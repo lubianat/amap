@@ -1,4 +1,9 @@
+Wed Jun 23 2004: 0.2-6
+   * deleting functions (redondance with mva)
+      hclust,plot.hclust,plclust
+
 Thu Feb  6 2004: 0.2-5
+   * function zzz.R modified
    * Change minor "warning" on manual fixed.
 
 Thu Feb  5 2004: 0.2-4
