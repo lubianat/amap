@@ -11,8 +11,8 @@ distpar(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
     \code{x} will be computed.}
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
-    \code{"canberra"} or \code{"binary"} \code{"pearson"} or
-    \code{"correlation"}.
+    \code{"canberra"}, \code{"binary"}, \code{"pearson"},
+    \code{"correlation"} or \code{"spearman"}.
     Any unambiguous substring can be given.}
   \item{nbproc}{Integer, Number of subprocess for parallelization}
   \item{diag}{logical value indicating whether the diagonal of the
@@ -34,26 +34,18 @@ distpar(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
 }
 
 \seealso{
-  \code{\link{dist}}
+  \code{\link{Dist}}
 }
 \examples{
 x <- matrix(rnorm(100), nrow=5)
-dist(x)
-dist(x, diag = TRUE)
-dist(x, upper = TRUE)
-m <- as.matrix(dist(x))
-d <- as.dist(m)
-stopifnot(d == dist(x))
-names(d) <- LETTERS[1:5]
-print(d, digits = 3)
 
-## example of binary and canberra distances.
-x <- c(0, 0, 1, 1, 1, 1)
-y <- c(1, 0, 1, 1, 0, 1)
-dist(rbind(x,y), method="binary")
-## answer 0.4 = 2/5
-dist(rbind(x,y), method="canberra")
-## answer 2 * (6/5)
+## compute dist with 8 threads
+distpar(x,nbproc=8)
+
+## compute pearson dist with 8 threads
+distpar(x,nbproc=8,method="pearson")
+
+
 }
 \keyword{multivariate}
 \keyword{cluster}

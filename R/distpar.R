@@ -4,8 +4,8 @@ distpar <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
     if(!is.na(pmatch(method, "euclidian")))
 	method <- "euclidean"
 
-    METHODS <- c("euclidean", "maximum",
-                 "manhattan", "canberra", "binary","pearson","correlation")
+    METHODS <- c("euclidean", "maximum","manhattan", "canberra",
+                 "binary","pearson","correlation","spearman")
     method <- pmatch(method, METHODS)
     if(is.na(method))
 	stop("invalid distance method")

@@ -15,7 +15,7 @@
 #define max( A , B )  ( ( A ) > ( B ) ? ( A ) : ( B ) )
 #define min( A , B )  ( ( A ) < ( B ) ? ( A ) : ( B ) )
 
-enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION};
+enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, SPEARMAN};
 /* == 1,2,..., defined by order in the R function dist */
 
 
@@ -94,7 +94,13 @@ void* thread_dist(void* arguments)
   double * x;
   int * method;
   int * ierr;
-  double (*distfun)(double*, int, int, int, int,int*) = NULL;
+  /* for spearman dist */
+  void ** opt;
+  double * data_tri;
+  int * order_tri;
+  int * rank_tri;
+  double (*distfun)(double*, int, int, int, int, int *, void **) = NULL;
+  
   
 
   arguments2 = (void **) arguments;
@@ -138,6 +144,18 @@ void* thread_dist(void* arguments)
     case CORRELATION:
 	distfun = R_correlation;
 	break;
+    case SPEARMAN:
+        distfun = R_spearman;
+	opt = (void * ) malloc (  3 * sizeof(void));
+	data_tri  = (double * ) malloc (2*  (nc) * sizeof(double));
+	order_tri  = (int * ) malloc (2 * (nc) * sizeof(int));
+	rank_tri  = (int * ) malloc (2 * (nc) * sizeof(int));
+	if( (data_tri == NULL) || (order_tri == NULL) || (rank_tri == NULL)) 
+	  error("distance(): unable to alloc memory");
+	opt[0] = (void *) data_tri;
+	opt[1] = (void *) order_tri;
+	opt[2] = (void *) rank_tri;
+	break;
 
     default:
 	error("distance(): invalid distance");
@@ -167,9 +185,18 @@ void* thread_dist(void* arguments)
 	  ij = (2 * (nr-dc) - j +1) * (j) /2 ;
 	  for(i = j+dc ; i < nr ; i++)
 	    {
-	      d[ij++] = distfun(x, nr, nc, i, j,ierr);
+	      d[ij++] = distfun(x, nr, nc, i, j,ierr,opt);
 	    }
 	}
+
+    if((*method) == SPEARMAN)
+      {
+	free(opt);
+	free(data_tri);
+	free(order_tri);
+	free(rank_tri);
+      }
+
     return (void*)0;
 
 }

@@ -84,7 +84,7 @@ hclusterpar(x, method = "euclidean", diag = FALSE, upper = FALSE,
   by Antoine Lucas \url{http://mulcyber.toulouse.inra.fr/projects/amap/}.
 }
 \seealso{
-  \code{\link{dist}}, \code{\link{hclust}}, \code{\link[stats]{kmeans}}.
+  \code{\link{Dist}}, \code{\link{hclust}}, \code{\link[stats]{kmeans}}.
 }
 \examples{
 

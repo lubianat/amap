@@ -1,3 +1,13 @@
+Tue Mar 15 2005: 0.4-1
+   * code without C++ style comments are not allowed.
+
+Mon Mar 14 2005: 0.4
+   * Implement kmeans from stats package and add support for 
+     several distances.
+
+Wed Mar 09 2005
+   * New distance "spearman" based on rank.
+
 Mon Feb 28 2005: 0.3
    * Parallelization for functions dist & hcluster
    * function dist move to Dist.

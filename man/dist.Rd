@@ -10,14 +10,13 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
     \code{x} will be computed.}
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
-    \code{"canberra"} or \code{"binary"} \code{"pearson"} or
-    \code{"correlation"}.
+    \code{"canberra"}, \code{"binary"}, \code{"pearson"},
+    \code{"correlation"} or \code{"spearman"}.
     Any unambiguous substring can be given.}
   \item{diag}{logical value indicating whether the diagonal of the
     distance matrix should be printed by \code{print.dist}.}
   \item{upper}{logical value indicating whether the upper triangle of the
     distance matrix should be printed by \code{print.dist}.}
-
 }
 \description{
   This function computes and returns the distance matrix computed by
@@ -56,6 +55,15 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
 
     \item{\code{correlation}:}{Also named "Centered Pearson"
       \eqn{1 - corr(x,y)}.  
+    }
+    \item{\code{spearman}:}{Compute a distance based on rank.
+      \eqn{\sum(d_i^2)}{sum (d_i^2)} where \eqn{d_i} is the difference
+      in rank between \eqn{x_i} and \eqn{y_i}.
+      \preformatted{
+	Dist(x,method="spearman")[i,j] =
+	
+	cor.test(x[i,],x[j,],method="spearman")$statistic
+	}
     }
   }
 
@@ -105,22 +113,10 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
 }
 \examples{
 x <- matrix(rnorm(100), nrow=5)
-dist(x)
-dist(x, diag = TRUE)
-dist(x, upper = TRUE)
-m <- as.matrix(dist(x))
-d <- as.dist(m)
-stopifnot(d == dist(x))
-names(d) <- LETTERS[1:5]
-print(d, digits = 3)
+Dist(x)
+Dist(x, diag = TRUE)
+Dist(x, upper = TRUE)
 
-## example of binary and canberra distances.
-x <- c(0, 0, 1, 1, 1, 1)
-y <- c(1, 0, 1, 1, 0, 1)
-dist(rbind(x,y), method="binary")
-## answer 0.4 = 2/5
-dist(rbind(x,y), method="canberra")
-## answer 2 * (6/5)
 }
 \keyword{multivariate}
 \keyword{cluster}

@@ -28,7 +28,7 @@
 #include <R_ext/Error.h>
 #include "mva.h"
 
-double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag)
+double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     double dev, dist;
     int count, j;
@@ -54,7 +54,7 @@ double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag)
     return sqrt(dist);
 }
 
-double R_maximum(double *x, int nr, int nc, int i1, int i2, int * flag)
+double R_maximum(double *x, int nr, int nc, int i1, int i2, int * flag, void ** opt)
 {
     double dev, dist;
     int count, j;
@@ -79,7 +79,7 @@ double R_maximum(double *x, int nr, int nc, int i1, int i2, int * flag)
     return dist;
 }
 
-double R_manhattan(double *x, int nr, int nc, int i1, int i2, int * flag)
+double R_manhattan(double *x, int nr, int nc, int i1, int i2, int * flag, void ** opt)
 {
     double dist;
     int count, j;
@@ -103,7 +103,7 @@ double R_manhattan(double *x, int nr, int nc, int i1, int i2, int * flag)
     return dist;
 }
 
-double R_canberra(double *x, int nr, int nc, int i1, int i2, int * flag)
+double R_canberra(double *x, int nr, int nc, int i1, int i2, int * flag, void ** opt)
 {
     double dist, sum, diff;
     int count, j;
@@ -131,7 +131,7 @@ double R_canberra(double *x, int nr, int nc, int i1, int i2, int * flag)
     return dist;
 }
 
-double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag)
+double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     int total, count, dist;
     int j;
@@ -165,7 +165,7 @@ double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag)
  * Added by A. Lucas
  */
 
-double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag)
+double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     double num,sum1,sum2, dist;
     int count,j;
@@ -195,7 +195,7 @@ double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag)
 }
 
 
-double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag)
+double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     double num,denum,sumx,sumy,sumxx,sumyy,sumxy,dist;
     int count,j;
@@ -230,14 +230,79 @@ double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag)
     return 1 - (num / denum);
 }
 
-enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION};
+double R_spearman(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
+{
+  int j;
+  double * data_tri;
+  int * order_tri;
+  int * rank_tri;
+  int n;
+  double diffrang=0;
+
+  /* initialisation of variables */
+  data_tri = (double * ) opt[0];
+  order_tri = (int * )   opt[1];
+  rank_tri  = (int * )   opt[2];
+  for(j = 0 ; j < nc ; j++) {
+    if(!(R_FINITE(x[i1]) && R_FINITE(x[i2])))
+      {
+	*flag = 0;
+	return NA_REAL;	
+      }
+    order_tri[j] = rank_tri[j] = j;
+    order_tri[j+nc] = rank_tri[j+nc] = j;
+    data_tri[j] = x[i1];
+    data_tri[j+nc] = x[i2];
+    i1 += nr;
+    i2 += nr;
+  }
+
+  n  = nc;
+  /* sort and compute rank */
+  /* First list */
+  rsort_rank_order(data_tri, order_tri,rank_tri, &n);
+  /* Second list */
+  rsort_rank_order(&(data_tri[nc]),&( order_tri[nc]),&(rank_tri[nc]), &n);
+
+  for(j=0;j<nc;j++)
+    {
+      diffrang += pow((double) ( rank_tri[j] - rank_tri[j+nc]),2);
+    }
+  return(  diffrang );
+
+  /*
+   * verifcation in R:
+   * Dist(x,method='spearman') ; n =dim(x)[2]
+   * l=c(x[3,],x[4,]); sum((rank(l[1:n])-rank(l[(n+1):(2*n)]))^2)
+   * cor.test(x[3,],x[4,],method="spearm")$statistic
+   */
+
+}
+
+enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, SPEARMAN};
 /* == 1,2,..., defined by order in the r function dist */
 
+
+/**
+ * R_distance: compute distance
+ * \param x input matrix
+ * \param nr,nc number of row and columns
+ *        nr individuals with nc values.
+ * \param d distance half matrix.
+ * \param diag if we compute diagonal of dist matrix (usualy: no).
+ * \param method 1, 2,... method used
+ * \param ierr error return; 1 good; 0 missing values
+ */
 void R_distance(double *x, int *nr, int *nc, double *d, int *diag, 
 		int *method, int * ierr)
 {
     int dc, i, j, ij;
-    double (*distfun)(double*, int, int, int, int, int *) = NULL;
+    /* for spearman dist */
+    void ** opt;
+    double * data_tri;
+    int * order_tri;
+    int * rank_tri;
+    double (*distfun)(double*, int, int, int, int, int *, void **) = NULL;
 
     switch(*method) {
     case EUCLIDEAN:
@@ -261,6 +326,18 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag,
     case CORRELATION:
 	distfun = R_correlation;
 	break;
+    case SPEARMAN:
+        distfun = R_spearman;
+	opt = (void * ) malloc (  3 * sizeof(void));
+	data_tri  = (double * ) malloc (2*  (*nc) * sizeof(double));
+	order_tri  = (int * ) malloc (2 * (*nc) * sizeof(int));
+	rank_tri  = (int * ) malloc (2 * (*nc) * sizeof(int));
+	if( (data_tri == NULL) || (order_tri == NULL) || (rank_tri == NULL)) 
+	  error("distance(): unable to alloc memory");
+	opt[0] = (void *) data_tri;
+	opt[1] = (void *) order_tri;
+	opt[2] = (void *) rank_tri;
+	break;
 
     default:
 	error("distance(): invalid distance");
@@ -274,5 +351,49 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag,
     ij = 0;
     for(j = 0 ; j <= *nr ; j++)
 	for(i = j+dc ; i < *nr ; i++)
-	    d[ij++] = distfun(x, *nr, *nc, i, j,ierr);
+	    d[ij++] = distfun(x, *nr, *nc, i, j,ierr,opt);
+
+
+    if((*method) == SPEARMAN)
+      {
+	free(opt);
+	free(data_tri);
+	free(order_tri);
+	free(rank_tri);
+      }
+    /* If spearman: free(vecteur pour tri) */
+}
+
+
+
+/**
+ * Sort, and return order and rank.
+ * order and rank must be initialised with 0:(n-1)
+ * make sort, return x sorted
+ * order = order(x) - 1 
+ * rank = rank(x) -1
+ * 
+ */
+
+void rsort_rank_order(double *x, int *order, int *rank, int * n)
+{
+    double v;
+    int i, j, h, iv;
+
+
+    for (h = 1; h <= *n / 9; h = 3 * h + 1);
+    for (; h > 0; h /= 3)
+	for (i = h; i < *n; i++) {
+	    v = x[i]; iv = order[i];
+	    j = i;
+	    while (j >= h && (x[j - h] > v))
+	      {
+		x[j] = x[j - h]; order[j] = order[j-h];
+		rank[order[j]] = j; 
+		j -= h; 
+	      }
+	    x[j] = v; order[j] = iv; 
+	    rank[order[j]] = j; 
+	}
+
 }

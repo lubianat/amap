@@ -5,6 +5,7 @@ Dist                    Distance Matrix Computation
 distpar                 Parallelized Distance Matrix Computation
 hcluster                Hierarchical Clustering
 hclusterpar             Parallelized Hierarchical Clustering
+Kmeans                  K-Means Clustering
 lubisch                 Dataset Lubischew
 plot.acp                Graphics for Principal component Analysis
 varrob                  Robust variance
