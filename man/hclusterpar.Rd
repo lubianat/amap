@@ -1,12 +1,12 @@
-\name{hcluster}
-\title{Hierarchical Clustering}
-\alias{hcluster}
+\name{hclusterpar}
+\title{Parallelized Hierarchical Clustering}
+\alias{hclusterpar}
 \description{
-  Hierarchical cluster analysis.
+  Parallelized Hierarchical cluster analysis.
 }
 \usage{
-hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
-         link = "complete", members = NULL)
+hclusterpar(x, method = "euclidean", diag = FALSE, upper = FALSE,
+         link = "complete", members = NULL, nbproc = 2)
 }
 \arguments{
   \item{x}{numeric matrix or (data frame).  Distances between the rows of
@@ -26,6 +26,7 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
     \code{"average"}, \code{"mcquitty"}, \code{"median"} or
     \code{"centroid"}.}
   \item{members}{\code{NULL} or a vector with length size of \code{d}.}
+  \item{nbproc}{Integer, number of subprocess for parallelization}
 }
 \value{
   An object of class \bold{hclust} which describes the
@@ -71,16 +72,15 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
 }
 \details{
   This function is a mix of function \code{hclust} and function
-   \code{dist}. \code{hcluster(x, method = "euclidean",link = "complete")
+   \code{distpar}. \code{hcluster(x, method = "euclidean",link = "complete")
      = hclust(dist(x, method = "euclidean"),method = "complete"))}   
-   It use twice less memory, as it doesn't store distance matrix.
+
 
    For more details, see documentation of \code{hclust} and \code{dist}.
 
 }
 \author{
-  The \code{hcluster} function is based on C code adapted from Cran
-  Fortran routine
+  The \code{hcluster} function is based on C code
   by Antoine Lucas \url{http://mulcyber.toulouse.inra.fr/projects/amap/}.
 }
 \seealso{
@@ -89,24 +89,15 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
 \examples{
 
 data(USArrests)
-hc <- hcluster(USArrests,link = "ave")
+hc <- hclusterpar(USArrests,link = "ave",nbproc=8)
 plot(hc)
 plot(hc, hang = -1)
 
-## Do the same with centroid clustering and squared Euclidean distance,
-## cut the tree into ten clusters and reconstruct the upper part of the
-## tree from the cluster centers.
-hc <- hclust(dist(USArrests)^2, "cen")
-memb <- cutree(hc, k = 10)
-cent <- NULL
-for(k in 1:10){
-  cent <- rbind(cent, colMeans(USArrests[memb == k, , drop = FALSE]))
-}
-hc1 <- hclust(dist(cent)^2, method = "cen", members = table(memb))
-opar <- par(mfrow = c(1, 2))
-plot(hc,  labels = FALSE, hang = -1, main = "Original Tree")
-plot(hc1, labels = FALSE, hang = -1, main = "Re-start from 10 clusters")
-par(opar)
+## To check...
+hc <- hcluster(USArrests,link = "ave")
+plot(hc)
+## The same ?
+
 }
 \keyword{multivariate}
 \keyword{cluster}

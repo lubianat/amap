@@ -1,19 +1,10 @@
-\name{dist}
+\name{Dist}
 \title{Distance Matrix Computation}
 \usage{
-dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
-
-print.dist(x, diag = NULL, upper = NULL, \dots)
-as.matrix.dist(x)
-as.dist(m, diag = FALSE, upper = FALSE)
+Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
 }
-\alias{dist}
-\alias{print.dist}
-\alias{format.dist}
-\alias{as.matrix.dist}
-\alias{names.dist}
-\alias{names<-.dist}
-\alias{as.dist}
+\alias{Dist}
+
 \arguments{
   \item{x}{numeric matrix or (data frame).  Distances between the rows of
     \code{x} will be computed.}
@@ -26,9 +17,7 @@ as.dist(m, diag = FALSE, upper = FALSE)
     distance matrix should be printed by \code{print.dist}.}
   \item{upper}{logical value indicating whether the upper triangle of the
     distance matrix should be printed by \code{print.dist}.}
-  \item{m}{A matrix of distances to be converted to a \code{"dist"}
-    object (only the lower triangle is used, the rest is ignored).}
-  \item{\dots}{further arguments, passed to the (next) \code{print} method.}
+
 }
 \description{
   This function computes and returns the distance matrix computed by
@@ -112,7 +101,7 @@ as.dist(m, diag = FALSE, upper = FALSE)
   \code{\link[cluster]{daisy}} in the \file{cluster} package with more
   possibilities in the case of \emph{mixed} (contiuous / categorical)
   variables.
- \code{\link[mva]{dist}}  \code{\link{hclust}}.
+ \code{\link[stats]{dist}}  \code{\link{hclust}}.
 }
 \examples{
 x <- matrix(rnorm(100), nrow=5)

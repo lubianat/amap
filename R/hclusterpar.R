@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2003-05-28 10:33:31 lucas>
+## Last Modified : Time-stamp: <2005-02-15 10:23:34 lucas>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -10,7 +10,7 @@
 
 
 
-hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link = "complete", members = NULL)
+hclusterpar <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link = "complete", members = NULL, nbproc = 2)
 {
                                         # take from dist
   if (!is.na(pmatch(method, "euclidian"))) 
@@ -43,7 +43,7 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
     stop("Invalid length of members")
   n <- N
   
-  hcl <- .C("hcluster",
+  hcl <- .C("hclusterpar",
             x = as.double(x),
             nr = as.integer(n),
             nc = as.integer(ncol(x)),
@@ -55,18 +55,11 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
             order = integer(n),
             crit = double(n),
             members = as.double(members),
-            res  = as.integer (1),
+            nbprocess  = as.integer(nbproc),
+            err = as.integer(0),
             DUP = FALSE,
-            NAOK=TRUE,
-            PACKAGE= "amap")
+            NAOK=TRUE, PACKAGE="amap")
 
-  if(hcl$res == 2)
-    stop("Cannot allocate memory")
-  if(hcl$res == 3)
-    stop("Missing values in distance Matrix")
-  if(hcl$res == 1)
-    stop("Error")
-  
   tree <- list(merge = cbind(hcl$ia[1:(N - 1)],
                  hcl$ib[1:(N -  1)]),
                height = hcl$crit[1:(N - 1)],

@@ -53,3 +53,6 @@ int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cri
 
 
 
+void R_distancepar(double *x, int *nr, int *nc, double *d, int *diag, int *method,int *nbprocess,int *ierr);
+void* thread_dist(void* arguments);
+

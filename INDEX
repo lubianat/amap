@@ -1,8 +1,10 @@
-acpgen                  Generalised principal component analysis
 acp                     Principal component analysis
+acpgen                  Generalised principal component analysis
 acprob                  Robust principal component analysis
-dist                    Distance Matrix Computation
+Dist                    Distance Matrix Computation
+distpar                 Parallelized Distance Matrix Computation
 hcluster                Hierarchical Clustering
+hclusterpar             Parallelized Hierarchical Clustering
 lubisch                 Dataset Lubischew
 plot.acp                Graphics for Principal component Analysis
-VarRob                  Robust variance
+varrob                  Robust variance

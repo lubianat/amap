@@ -1,4 +1,4 @@
-Dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
+distpar <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
 {
     ## account for possible spellings of euclid?an
     if(!is.na(pmatch(method, "euclidian")))
@@ -13,18 +13,16 @@ Dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
 	stop("ambiguous distance method")
 
     N <- nrow(x <- as.matrix(x))
-    d <- .C("R_distance",
+    d <- .C("R_distancepar",
 	    x = as.double(x),
 	    nr= N,
 	    nc= ncol(x),
 	    d = double(N*(N - 1)/2),
 	    diag  = as.integer(FALSE),
 	    method= as.integer(method),
-            ierr=as.integer(0),
-	    DUP = FALSE,
-            NAOK=TRUE,
-            PACKAGE="amap"
-            )$d
+            nbproc = as.integer(nbproc),
+            err = as.integer(0),
+	    DUP = FALSE, NAOK=TRUE, PACKAGE="amap")$d
     attr(d, "Size") <- N
     attr(d, "Labels") <- dimnames(x)[[1]]
     attr(d, "Diag") <- diag
@@ -34,4 +32,3 @@ Dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
     class(d) <- "dist"
     return(d)
 }
-
