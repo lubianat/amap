@@ -25,7 +25,7 @@ distpar(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
   using the specified distance measure to compute the distances between
   the rows of a data matrix.
 }
-
+}
 
 \value{
   An object of class \code{"dist"}.

@@ -59,11 +59,11 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
     \item{\code{spearman}:}{Compute a distance based on rank.
       \eqn{\sum(d_i^2)}{sum (d_i^2)} where \eqn{d_i} is the difference
       in rank between \eqn{x_i} and \eqn{y_i}.
-      \preformatted{
-	Dist(x,method="spearman")[i,j] =
+      
+      \code{Dist(x,method="spearman")[i,j] =}
 	
-	cor.test(x[i,],x[j,],method="spearman")$statistic
-	}
+      \code{cor.test(x[i,],x[j,],method="spearman")$statistic}
+	
     }
   }
 

@@ -1,5 +1,8 @@
+Wed Mar 16 2005: 0.4-2
+  * man flag \preformated too recent... changed to \code 
+
 Tue Mar 15 2005: 0.4-1
-   * code without C++ style comments are not allowed.
+   * code without C++ style comments.
 
 Mon Mar 14 2005: 0.4
    * Implement kmeans from stats package and add support for 

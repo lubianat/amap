@@ -13,8 +13,8 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
     \code{x} will be computed.}
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
-    \code{"canberra"} \code{"binary"} \code{"pearson"} or
-    \code{"correlation"}.
+    \code{"canberra"} \code{"binary"} \code{"pearson"},
+    \code{"correlation"} or  \code{"spearman"}.
     Any unambiguous substring can be given.}
   \item{diag}{logical value indicating whether the diagonal of the
     distance matrix should be printed by \code{print.dist}.}
