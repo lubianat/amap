@@ -4,7 +4,7 @@
  * Description   : Robust principal component analysis
  *
  * Created       : 06/11/02 
- * Last Modified : Time-stamp: <2002-11-12 11:15:27 lucas>
+ * Last Modified : Time-stamp: <2003-02-12 15:20:33 lucas>
  *
  * This Message must remain attached to this source code at all times.
  * This source code may not be redistributed, nor may any executable
@@ -91,7 +91,7 @@ void mult(double *x,int *p,double *res)
 
 
 
-void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res)
+int W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
      /*
       * x: matrice des données n x p
       * h: largeure de la fenetre (scalaire)
@@ -103,15 +103,28 @@ void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res)
       * Convention:
       *   la matrice x[i,j] (n x p) est remplacée par 
       *   le vecteur x[i + j x n]  (i=0..n-1 ; j=0..p-1) 
+      *
+      * result  flag  0 => correct
+      *               1 => Pb
+      *               2 => Cannot allocate memory
       */
 {
   double *delta;
   double *temp;
   double N=0,K=0,som=0;
   int i,j,k,l;
-
+  
+  *result = 1; 
   delta = (double*) malloc (*p * sizeof(double));
   temp  = (double*) malloc (*p * *p * sizeof(double));
+
+  if(delta == NULL || temp == NULL )
+    {
+      printf("AMAP: Not enought system memory \n"); 
+      *result = 2; 
+      return(0);
+    }
+
 
   for (l=0; l < (*p * *p) ; l++)
     res[l]=0;
@@ -140,10 +153,10 @@ void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res)
 
   free(delta);
   free(temp);
-
+  *result = 0; 
 }
 
-void U(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res)
+int VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
      /*
       * x: matrice des données n x p
       * h: largeure de la fenetre (scalaire)
@@ -151,14 +164,25 @@ void U(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res)
       * n: longueur de x
       * p: largeure de x
       * k: noyau utilise
+      * result  flag  0 => correct
+      *               1 => Pb
+      *               2 => Cannot allocate memory
       */
 {
   int i,j;
   double *temp, *Xi;
   double N=0,K=0,som=0;
 
+  *result = 1;
   temp  = (double*) malloc (*p * *p * sizeof(double));
   Xi = (double*) malloc (*p * sizeof(double));
+  if(temp == NULL || Xi == NULL )
+    {
+      printf("AMAP: Not enought system memory \n"); 
+      *result = 2;
+      return(0);
+    }
+
 
   som = 0;
   for (i=0; i < *n ; i++)
@@ -180,6 +204,7 @@ void U(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res)
 
   free(Xi);
   free(temp);
+  *result = 0;
 }
 
 
@@ -197,6 +222,12 @@ main()
 
   k2 = (char*) malloc ( sizeof(char));
   k3 = (char**) malloc ( sizeof(char* ));
+  if(k2 == NULL || k3 == NULL )
+    {
+      printf("AMAP: Not enought system memory \n"); 
+      return(0);
+    }
+
 
   k2 = &k1;
   k3 = &k2;

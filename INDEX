@@ -5,3 +5,4 @@ hclust                  Hierarchical Clustering
 hcluster                Hierarchical Clustering
 lubisch                 Dataset Lubischew
 plot.acp                Graphics for Principal component Analysis
+VarRob                  Robust variance

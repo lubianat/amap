@@ -3,7 +3,7 @@
  *   HIERARCHICAL CLUSTERING using (user-specified) criterion. 
  *                                                          
  *   Created       : 14/11/02 
- *   Last Modified : Time-stamp: <2002-11-20 12:53:57 lucas>
+ *   Last Modified : Time-stamp: <2003-02-12 09:19:54 lucas>
  *
  *   Parameters:                                               
  *                                                          
@@ -42,7 +42,7 @@
 #define min( A , B )  ( ( A ) < ( B ) ? ( A ) : ( B ) )
 
 
-void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr)
+int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,int *result)
      /*
       * x: data nr x nc
       * membr: member, vector  1:nr
@@ -52,14 +52,27 @@ void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,in
       * ia ib   result (merge)
       * iorder  result (order)
       * crit    result (height)
+      * result  flag  0 => correct
+      *               1 => Pb
+      *               2 => Cannot allocate memory
       */ 
 
 {
   int  len;
   double *d;
 
+  *result = 1;
+
   len = (*nr * (*nr-1) )/2; 
+
   d = (double*) malloc (len * sizeof(double));
+  if(d == NULL )
+    {
+      printf("AMAP: Not enought system memory to allocate matrix distance\n"); 
+      *result = 2;
+      return(0);
+    }
+
   /*
    * Calculate d: distance matrix
    */
@@ -68,12 +81,13 @@ void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,in
   /*
    *  Hierarchical clustering
    */
-  hclust (nr,&len,iopt ,ia ,ib,iorder,crit,membr,d);
+  hclust (nr,&len,iopt ,ia ,ib,iorder,crit,membr,d,result);
   free(d); 
+  *result = 0;
 }
 
  
-void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss)
+int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss,int *result)
 {
 
   int im,jm,jj,i,j,ncl,ind,i2,j2,k,ind1,ind2,ind3;
@@ -85,9 +99,16 @@ void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cr
   int *iib;
   int *tmp;
 
+  *result = 1;
   nn    = (int*) malloc (*n * sizeof(int));
   disnn = (double*) malloc (*n * sizeof(double));
   flag  = (short int*) malloc (*n * sizeof(short int));
+  if(nn == NULL || disnn == NULL || flag == NULL )
+    {
+      printf("AMAP: Not enought system memory \n"); 
+      *result = 2;
+      return(0);
+    }
 
 
   /* Initialisation */
@@ -271,7 +292,13 @@ void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cr
   
   iia = (int*) malloc (*n * sizeof(int));
   iib = (int*) malloc (*n * sizeof(int));
-  
+  if(iia == NULL || iib == NULL )
+    {
+      printf("AMAP: Not enought system memory \n"); 
+      *result = 2;
+      return(0);
+    }
+
 
   
   hcass2(n,ia,ib,iorder,iia,iib);
@@ -290,7 +317,7 @@ void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cr
   free(iia);
   free(iib);
   
-
+  *result = 0;
 } /* end function hclust */
 
 

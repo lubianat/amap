@@ -55,9 +55,15 @@ hclust <-
                 crit = double(n),
                 members = as.double(members),
                 diss = as.double(d),
+                res  = as.integer (1),
                 PACKAGE ="amap" )
       
-      tree <- list(merge = cbind(hcl$ia[1:(n - 1)],
+    if(hcl$res == 2)
+      stop("Cannot allocate memory")
+    if(hcl$res == 1)
+      stop("Error")
+
+    tree <- list(merge = cbind(hcl$ia[1:(n - 1)],
                      hcl$ib[1:(n - 1)]),
                    height = hcl$crit[1:(n - 1)],
                    order = hcl$order, 

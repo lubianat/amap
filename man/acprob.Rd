@@ -3,8 +3,7 @@
 \alias{K}
 \alias{W}
 \alias{WsansC}
-\alias{U}
-\alias{UsansC}
+
 
 \title{Generalised principal component analysis}
 \description{Generalised principal component analysis / Analyse en composantes principales généralisée}
@@ -14,8 +13,6 @@ acpgen(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
 K(u,kernel="gaussien")
 W(x,h,D=NUL,kernel="gaussien")
 WsansC(x,h,D=NUL,kernel="gaussien")
-U(x,h,D=NUL,kernel="gaussien")
-UsansC(x,h,D=NUL,kernel="gaussien")
 }
 
 \arguments{
@@ -77,7 +74,6 @@ cosinus: \deqn{\frac{\pi}{4}\cos(\frac{\pi}{2}u) I_{|u|\leq 1}  }{
 
 }
 
-
 \value{
   An object of class \bold{acp} 
   The object is a list with components:
@@ -85,7 +81,7 @@ cosinus: \deqn{\frac{\pi}{4}\cos(\frac{\pi}{2}u) I_{|u|\leq 1}  }{
   \item{sdev}{the standard deviations of the principal components.}
   \item{loadings}{the matrix of variable loadings (i.e., a matrix
     whose columns contain the eigenvectors).  This is of class
-    \code{"loadings"}: see \code{\link{loadings}} for its \code{print}
+    \code{"loadings"}: see \code{\link[mva]{loadings}} for its \code{print}
     method.}
   \item{scores}{if \code{scores = TRUE}, the scores of the supplied
     data on the principal components.}
@@ -124,4 +120,4 @@ rm (m,n,temp)
 \keyword{multivariate}
 
 \author{Antoine Lucas, \url{http://genopole.toulouse.inra.fr/~lucas/amap}}
-\seealso{\code{acprob}, \code{princomp} (library mva)}
+\seealso{\link{acp} \link[mva]{princomp} }

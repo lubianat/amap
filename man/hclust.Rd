@@ -171,7 +171,7 @@ plclust(tree, hang = 0.1, unit = FALSE, level = FALSE, hmin = 0,
   contributed to STATLIB by F. Murtagh.
 }
 \seealso{
-  \code{\link{kmeans}}.
+  \code{\link[mva]{hclust}} \code{\link[mva]{kmeans}}.
 }
 \examples{
 library(mva)

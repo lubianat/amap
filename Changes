@@ -1,0 +1,8 @@
+Mon Feb 17 2003: 0.2-1
+   * minor bug fixed for acp & acpgen
+
+Fri Feb 14 2003: 0.2
+   * The package now handles memory allocation errors
+   * Dimnames change for loadings and scores in pca 
+   * U renamed as varrob
+   * \link{}s in the docs refer to correct packages

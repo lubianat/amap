@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 30/10/02
-#  Last Modified : Time-stamp: <2002-11-25 10:19:04 lucas>
+#  Last Modified : Time-stamp: <2003-02-17 10:02:07 lucas>
 #
 #  Description   : Robust principal component analysis
 #                  
@@ -36,7 +36,14 @@ W <- function(x,h,D=NULL,kernel="gaussien")
     D <- as.vector(D)
     kernel <- substr(kernel,1,1)
 
-    matrix(.C("W",as.double(x),as.double(h),as.double(D),as.integer(n),as.integer(p),as.character(kernel),res=double(p*p))$res,p)
+    VarLoc <- .C("W",as.double(x),as.double(h),as.double(D),as.integer(n),as.integer(p),as.character(kernel),res=double(p*p),result = as.integer(1))
+
+    if(VarLoc$result == 2)
+      stop("Cannot allocate memory")
+    if(VarLoc$result == 1)
+      stop("Error")
+
+    matrix(VarLoc$res,p)
 }
 
 
@@ -66,7 +73,7 @@ WsansC <- function(x,h,D=NULL,kernel="gaussien")
     result /   som
 }
 
-U <- function(x,h,D=NULL,kernel="gaussien")
+varrob <- function(x,h,D=NULL,kernel="gaussien")
 {
     x   <- as.matrix(x)
     x   <- scale(x, center = TRUE, scale = FALSE)
@@ -79,13 +86,20 @@ U <- function(x,h,D=NULL,kernel="gaussien")
     D <- as.vector(D)
     kernel <- substr(kernel,1,1)
 
-    S <- matrix(.C("U",as.double(x),as.double(h),as.double(D),as.integer(n),as.integer(p),as.character(kernel),res=double(p*p))$res,p)
+    Calcul <- .C("VarRob",as.double(x),as.double(h),as.double(D),as.integer(n),as.integer(p),as.character(kernel),res=double(p*p),result = as.integer(1))
+
+    if(Calcul$result == 2)
+      stop("Cannot allocate memory")
+    if(Calcul$result == 1)
+      stop("Error")
+
+    S <- matrix(Calcul$res,p)
     Sinv <- solve(S)
     solve ( Sinv - D / h)
 }
 
 
-UsansC <- function(x,h,D=NULL,kernel="gaussien")
+varrobsansC <- function(x,h,D=NULL,kernel="gaussien")
 {
     n   <- dim(x)[1]
     p   <- dim(x)[2]
@@ -120,10 +134,10 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
           x    <- apply(x,2,function(u) { u/sd(u)}) 
          }
 
-    # ESTIMATION DE W et U
+    # ESTIMATION DE W et VarRob
     n <- dim(x)[1]
     VarInv   <- solve(var(x)*(n-1)/n) # solve= inverser
-    leU    <- U(x,h1,D=VarInv,kernel=kernel)
+    leU    <- varrob(x,h1,D=VarInv,kernel=kernel)
     leW    <- W(x,h2,D=VarInv,kernel=kernel)
     Winv   <- solve(leW) 
 
@@ -145,7 +159,16 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
     
 
     # AFFICHAGE DES RESULTATS
+
+
     scores <- x %*% Winv %*% V
+
+    V      <- data.frame(V)
+    scores <- data.frame(scores)
+    dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
+    dimnames(V)[[1]] <- dimnames(x)[[2]]
+    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
     eig    <- sqrt(EIG$values)
     sdev   <- apply(scores,2,sd)    
     res    <- list(eig=eig,sdev=sdev,scores=scores,loadings=V)

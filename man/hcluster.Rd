@@ -83,7 +83,7 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
   by Antoine Lucas \url{http://genopole.toulouse.inra.fr/~lucas/amap}.
 }
 \seealso{
-  \code{\link{dist}, \link{hclust}, \link{kmeans}}.
+  \code{\link{dist}, \link{hclust}, \link[mva]{kmeans}}.
 }
 \examples{
 library(mva)

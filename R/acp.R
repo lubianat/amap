@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2002-11-12 09:59:15 lucas>
+#  Last Modified : Time-stamp: <2003-02-17 10:01:10 lucas>
 #
 #  Description   : Principal component analysis
 #                  
@@ -24,9 +24,17 @@ acp <- function(x,center=TRUE,reduce=TRUE)
          }
     EIG  <- eigen( t(x) %*% x,symmetric=TRUE) 
     V    <- EIG$vector    # ou bien: V=svd(x)$v
+
     val  <- sqrt(EIG$values)
 
     scores <- x %*% V
+
+    V      <- data.frame(V)
+    scores <- data.frame(scores)
+    dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
+    dimnames(V)[[1]] <- dimnames(x)[[2]]
+    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
     sdev   <- apply(scores,2,sd)    
     res  <- list(eig=val,sdev=sdev,scores=scores,loadings=V)
     class(res) <- "acp"

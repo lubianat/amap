@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2002-11-29 15:21:04 lucas>
+## Last Modified : Time-stamp: <2003-02-12 09:26:11 lucas>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -55,10 +55,16 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
             order = integer(n),
             crit = double(n),
             members = as.double(members),
+            res  = as.integer (1),
             DUP = FALSE,
             NAOK=TRUE,
             PACKAGE= "amap")
 
+  if(hcl$res == 2)
+    stop("Cannot allocate memory")
+  if(hcl$res == 1)
+    stop("Error")
+  
   tree <- list(merge = cbind(hcl$ia[1:(N - 1)],
                  hcl$ib[1:(N -  1)]),
                height = hcl$crit[1:(N - 1)],

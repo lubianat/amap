@@ -116,7 +116,7 @@ as.dist(m, diag = FALSE, upper = FALSE)
   \code{\link[cluster]{daisy}} in the \file{cluster} package with more
   possibilities in the case of \emph{mixed} (contiuous / categorical)
   variables.
-  \code{\link{hclust}}.
+ \code{\link[mva]{dist}}  \code{\link{hclust}}.
 }
 \examples{
 x <- matrix(rnorm(100), nrow=5)
