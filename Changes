@@ -1,3 +1,12 @@
+
+Fri Jul 11 2003: 0.2-2
+   * bug fixed in varrob
+   * fixed documentation varrob.Rd
+
+Wed May 28 2003
+   * hcluster check if distance matrix has missing values
+   * new function acprob for robust pca.
+
 Mon Feb 17 2003: 0.2-1
    * minor bug fixed for acp & acpgen
 

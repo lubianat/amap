@@ -1,9 +1,9 @@
 Package: amap
-Version: 0.2-1
-Date: 2002-29-11
+Version: 0.2-2
+Date: 2003-29-07
 Title: Another Multidimensional Analysis Package 
-Author: Antoine Lucas <lucas@toulouse.inra.fr>
-Maintainer: Antoine Lucas <lucas@toulouse.inra.fr>
+Author: Antoine Lucas 
+Maintainer: Antoine Lucas <antoinelucas[at]libertysurf.fr>
 Description: Hierarchical Clustering and Principal 
         Component Analysis (With general and robusts
 	methods).	

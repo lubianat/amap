@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2003-02-17 10:01:10 lucas>
+#  Last Modified : Time-stamp: <2003-03-05 15:22:26 lucas>
 #
 #  Description   : Principal component analysis
 #                  
@@ -62,7 +62,12 @@ plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composante ',col='darkblue',main
     U    <- x$scores
     XLAB <- paste(label,i)
     YLAB <- paste(label,j)
-    plot(U[,i],U[,j],col='white',xlab=XLAB,ylab=YLAB,main=main)
+    plot.new()
+    plot.window(range(U[,i]),range(U[,j]))
+    axis(1,label=TRUE,tick=TRUE)
+    axis(2,label=TRUE,tick=TRUE)
+    box()
+    title(xlab=XLAB,ylab=YLAB,main=main)
     if(text){
         text(U[,i],U[,j],col=col,...)   
     }
@@ -77,8 +82,15 @@ biplot.acp <- function(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,m
     LIM  <- c(-1.3,1.3)
     XLAB <- paste(label,i)
     YLAB <- paste(label,j)
+
     # PLOT DES AXES
-    plot.default(0,col='white',xlim=LIM,ylim=LIM,xlab=XLAB,ylab=YLAB,main=main)
+    plot.new()
+    plot.window(LIM,LIM)
+    axis(1,label=TRUE,tick=TRUE)
+    axis(2,label=TRUE,tick=TRUE)
+    box()
+    title(xlab=XLAB,ylab=YLAB,main=main)
+
 
     # PLOT DU NOM DES FLECHES
     text(U[,i]*1.3,U[,j]*1.3,labels=dimnames(U)[[1]],col=col)   

@@ -1,5 +1,6 @@
 acp                     Principal component analysis
 acpgen                  Generalised principal component analysis
+acprob                  Robust principal component analysis
 dist                    Distance Matrix Computation
 hclust                  Hierarchical Clustering
 hcluster                Hierarchical Clustering

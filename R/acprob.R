@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 30/10/02
-#  Last Modified : Time-stamp: <2003-02-17 10:02:07 lucas>
+#  Last Modified : Time-stamp: <2003-07-29 11:12:25 lucas>
 #
 #  Description   : Robust principal component analysis
 #                  
@@ -36,7 +36,18 @@ W <- function(x,h,D=NULL,kernel="gaussien")
     D <- as.vector(D)
     kernel <- substr(kernel,1,1)
 
-    VarLoc <- .C("W",as.double(x),as.double(h),as.double(D),as.integer(n),as.integer(p),as.character(kernel),res=double(p*p),result = as.integer(1))
+    VarLoc <- .C(
+                 "W",
+                 as.double(x),
+                 as.double(h),
+                 as.double(D),
+                 as.integer(n),
+                 as.integer(p),
+                 as.character(kernel),
+                 res=double(p*p),
+                 result = as.integer(1),
+                 PACKAGE= "amap"
+                 )
 
     if(VarLoc$result == 2)
       stop("Cannot allocate memory")
@@ -79,6 +90,7 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
     x   <- scale(x, center = TRUE, scale = FALSE)
     n   <- dim(x)[1]
     p   <- dim(x)[2]
+    Vinv<- solve(var(x) * (n-1) / n)
     if (is.null(D)) {
         D <- diag(1,p)
     }
@@ -86,7 +98,17 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
     D <- as.vector(D)
     kernel <- substr(kernel,1,1)
 
-    Calcul <- .C("VarRob",as.double(x),as.double(h),as.double(D),as.integer(n),as.integer(p),as.character(kernel),res=double(p*p),result = as.integer(1))
+    Calcul <- .C(
+                 "VarRob",
+                 as.double(x),
+                 as.double(h),
+                 as.double(D),
+                 as.integer(n),
+                 as.integer(p),
+                 as.character(kernel),
+                 res=double(p*p),
+                 result = as.integer(1),
+                 PACKAGE= "amap")
 
     if(Calcul$result == 2)
       stop("Cannot allocate memory")
@@ -95,7 +117,7 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
 
     S <- matrix(Calcul$res,p)
     Sinv <- solve(S)
-    solve ( Sinv - D / h)
+    solve ( Sinv - Vinv / h)
 }
 
 
@@ -108,6 +130,7 @@ varrobsansC <- function(x,h,D=NULL,kernel="gaussien")
     }
     x   <- as.matrix(x)
     x   <- scale(x ,center = TRUE, scale = FALSE)
+    Vinv<- solve(var(x) * (n-1) / n)
     som <- 0
     res <- 0
     for (i in 1:n )
@@ -119,9 +142,10 @@ varrobsansC <- function(x,h,D=NULL,kernel="gaussien")
     }
     S <- res / som
     Sinv <- solve(S)
-    solve ( Sinv -  D / h )
+    solve ( Sinv -  Vinv / h )
 
 }
+
 
 
 acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
@@ -172,6 +196,34 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
     eig    <- sqrt(EIG$values)
     sdev   <- apply(scores,2,sd)    
     res    <- list(eig=eig,sdev=sdev,scores=scores,loadings=V)
+    class(res) <- "acp"
+    res
+}
+
+
+acprob <- function(x,h=1,center=TRUE,reduce=TRUE,kernel="gaussien")
+{   
+    x    <- as.matrix(x)
+    x    <- scale(x ,center = center, scale = FALSE)
+    if (reduce == TRUE)
+         {
+          x    <- apply(x,2,function(u) { u/sd(u)}) 
+         }
+    EIG  <- eigen( varrob(x,h),symmetric=TRUE) 
+    V    <- EIG$vector    # ou bien: V=svd(x)$v
+
+    val  <- sqrt(EIG$values)
+
+    scores <- x %*% V
+
+    V      <- data.frame(V)
+    scores <- data.frame(scores)
+    dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
+    dimnames(V)[[1]] <- dimnames(x)[[2]]
+    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
+    sdev   <- apply(scores,2,sd)    
+    res  <- list(eig=val,sdev=sdev,scores=scores,loadings=V)
     class(res) <- "acp"
     res
 }

@@ -20,7 +20,11 @@ dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
 	    d = double(N*(N - 1)/2),
 	    diag  = as.integer(FALSE),
 	    method= as.integer(method),
-	    DUP = FALSE, NAOK=TRUE, PACKAGE="amap")$d
+            ierr=as.integer(0),
+	    DUP = FALSE,
+            NAOK=TRUE,
+            PACKAGE="amap"
+            )$d
     attr(d, "Size") <- N
     attr(d, "Labels") <- dimnames(x)[[1]]
     attr(d, "Diag") <- diag

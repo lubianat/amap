@@ -11,7 +11,7 @@
 \usage{
 hclust(d, method = "complete", members=NULL)
 
-\method{plot}{hclust}(x, labels = NULL, hang = 0.1,
+plot.hclust(x, labels = NULL, hang = 0.1,
             axes = TRUE, frame.plot = FALSE, ann = TRUE,
             main = "Cluster Dendrogram",
             sub = NULL, xlab = NULL, ylab = "Height", \dots)
@@ -138,6 +138,39 @@ plclust(tree, hang = 0.1, unit = FALSE, level = FALSE, hmin = 0,
   Single observations are the tightest clusters possible,
   and merges involving two observations place them in order by their
   observation sequence number.
+
+  More details on agglomeration methods between groups \eqn{A} and
+  \eqn{B}:
+
+  \describe{
+  \item{\code{Ward}}{ can be calculated recursively:
+  \deqn{d(AB,C) = \frac{(n_A+n_C) d(A,C) + (n_B+n_C) d(B,C) - 
+      n_C d(A,B)}{n_A+n_B+n_C}}{d(AB,C) = [(n_A+n_C) d(A,C) +
+     (n_B+n_C) d(B,C) - n_C d(A,B)]/(n_A+n_B+n_C)}}
+
+   \item{\code{Single}:}{\deqn{d(A,B) = \min_{i\in A,j\in B}d_{ij}
+   }{d(A,B) = minimum of all distances between A and B}}
+   
+   \item{\code{Complete}:}{ \deqn{d(A,B) = \sup_{i\in A,j\in B}d_{ij}
+   }{d(A,B) = maximum of all distances between A and B}}
+   
+   \item{\code{Average}:}{ \deqn{d(A,B) = \frac 1{card(A) card(B)}
+     \sum_{i\in A,j\in B}d_{ij}}{d(A,B) =
+     mean of all distances between A and B}}
+   
+   \item{\code{Mcquitty}}{, can be calculated recursively
+   \deqn{d(AB,C) = \frac12 d(A,C) + \frac12 d(B,C)}{d(AB,C)
+     =0.5 d(A,C) + 0.5 D(B,C)}}
+
+   \item{\code{Median}}{(Gower's method), can be calculated recursively
+   \deqn{d(AB,C) = \frac12 d(A,C) + \frac12 d(B,C) -
+     \frac14 d(A,B)}{0.5 d(A,C) + 0.5 D(B,C) - 0.25 D(A,B)}}
+   
+   \item{\code{Centroid}}{ can be calculated recursively:
+   \deqn{d(AB,C) = \frac{n_A d(A,C) + n_B d(B,C) - 
+       \frac{n_A n_B}{n_A+n_B} d(A,B)}{n_A+n_B}}{d(AB,C) =
+     [nA d(A,C) + nB d(B,C) - nA nB / (nA + nB) d(A,B)] / (nA + nB)}}
+ }
 }
 \references{
   Everitt, B. (1974).
@@ -174,7 +207,7 @@ plclust(tree, hang = 0.1, unit = FALSE, level = FALSE, hmin = 0,
   \code{\link[mva]{hclust}} \code{\link[mva]{kmeans}}.
 }
 \examples{
-library(mva)
+library(amap)
 data(USArrests)
 hc <- hclust(dist(USArrests), "ave")
 plot(hc)

@@ -22,17 +22,16 @@
 
 void dblcen(double *a, int *na);
 
-void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method);
+void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method,
+	       int * ierr);
 
-
-
-double R_euclidean(double *x, int nr, int nc, int i1, int i2);
-double R_maximum  (double *x, int nr, int nc, int i1, int i2);
-double R_manhattan(double *x, int nr, int nc, int i1, int i2);
-double R_canberra (double *x, int nr, int nc, int i1, int i2);
-double R_dist_binary(double *x, int nr, int nc, int i1, int i2);
-double R_pearson(double *x, int nr, int nc, int i1, int i2);
-double R_correlation(double *x, int nr, int nc, int i1, int i2);
+double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag);
+double R_maximum  (double *x, int nr, int nc, int i1, int i2,int * flag);
+double R_manhattan(double *x, int nr, int nc, int i1, int i2,int * flag);
+double R_canberra (double *x, int nr, int nc, int i1, int i2,int * flag);
+double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag);
+double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag);
+double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag);
 
 
 
@@ -51,4 +50,6 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
 
 
 int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss, int *result);
+
+
 

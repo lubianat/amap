@@ -3,7 +3,7 @@
  *   HIERARCHICAL CLUSTERING using (user-specified) criterion. 
  *                                                          
  *   Created       : 14/11/02 
- *   Last Modified : Time-stamp: <2003-02-12 09:19:54 lucas>
+ *   Last Modified : Time-stamp: <2003-05-28 10:32:39 lucas>
  *
  *   Parameters:                                               
  *                                                          
@@ -55,10 +55,12 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
       * result  flag  0 => correct
       *               1 => Pb
       *               2 => Cannot allocate memory
+      *               3 => Pb with distance matrix
       */ 
 
 {
   int  len;
+  int flag;
   double *d;
 
   *result = 1;
@@ -76,7 +78,15 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
   /*
    * Calculate d: distance matrix
    */
-  R_distance(x,nr,nc,d,diag,method);
+
+  R_distance(x,nr,nc,d,diag,method,&flag);
+  
+  if(flag == 0)
+    {
+      printf("AMAP: Unable to compute Hierarchical Clustering: missing values in distance matrix\n"); 
+      *result = 3;
+      return(0);
+    }
 
   /*
    *  Hierarchical clustering
@@ -86,7 +96,7 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
   *result = 0;
 }
 
- 
+
 int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss,int *result)
 {
 
@@ -199,6 +209,20 @@ int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cri
 		}
 	      ind3=ioffst(*n,i2,j2);
 	      xx=diss[ind3];
+	      /*
+	       * Gi & Gj are agglomerated => Gii
+	       * We are calculating D(Gii,Gk) (for all k)
+	       *
+	       * diss[ind1] = D(Gi,Gk) (will be replaced by  D(Gii,Gk))
+	       * diss[ind2] = D(Gj,Gk) 
+	       * xx = diss[ind3] = D(Gi,Gj)
+	       *
+	       * membr[i2] = #Gi
+	       * membr[j2] = #Gj
+	       * membr[k]  = #Gk
+	       * 
+	       * x = #Gi + #Gj + #Gk
+	       */
 	      switch(*iopt)
 		{
 		  /*

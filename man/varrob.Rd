@@ -25,7 +25,7 @@ varrobsansC(x,h,D=NUL,kernel="gaussien")
  = 1/Sn - 1 / (h Vn)}
 
 
-\deqn{S_n=\frac{\sum_{i=1}^{n}K(||X_i-X_j||_{V_n^{-1}}/h)(X_i-\mu_n)(X_i-\mu_n)'}{\sum_{i=1}^nK(||X_i-X_j||_{V_n^{-1}}/h)}}{S: see latex doc}
+\deqn{S_n=\frac{\sum_{i=1}^{n}K(||X_i||_{V_n^{-1}}/h)(X_i-\mu_n)(X_i-\mu_n)'}{\sum_{i=1}^nK(||X_i||_{V_n^{-1}}/h)}}{S: see latex doc}
 
 with \eqn{\mu_n} estimator of the mean.
 

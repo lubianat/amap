@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2003-02-12 09:26:11 lucas>
+## Last Modified : Time-stamp: <2003-05-28 10:33:31 lucas>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -62,6 +62,8 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
 
   if(hcl$res == 2)
     stop("Cannot allocate memory")
+  if(hcl$res == 3)
+    stop("Missing values in distance Matrix")
   if(hcl$res == 1)
     stop("Error")
   

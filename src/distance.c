@@ -28,7 +28,7 @@
 #include <R_ext/Error.h>
 #include "mva.h"
 
-double R_euclidean(double *x, int nr, int nc, int i1, int i2)
+double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag)
 {
     double dev, dist;
     int count, j;
@@ -44,12 +44,17 @@ double R_euclidean(double *x, int nr, int nc, int i1, int i2)
 	i1 += nr;
 	i2 += nr;
     }
-    if(count == 0) return NA_REAL;
+    if(count == 0)
+      { 
+	*flag = 0;
+	return NA_REAL;
+      }
+
     if(count != nc) dist /= ((double)count/nc);
     return sqrt(dist);
 }
 
-double R_maximum(double *x, int nr, int nc, int i1, int i2)
+double R_maximum(double *x, int nr, int nc, int i1, int i2, int * flag)
 {
     double dev, dist;
     int count, j;
@@ -66,11 +71,15 @@ double R_maximum(double *x, int nr, int nc, int i1, int i2)
 	i1 += nr;
 	i2 += nr;
     }
-    if(count == 0) return NA_REAL;
+    if(count == 0)
+      {
+	*flag = 0;
+	return NA_REAL;
+      }
     return dist;
 }
 
-double R_manhattan(double *x, int nr, int nc, int i1, int i2)
+double R_manhattan(double *x, int nr, int nc, int i1, int i2, int * flag)
 {
     double dist;
     int count, j;
@@ -85,12 +94,16 @@ double R_manhattan(double *x, int nr, int nc, int i1, int i2)
 	i1 += nr;
 	i2 += nr;
     }
-    if(count == 0) return NA_REAL;
+    if(count == 0)
+      {
+	*flag = 0;
+	return NA_REAL;
+      }
     if(count != nc) dist /= ((double)count/nc);
     return dist;
 }
 
-double R_canberra(double *x, int nr, int nc, int i1, int i2)
+double R_canberra(double *x, int nr, int nc, int i1, int i2, int * flag)
 {
     double dist, sum, diff;
     int count, j;
@@ -109,12 +122,16 @@ double R_canberra(double *x, int nr, int nc, int i1, int i2)
 	i1 += nr;
 	i2 += nr;
     }
-    if(count == 0) return NA_REAL;
+    if(count == 0)
+      {
+	*flag = 0;
+	return NA_REAL;
+      }
     if(count != nc) dist /= ((double)count/nc);
     return dist;
 }
 
-double R_dist_binary(double *x, int nr, int nc, int i1, int i2)
+double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag)
 {
     int total, count, dist;
     int j;
@@ -135,7 +152,11 @@ double R_dist_binary(double *x, int nr, int nc, int i1, int i2)
 	i2 += nr;
     }
 
-    if(total == 0) return NA_REAL;
+    if(total == 0)
+      {
+	*flag = 0;
+	return NA_REAL;
+      }
     if(count == 0) return 0;
     return (double) dist / count;
 }
@@ -144,7 +165,7 @@ double R_dist_binary(double *x, int nr, int nc, int i1, int i2)
  * Added by A. Lucas
  */
 
-double R_pearson(double *x, int nr, int nc, int i1, int i2)
+double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag)
 {
     double num,sum1,sum2, dist;
     int count,j;
@@ -164,13 +185,17 @@ double R_pearson(double *x, int nr, int nc, int i1, int i2)
 	i1 += nr;
 	i2 += nr;
     }
-    if(count == 0) return NA_REAL;
+    if(count == 0) 
+      {
+	*flag = 0;
+	return NA_REAL;
+      }
     dist = 1 - ( num / sqrt(sum1 * sum2) );
     return dist;
 }
 
 
-double R_correlation(double *x, int nr, int nc, int i1, int i2)
+double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag)
 {
     double num,denum,sumx,sumy,sumxx,sumyy,sumxy,dist;
     int count,j;
@@ -195,19 +220,24 @@ double R_correlation(double *x, int nr, int nc, int i1, int i2)
 	i1 += nr;
 	i2 += nr;
     }
-    if(count == 0) return NA_REAL;
+    if(count == 0)
+      {
+	*flag = 0;
+	return NA_REAL;
+      }
     num = sumxy - ( sumx*sumy /count );
     denum = sqrt( (sumxx - (sumx*sumx /count ) )* (sumyy - (sumy*sumy /count ) ) );
     return 1 - (num / denum);
 }
 
 enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION};
-/* == 1,2,..., defined by order in the R function dist */
+/* == 1,2,..., defined by order in the r function dist */
 
-void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
+void R_distance(double *x, int *nr, int *nc, double *d, int *diag, 
+		int *method, int * ierr)
 {
     int dc, i, j, ij;
-    double (*distfun)(double*, int, int, int, int) = NULL;
+    double (*distfun)(double*, int, int, int, int, int *) = NULL;
 
     switch(*method) {
     case EUCLIDEAN:
@@ -236,9 +266,13 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method)
 	error("distance(): invalid distance");
     }
 
+
+    *ierr = 1; /* res = 1 => no missing values
+	          res = 0 => missings values */
+
     dc = (*diag) ? 0 : 1; /* diag=1:  we do the diagonal */
     ij = 0;
     for(j = 0 ; j <= *nr ; j++)
 	for(i = j+dc ; i < *nr ; i++)
-	    d[ij++] = distfun(x, *nr, *nc, i, j);
+	    d[ij++] = distfun(x, *nr, *nc, i, j,ierr);
 }

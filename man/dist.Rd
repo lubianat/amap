@@ -62,15 +62,11 @@ as.dist(m, diag = FALSE, upper = FALSE)
     \item{\code{pearson}:}{Also named "not centered Pearson"
       \eqn{1 - \frac{\sum_i x_i y_i}{\sum_i x_i^2 %
 	  + \sum_i y_i^2}}{%
-	sum(x_i y_i) / [sum(x_i^2) sum(y_i^2)]}. Terms with zero numerator and
-      denominator are omitted from the sum and treated as if the values
-      were missing.
+	sum(x_i y_i) / [sum(x_i^2) sum(y_i^2)]}.
     }
 
     \item{\code{correlation}:}{Also named "Centered Pearson"
-      \eqn{1 - corr(x,y)}.  Terms with zero numerator and
-      denominator are omitted from the sum and treated as if the values
-      were missing.
+      \eqn{1 - corr(x,y)}.  
     }
   }
 
