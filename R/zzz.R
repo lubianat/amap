@@ -4,7 +4,16 @@
 .onLoad <- .First.lib <- function(lib, pkg)
 {
     library.dynam("amap", pkg, lib)
-    have.mva <- "package:mva" %in% search()
-    if(!have.mva) require("mva")
+    vers <- R.Version()$major
+    if(vers <2)
+      {
+        have.mva <- "package:mva" %in% search()
+        if(!have.mva) require("mva")
+      }
+    else
+      {
+        have.stats <- "package:stats" %in% search()
+        if(!have.stats)   require("stats")
+      }
 }
 
