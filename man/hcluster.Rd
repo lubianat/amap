@@ -80,13 +80,13 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
 }
 \author{
   The \code{hcluster} function is based on C code
-  by Antoine Lucas \url{http://genopole.toulouse.inra.fr/~lucas/amap}.
+  by Antoine Lucas \url{http://antoinelucas.free.fr/amap}.
 }
 \seealso{
-  \code{\link{dist}}, \code{\link{hclust}}, \code{\link[mva]{kmeans}}.
+  \code{\link{dist}}, \code{\link{hclust}}, \code{\link[stats]{kmeans}}.
 }
 \examples{
-library(mva)
+
 data(USArrests)
 hc <- hcluster(USArrests,link = "ave")
 plot(hc)

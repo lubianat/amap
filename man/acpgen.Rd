@@ -81,19 +81,13 @@ cosinus: \deqn{\frac{\pi}{4}\cos(\frac{\pi}{2}u) I_{|u|\leq 1}  }{
   \item{sdev}{the standard deviations of the principal components.}
   \item{loadings}{the matrix of variable loadings (i.e., a matrix
     whose columns contain the eigenvectors).  This is of class
-    \code{"loadings"}: see \code{\link[mva]{loadings}} for its \code{print}
+    \code{"loadings"}: see \code{\link[stats]{loadings}} for its \code{print}
     method.}
   \item{scores}{if \code{scores = TRUE}, the scores of the supplied
     data on the principal components.}
   \item{eig}{Eigen values}
 }
 
-\references{
-  H. Caussinus, S. Hakam, A. Ruiz-Gazen
-  Projections révélatrices contrôlées: groupements et structures
-  diverses.
-  2002, to appear in Rev. Statist. Appli.
-}
 
 \examples{
 data(lubisch)
@@ -117,10 +111,29 @@ mat <- scale(mat,TRUE,TRUE)
 rm (m,n,temp) 
 
 }
+
+\references{
+  H. Caussinus, M. Fekri, S. Hakam and A. Ruiz-Gazen, \emph{A monitoring
+  display of multivariate outliers} Computational Statistics & Data
+  Analysis,
+  Volume 44, Issues 1-2, 28 October 2003, Pages 237-252
+
+  Caussinus, H and Ruiz-Gazen, A. (1993): \emph{Projection Pursuit and
+  Generalized Principal Component Analyses, in New Directions in
+  Statistical Data Analysis and Robustness} (eds.  Morgenthaler et
+  al.), pp. 35-46. Birkäuser Verlag Basel.
+
+  Caussinus, H. and Ruiz-Gazen, A. (1995). \emph{Metrics for Finding Typical
+  Structures by Means of Principal Component Analysis. In Data Science
+  and its Applications} (eds Y. Escoufier and C. Hayashi),
+  pp. 177-192. Tokyo: Academic Press.
+}
+
+
 \keyword{multivariate}
 
-\author{Antoine Lucas, \url{http://genopole.toulouse.inra.fr/~lucas/amap}}
-\seealso{\link{acp} \link{acprob} \link[mva]{princomp} }
+\author{Antoine Lucas, \url{http://antoinelucas.free.fr/amap}}
+\seealso{\link{acp} \link{acprob} \link[stats]{princomp} }
 
 
 

@@ -53,5 +53,5 @@ plot(p)
 }
 \keyword{multivariate}
 
-\author{Antoine Lucas, \url{http://genopole.toulouse.inra.fr/~lucas/amap}}
-\seealso{\link{acp},\link{acpgen}, \link[mva]{princomp}}
+\author{Antoine Lucas, \url{http://antoinelucas.free.fr/amap}}
+\seealso{\link{acp},\link{acpgen}, \link[stats]{princomp}}
