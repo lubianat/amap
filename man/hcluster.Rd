@@ -79,8 +79,9 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
 
 }
 \author{
-  The \code{hcluster} function is based on C code
-  by Antoine Lucas \url{http://antoinelucas.free.fr/amap}.
+  The \code{hcluster} function is based on C code adapted from Cran
+  Fortran routine
+  by Antoine Lucas \url{http://mulcyber.toulouse.inra.fr/projects/amap/}.
 }
 \seealso{
   \code{\link{dist}}, \code{\link{hclust}}, \code{\link[stats]{kmeans}}.

@@ -60,9 +60,9 @@ as.dist(m, diag = FALSE, upper = FALSE)
       bits in which only one is on amongst those in which at least one is on.}
 
     \item{\code{pearson}:}{Also named "not centered Pearson"
-      \eqn{1 - \frac{\sum_i x_i y_i}{\sum_i x_i^2 %
-	  + \sum_i y_i^2}}{%
-	sum(x_i y_i) / [sum(x_i^2) sum(y_i^2)]}.
+      \eqn{1 - \frac{\sum_i x_i y_i}{\sqrt{\sum_i x_i^2 %
+	   \sum_i y_i^2}}}{%
+	sum(x_i y_i) / sqrt [sum(x_i^2) sum(y_i^2)]}.
     }
 
     \item{\code{correlation}:}{Also named "Centered Pearson"

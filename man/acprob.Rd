@@ -57,5 +57,5 @@ divide each column by standard deviation}
   pp. 177-192. Tokyo: Academic Press.
 }
 
-\author{Antoine Lucas, \url{http://antoinelucas.free.fr/amap}}
+\author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
 \seealso{\link{acp} \link[stats]{princomp} }
