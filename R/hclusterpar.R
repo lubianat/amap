@@ -1,7 +1,7 @@
 ## Hierarchical clustering parallelized
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2005-03-09 09:42:59 lucas>
+## Last Modified : Time-stamp: <2005-03-22 12:37:59 lucas>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -65,9 +65,11 @@ hclusterpar <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, l
                height = hcl$crit[1:(N - 1)],
                order = hcl$order, 
                labels = dimnames(x)[[1]],
-               dist.method = METHODS[method],
                method = METHODSLINKS[link],
-               call = match.call())
+               call = match.call(),
+               dist.method = METHODS[method]
+               )
+
   class(tree) <- "hclust"
   tree
 }

@@ -4,6 +4,7 @@
 \usage{
 data(lubisch)
 }
-\description{Données de Lubischew (1962) 74 insectes, 6 grandeurs morphologiques. 3 classes a priori}
+\description{Lubischew data (1962): 74 insects, 6 morphologic size. 3
+  supposed classes}
 
 \keyword{datasets}

@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2005-03-08 15:02:53 lucas>
+## Last Modified : Time-stamp: <2005-03-22 10:03:45 lucas>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -66,15 +66,19 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
     stop("Missing values in distance Matrix")
   if(hcl$res == 1)
     stop("Error")
-  
+
+
   tree <- list(merge = cbind(hcl$ia[1:(N - 1)],
                  hcl$ib[1:(N -  1)]),
                height = hcl$crit[1:(N - 1)],
                order = hcl$order, 
                labels = dimnames(x)[[1]],
-               dist.method = METHODS[method],
                method = METHODSLINKS[link],
-               call = match.call())
+               call = match.call(),
+               dist.method = METHODS[method]
+               )
+
+
   class(tree) <- "hclust"
   tree
 }

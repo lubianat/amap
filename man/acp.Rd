@@ -4,12 +4,13 @@
 \alias{print.acp}
 
 \title{Principal component analysis}
-\description{Principal component analysis / Analyse en composantes principales}
+\description{Principal component analysis}
 \usage{
 acp(x,center=TRUE,reduce=TRUE)
 pca(x,center=TRUE,reduce=TRUE)
 print.acp(x, ...) 
 }
+
 
 \arguments{
 \item{x}{Matrix  / data frame}
@@ -35,6 +36,13 @@ divide each column by standard deviation}
     data on the principal components.}
   \item{eig}{Eigen values}
 }
+
+\details{
+  This function offer a variant of \code{\link[stats]{princomp}} and
+  \code{\link[stats]{prcomp}} functions, with a slightly different
+  graphic representation (see \code{\link{plot.acp}}).
+  }
+
 
 \references{
   A. Carlier

@@ -26,7 +26,7 @@ hclusterpar(x, method = "euclidean", diag = FALSE, upper = FALSE,
     \code{"average"}, \code{"mcquitty"}, \code{"median"} or
     \code{"centroid"}.}
   \item{members}{\code{NULL} or a vector with length size of \code{d}.}
-  \item{nbproc}{Integer, number of subprocess for parallelization}
+  \item{nbproc}{integer, number of subprocess for parallelization}
 }
 \value{
   An object of class \bold{hclust} which describes the
@@ -84,7 +84,7 @@ hclusterpar(x, method = "euclidean", diag = FALSE, upper = FALSE,
   by Antoine Lucas \url{http://mulcyber.toulouse.inra.fr/projects/amap/}.
 }
 \seealso{
-  \code{\link{Dist}}, \code{\link{hclust}}, \code{\link[stats]{kmeans}}.
+  \code{\link{Dist}}, \code{\link{hcluster}}, \code{\link[stats]{hclust}}, \code{\link[stats]{kmeans}}.
 }
 \examples{
 

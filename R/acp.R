@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2003-03-05 15:22:26 lucas>
+#  Last Modified : Time-stamp: <2005-04-08 13:48:36 lucas>
 #
 #  Description   : Principal component analysis
 #                  
@@ -57,7 +57,7 @@ print.acp <- function(x, ...)
 #   SECTION GRAPHIQUES
 #
 
-plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composante ',col='darkblue',main='ACP des individus',...)
+plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',...)
 {
     U    <- x$scores
     XLAB <- paste(label,i)
@@ -76,7 +76,7 @@ plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composante ',col='darkblue',main
     }
 }
 
-biplot.acp <- function(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,main='ACP des variables',...)
+biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,main='Variables PCA',...)
 {
     U    <- x$loadings
     LIM  <- c(-1.3,1.3)
@@ -106,7 +106,7 @@ biplot.acp <- function(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,m
 }
 
 # Graphique: Eboulis des valeurs propres
-plot2.acp <- function(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',main='Eboulis des valeurs propres',ylab='Valeurs propres')
+plot2.acp <- function(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',main='Scree Graph',ylab='Eigen Values')
 {
     if(eigen){ U <- x$eig }
     else { U <- x$sdev }

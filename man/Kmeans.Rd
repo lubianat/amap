@@ -39,7 +39,9 @@ Kmeans(x, centers, iter.max = 10, nstart = 1,
 
   The algorithm of Lloyd--Forgy is used; method="euclidean" should
   return same result as with function \link[stat]{kmeans}.
+}
 
+\note{
   An objective: to allow NA values.
 }
 \value{

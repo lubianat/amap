@@ -1,7 +1,7 @@
 \name{acprob}
 \alias{acprob}
 \title{Robust principal component analysis}
-\description{Robust principal component analysis / Analyse en composantes principales robuste}
+\description{Robust principal component analysis}
 
 \usage{
 acprob(x,h,center=TRUE,reduce=TRUE,kernel="gaussien")
@@ -58,4 +58,4 @@ divide each column by standard deviation}
 }
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link{acp} \link[stats]{princomp} }
+\seealso{\link{acp} \link[stats]{princomp} \link{acpgen}}

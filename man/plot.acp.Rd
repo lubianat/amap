@@ -4,17 +4,17 @@
 \alias{plot2.acp}
 
 \title{Graphics for Principal component Analysis}
-\description{Graphics for Principal component Analysis / Graphiques pour l'analyse en composantes principales, "comme Carlier"}
+\description{Graphics for Principal component Analysis}
 \usage{
-plot.acp(x,i=1,j=2,text=TRUE,label='Composante ',col='darkblue',
-main='ACP des individus',...)
-biplot.acp(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,
-main='ACP des variables',...)
+plot.acp(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',
+main='Individuals PCA',...)
+biplot.acp(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,
+main='Variables PCA',...)
 plot2.acp(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
-main='Eboulis des valeurs propres',ylab='Valeurs propres')}
+main='Scree Graph',ylab='Eigen Values')}
 
 \arguments{
-\item{x}{Result of acp / princomp}
+\item{x}{Result of acp or princomp}
 \item{i}{X axis}
 \item{j}{Y axis}
 \item{text}{a logical value indicating whether we use text or points for plot}
@@ -36,11 +36,11 @@ standard deviation}
 \value{
    Graphics: 
 
-\code{plot.acp} PCA for lines / ACP des individus
+\code{plot.acp} PCA for lines (individuals)
 
-\code{plot.acp} PCA for columns / ACP des variables
+\code{plot.acp} PCA for columns (variables)
 
-\code{plot2.acp} Eigen values diagram / Eboulis des valeurs propres
+\code{plot2.acp} Eigen values diagram (Scree Graph)
 }
 
 
@@ -54,4 +54,4 @@ plot(p)
 \keyword{multivariate}
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link{acp},\link{acpgen}, \link[stats]{princomp}}
+\seealso{\link{acp},\link{acpgen},\link{acprob}, \link[stats]{princomp}}

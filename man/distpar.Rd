@@ -14,7 +14,7 @@ distpar(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
     \code{"canberra"}, \code{"binary"}, \code{"pearson"},
     \code{"correlation"} or \code{"spearman"}.
     Any unambiguous substring can be given.}
-  \item{nbproc}{Integer, Number of subprocess for parallelization}
+  \item{nbproc}{integer, Number of subprocess for parallelization}
   \item{diag}{logical value indicating whether the diagonal of the
     distance matrix should be printed by \code{print.dist}.}
   \item{upper}{logical value indicating whether the upper triangle of the
@@ -25,7 +25,7 @@ distpar(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
   using the specified distance measure to compute the distances between
   the rows of a data matrix.
 }
-}
+
 
 \value{
   An object of class \code{"dist"}.

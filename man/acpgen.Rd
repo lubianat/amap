@@ -6,7 +6,7 @@
 
 
 \title{Generalised principal component analysis}
-\description{Generalised principal component analysis / Analyse en composantes principales généralisée}
+\description{Generalised principal component analysis}
 
 \usage{
 acpgen(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
@@ -16,7 +16,7 @@ WsansC(x,h,D=NULL,kernel="gaussien")
 }
 
 \arguments{
-\item{x}{Matrix  / data frame}
+\item{x}{Matrix or data frame}
 \item{h}{Scalar: bandwidth of the Kernel}
 \item{h1}{Scalar: bandwidth of the Kernel for W}
 \item{h2}{Scalar: bandwidth of the Kernel for U}
