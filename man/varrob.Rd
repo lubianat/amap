@@ -6,8 +6,8 @@
 \description{Compute a robust variance}
 
 \usage{
-varrob(x,h,D=NUL,kernel="gaussien")
-varrobsansC(x,h,D=NUL,kernel="gaussien")
+varrob(x,h,D=NULL,kernel="gaussien")
+varrobsansC(x,h,D=NULL,kernel="gaussien")
 }
 
 \arguments{

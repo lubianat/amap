@@ -11,8 +11,8 @@
 \usage{
 acpgen(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
 K(u,kernel="gaussien")
-W(x,h,D=NUL,kernel="gaussien")
-WsansC(x,h,D=NUL,kernel="gaussien")
+W(x,h,D=NULL,kernel="gaussien")
+WsansC(x,h,D=NULL,kernel="gaussien")
 }
 
 \arguments{

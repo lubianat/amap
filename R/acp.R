@@ -76,7 +76,7 @@ plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composante ',col='darkblue',main
     }
 }
 
-biplot.acp <- function(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,main='ACP des variables')
+biplot.acp <- function(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,main='ACP des variables',...)
 {
     U    <- x$loadings
     LIM  <- c(-1.3,1.3)

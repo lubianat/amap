@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 30/10/02
-#  Last Modified : Time-stamp: <2003-07-29 11:12:25 lucas>
+#  Last Modified : Time-stamp: <2003-04-02 09:52:47 lucas>
 #
 #  Description   : Robust principal component analysis
 #                  
@@ -90,7 +90,6 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
     x   <- scale(x, center = TRUE, scale = FALSE)
     n   <- dim(x)[1]
     p   <- dim(x)[2]
-    Vinv<- solve(var(x) * (n-1) / n)
     if (is.null(D)) {
         D <- diag(1,p)
     }
@@ -117,7 +116,7 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
 
     S <- matrix(Calcul$res,p)
     Sinv <- solve(S)
-    solve ( Sinv - Vinv / h)
+    solve ( Sinv - D / h)
 }
 
 
@@ -130,7 +129,6 @@ varrobsansC <- function(x,h,D=NULL,kernel="gaussien")
     }
     x   <- as.matrix(x)
     x   <- scale(x ,center = TRUE, scale = FALSE)
-    Vinv<- solve(var(x) * (n-1) / n)
     som <- 0
     res <- 0
     for (i in 1:n )
@@ -142,7 +140,7 @@ varrobsansC <- function(x,h,D=NULL,kernel="gaussien")
     }
     S <- res / som
     Sinv <- solve(S)
-    solve ( Sinv -  Vinv / h )
+    solve ( Sinv -  D / h )
 
 }
 

@@ -9,7 +9,7 @@
 plot.acp(x,i=1,j=2,text=TRUE,label='Composante ',col='darkblue',
 main='ACP des individus',...)
 biplot.acp(x,i=1,j=2,label='Composante ',col='darkblue',length=0.1,
-main='ACP des variables')
+main='ACP des variables',...)
 plot2.acp(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
 main='Eboulis des valeurs propres',ylab='Valeurs propres')}
 
