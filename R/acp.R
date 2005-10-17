@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2005-10-02 17:55:16 antoine>
+#  Last Modified : Time-stamp: <2005-11-14 22:09:16 antoine>
 #
 #  Description   : Principal component analysis
 #                  
@@ -13,6 +13,40 @@
 #-------------------------------------------------------
 
 
+
+acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
+{   
+    x    <- as.matrix(x)
+    if(center)
+      x <- t(t(x) - as.vector(( wI %*% x)/sum(wI)))
+##    x    <- scale(x ,center = center, scale = FALSE)
+    if (reduce) 
+      x    <- apply(x,2,function(u) { u/sd(u)}) 
+
+    ##              Di.X'.Dv.X
+    EIG  <- eigen( (t(x)* wI) %*% (x * wV) ,symmetric=FALSE) 
+    V    <- EIG$vector    # ou bien: V=svd(x)$v
+
+    V    <- V %*% diag(sign(EIG$values))
+    val  <- sqrt(abs(EIG$values))
+
+    scores <- x %*% V
+
+    V      <- data.frame(V)
+    scores <- data.frame(scores)
+    dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
+    dimnames(V)[[1]] <- dimnames(x)[[2]]
+    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
+
+    ##cmpr <- x %*% (sqrt(wV) * as.matrix(V))
+    
+    sdev   <- apply(scores,2,sd)    
+    res  <- list(eig=val,sdev=sdev,scores=scores,loadings=V)
+    class(res) <- "acp"
+    res
+}
+pca <- acp
 
 
 print.acp <- function(x, ...)
@@ -30,7 +64,7 @@ print.acp <- function(x, ...)
 #   SECTION GRAPHIQUES
 #
 
-plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',...)
+plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',variables=TRUE,...)
 {
     U    <- x$scores
     XLAB <- paste(label,i)
@@ -40,16 +74,23 @@ plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main=
     axis(1,label=TRUE,tick=TRUE)
     axis(2,label=TRUE,tick=TRUE)
     box()
+    
     title(xlab=XLAB,ylab=YLAB,main=main)
     if(text){
-        text(U[,i],U[,j],col=col,...)   
+        text(labels=dimnames(x$scores)[[1]],U[,i],U[,j],col=col,...)   
     }
     else{
         points(U[,i],U[,j],col=col,...) 
     }
+    if(variables)
+      {
+         par(new=TRUE)
+         biplot.acp(x,circle=FALSE,label="",main="")
+       }
+
 }
 
-biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,main='Variables PCA',...)
+biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,main='Variables PCA',circle=TRUE,...)
 {
     U    <- x$loadings
     LIM  <- c(-1.3,1.3)
@@ -72,14 +113,17 @@ biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,ma
     arrows(0,0,U[,i],U[,j],length = length,col=col)
 
     # CERCLE
-    t2p <- 2 * pi * seq(0,1, length = 200)
-    xc <- cos(t2p)
-    yc <- sin(t2p)
-    lines(xc,yc,col='darkblue')
+    if(circle)
+      {
+        t2p <- 2 * pi * seq(0,1, length = 200)
+        xc <- cos(t2p)
+        yc <- sin(t2p)
+        lines(xc,yc,col='darkblue')
+      }
 }
 
 # Graphique: Eboulis des valeurs propres
-plot2.acp <- function(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',main='Scree Graph',ylab='Eigen Values')
+plot2 <- function(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',main='Scree Graph',ylab='Eigen Values')
 {
     if(eigen){ U <- x$eig }
     else { U <- x$sdev }
@@ -91,3 +135,12 @@ plot2.acp <- function(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
 }
 
 
+plotAll <- function(x)
+  {
+    par(mfrow=c(2,2))
+    plot2(x)
+    ##    boxplot(as.list(as.data.frame(x$cmpr)))
+    plot(x,variables=FALSE)
+    biplot(x)
+    plot(x,main="Both",variables=TRUE)
+  }

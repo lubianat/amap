@@ -123,7 +123,7 @@ class(p)<- "acp"
 \keyword{multivariate}
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link{acprob} \link[stats]{princomp} }
+\seealso{\link{acp} \link{acprob} \link[stats]{princomp} }
 
 
 

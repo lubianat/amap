@@ -1,7 +1,7 @@
 ## Hierarchical clustering parallelized
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2005-10-01 21:04:48 antoine>
+## Last Modified : Time-stamp: <2005-11-13 21:06:46 antoine>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -61,6 +61,13 @@ hclusterpar <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, l
             err = as.integer(0),
             DUP = FALSE,
             NAOK=TRUE, PACKAGE="amap")
+
+  if(hcl$err == 2)
+    stop("Cannot allocate memory")
+  if(hcl$err == 3)
+    stop("Missing values in distance Matrix")
+  if(hcl$err == 1)
+    stop("Error")
 
   tree <- list(merge = cbind(hcl$ia[1:(N - 1)],
                  hcl$ib[1:(N -  1)]),

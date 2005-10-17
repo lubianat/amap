@@ -3,7 +3,7 @@
  *   
  *                                                          
  *   \date Created       : 14/11/02 
- *   \date Last Modified : Time-stamp: <2005-10-09 14:30:37 antoine>
+ *   \date Last Modified : Time-stamp: <2005-11-12 15:54:58 antoine>
  *
  * \author Antoine Lucas.
  */

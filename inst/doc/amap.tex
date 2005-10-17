@@ -5,9 +5,10 @@
 \author{Antoine Lucas}
 %\VignetteIndexEntry{Introduction to amap}
 %\VignettePackage{amap}
-\SweaveOpts{echo=FALSE}
+
 %\usepackage{a4wide}
 
+\usepackage{/usr/local/R/R_2005_10_17/lib/R/share/texmf/Sweave}
 \begin{document}
 
 \maketitle
@@ -29,45 +30,70 @@ We implement a principal component analysis (with robusts methods).
 \subsection{Clustering}
 
 The standard way of building  a hierarchical clustering:
-<<echo=TRUE>>=
-library(amap)
-data(USArrests)
-h = hcluster(USArrests)
-plot(h)
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> library(amap)
+\end{Sinput}
+\begin{Soutput}
+Loading required package: Biobase
+
+Welcome to Bioconductor 
+
+	Vignettes contain introductory material.
+	To view, simply type 'openVignette()' or start with 'help(Biobase)'. 
+	For details on reading vignettes, see the openVignette help page.
+\end{Soutput}
+\begin{Sinput}
+> data(USArrests)
+> h = hcluster(USArrests)
+> plot(h)
+\end{Sinput}
+\end{Schunk}
  Or for the ``heatmap'':
-<<echo=TRUE>>=
-heatmap(as.matrix(USArrests),
-        hclustfun=hcluster,
-        distfun=function(u){u})
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> heatmap(as.matrix(USArrests), hclustfun = hcluster, distfun = function(u) {
++     u
++ })
+\end{Sinput}
+\end{Schunk}
 On a multiprocessor computer:
-<<echo=TRUE>>=
-h = hclusterpar(USArrests,nbproc=4)   
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> h = hclusterpar(USArrests, nbproc = 4)
+\end{Sinput}
+\end{Schunk}
 The K-means clustering:
-<<echo=TRUE,results=hide>>=
-Kmeans(USArrests,centers=3,method="correlation")
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> Kmeans(USArrests, centers = 3, method = "correlation")
+\end{Sinput}
+\end{Schunk}
 
 \subsection{Robust tools}
 
 A robust variance computation:
-<<echo=TRUE,results=hide>>=
-data(lubisch)
-lubisch <- lubisch[,-c(1,8)]
-varrob(scale(lubisch),h=1)
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> data(lubisch)
+> lubisch <- lubisch[, -c(1, 8)]
+> varrob(scale(lubisch), h = 1)
+\end{Sinput}
+\end{Schunk}
 A robust principal component analysis:
-<<echo=TRUE,results=hide>>=
-p <- acpgen(lubisch,h1=1,h2=1/sqrt(2))
-plot(p)
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> p <- acpgen(lubisch, h1 = 1, h2 = 1/sqrt(2))
+> plot(p)
+\end{Sinput}
+\end{Schunk}
 Another robust pca:
-<<echo=TRUE,results=hide>>=
-p <- acprob(lubisch,h=4)
-plot(p)
-@ 
+\begin{Schunk}
+\begin{Sinput}
+> p <- acprob(lubisch, h = 4)
+> plot(p)
+\end{Sinput}
+\end{Schunk}
 
 
 \section{See Also}

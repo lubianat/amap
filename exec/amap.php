@@ -1,7 +1,8 @@
 <?php
 
 /*
-   This program is a sample to use R and amap as a web application.
+   This program is a sample to use R and amap and ctc as a web application.
+   ctc package is available on bioconductor.org
 
    Standard setup: 
    put amap.php in your public_html directory
@@ -30,7 +31,7 @@ $MAX_FILE = 307200;  // 300 Ko
 
 <html>
 <header>
-<title>AMAP Demo Web application V0-2</title>
+<title>AMAP Demo Web application V0-3</title>
 </header>
 <body>
 <center>
@@ -123,6 +124,7 @@ else
    $fp=fopen("$ID/prog.R",'w');
 
    fwrite($fp,"library(amap)\n");
+   fwrite($fp,"library(ctc)\n");
 
 
    /* Read Data */

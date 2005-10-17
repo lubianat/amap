@@ -1,19 +1,19 @@
 \name{plot.acp}
-\alias{print.acp}
 \alias{plot.acp}
 \alias{biplot.acp}
-\alias{plot2.acp}
+\alias{plot2}
+\alias{plotAll}
 
 \title{Graphics for Principal component Analysis}
 \description{Graphics for Principal component Analysis}
 \usage{
 plot.acp(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',
-main='Individuals PCA',...)
+main='Individuals PCA',variables=TRUE,...)
 biplot.acp(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,
-main='Variables PCA',...)
-plot2.acp(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
+main='Variables PCA',circle=TRUE,...)
+plot2(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
 main='Scree Graph',ylab='Eigen Values')
-print.acp(x, ...) 
+plotAll(x)
 }
 
 \arguments{
@@ -30,6 +30,8 @@ standard deviation}
 \item{main}{Title of graphic}
 \item{ylab}{Y label}
 \item{length}{length of arrows}
+\item{variables,circle}{a logical value indicating whether we display
+  circle or variables}
 \item{\dots}{cex, pch, and other options; see points.}
 }
 
@@ -43,7 +45,9 @@ standard deviation}
 
 \code{plot.acp} PCA for columns (variables)
 
-\code{plot2.acp} Eigen values diagram (Scree Graph)
+\code{plot2} Eigen values diagram (Scree Graph)
+
+\code{plotAll} Plot both 3 graphs
 }
 
 
@@ -51,8 +55,8 @@ standard deviation}
 \examples{
 data(lubisch)
 lubisch <- lubisch[,-c(1,8)]
-p <- acpgen(lubisch,h1=1,h2=1/sqrt(2))
-plot(p)
+p <- acp(lubisch)
+plotAll(p)
 }
 \keyword{multivariate}
 

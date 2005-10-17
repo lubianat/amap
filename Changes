@@ -1,3 +1,9 @@
+Sat Nov 12 2005:
+  * new function burt, matlogic & afc
+  * split functions concerning interactions with other software in 
+    package ctc
+  * internationalization (mainly: french).
+
 Mon Oct 17 2005: 0.5-1
   * minor change on doc (reference to acp function deleted)
   * minor change to R Kmeans function

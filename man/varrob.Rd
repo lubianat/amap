@@ -51,4 +51,4 @@ A matrix
 \keyword{multivariate}
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link[stats]{princomp} }
+\seealso{\link{acp} \link[stats]{princomp} }

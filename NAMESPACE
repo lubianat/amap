@@ -1,0 +1,13 @@
+useDynLib(amap)
+
+export("Kmeans","acp","pca","K","W","WsansC","varrob",
+	"varrobsansC","acpgen","acprob","plot2","plotAll",
+	"plot.acp","print.acp","biplot.acp")
+
+S3method("print","acp")
+S3method("plot","acp")
+S3method("biplot","acp")
+
+export("Dist","distpar","hcluster","hclusterpar")
+
+export("matlogic","burt","afc")
