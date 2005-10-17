@@ -1,4 +1,12 @@
-/*
+/*! \file distance.c
+ * \brief all functions requiered for R dist function and C hcluster function.
+ *
+ *  \date Created: probably in 1995
+ *  \date Last modified: Time-stamp: <2005-10-09 13:12:06 antoine>
+ *
+ *  \author R core members, and lately: Antoine Lucas 
+ *
+ *  
  *  R : A Computer Language for Statistical Data Analysis
  *  Copyright (C) 1995, 1996  Robert Gentleman and Ross Ihaka
  *  Copyright (C) 1998, 2001  Robert Gentleman, Ross Ihaka and the
@@ -17,6 +25,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,6 +37,8 @@
 #include <R_ext/Error.h>
 #include "mva.h"
 
+/** \brief Distance euclidean (i.e. sqrt(sum of square) )
+ */
 double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     double dev, dist;
@@ -54,6 +65,8 @@ double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag, void **
     return sqrt(dist);
 }
 
+/** \brief Distance maximum (supremum norm)
+ */
 double R_maximum(double *x, int nr, int nc, int i1, int i2, int * flag, void ** opt)
 {
     double dev, dist;
@@ -79,6 +92,8 @@ double R_maximum(double *x, int nr, int nc, int i1, int i2, int * flag, void ** 
     return dist;
 }
 
+/** \brief Distance manhattan
+ */
 double R_manhattan(double *x, int nr, int nc, int i1, int i2, int * flag, void ** opt)
 {
     double dist;
@@ -103,6 +118,8 @@ double R_manhattan(double *x, int nr, int nc, int i1, int i2, int * flag, void *
     return dist;
 }
 
+/** \brief Distance canberra
+ */
 double R_canberra(double *x, int nr, int nc, int i1, int i2, int * flag, void ** opt)
 {
     double dist, sum, diff;
@@ -131,6 +148,8 @@ double R_canberra(double *x, int nr, int nc, int i1, int i2, int * flag, void **
     return dist;
 }
 
+/** \brief Distance binary
+ */
 double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     int total, count, dist;
@@ -161,10 +180,9 @@ double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag, void 
     return (double) dist / count;
 }
 
-/* Pearson / Pearson centered (correlation)
- * Added by A. Lucas
+/** \brief Pearson / Pearson centered (correlation)
+ *  \note Added by A. Lucas
  */
-
 double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
     double num,sum1,sum2, dist;
@@ -195,9 +213,12 @@ double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag, void ** o
 }
 
 
+/** \brief Distance correlation (Uncentered Pearson)
+ *  \note Added by A. Lucas
+ */
 double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
-    double num,denum,sumx,sumy,sumxx,sumyy,sumxy,dist;
+    double num,denum,sumx,sumy,sumxx,sumyy,sumxy;
     int count,j;
 
     count= 0;
@@ -230,6 +251,9 @@ double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag, void 
     return 1 - (num / denum);
 }
 
+/** \brief Spearman distance (rank base metric)
+ *  \note Added by A. Lucas
+ */
 double R_spearman(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt)
 {
   int j;
@@ -284,7 +308,8 @@ enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, 
 
 
 /**
- * R_distance: compute distance
+ * R_distance: compute distance. Function called direclty by R
+ * \brief compute distance and call one of function R_euclidean or R_...
  * \param x input matrix
  * \param nr,nc number of row and columns
  *        nr individuals with nc values.
@@ -367,7 +392,8 @@ void R_distance(double *x, int *nr, int *nc, double *d, int *diag,
 
 
 /**
- * Sort, and return order and rank.
+ * Sort, and return order and rank
+ * \brief This function is used by R_spearman.
  * order and rank must be initialised with 0:(n-1)
  * make sort, return x sorted
  * order = order(x) - 1 

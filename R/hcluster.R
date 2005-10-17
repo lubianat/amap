@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2005-03-22 10:03:45 lucas>
+## Last Modified : Time-stamp: <2005-10-01 20:14:25 antoine>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -12,7 +12,11 @@
 
 hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link = "complete", members = NULL)
 {
-                                        # take from dist
+
+  if(class(x) == "exprSet")
+    x <- exprs(x)
+
+  ## take from dist
   if (!is.na(pmatch(method, "euclidian"))) 
     method <- "euclidean"
   METHODS <- c("euclidean", "maximum", "manhattan", "canberra", 

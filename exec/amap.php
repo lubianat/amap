@@ -15,13 +15,14 @@
    Example working:
    http://bioinfo.genopole-toulouse.prd.fr/~lucas/amap.php
 
+   Note:
+   Variable include_path in php.ini should includes path to gs binary.
+
  */ 
 
 /*  Some globals variables */
 
-// $R_BIN = "/bioinfo/appli/intel/pub/bin/R-2.0.1";
-$R_BIN = "/usr/local/bin/R-devel";
-//$R_BIN = "/usr/local/bin/R";
+$R_BIN = "/usr/local/bin/R";
 $MAX_FILE = 307200;  // 300 Ko
 /* End of personalization */
 ?>
@@ -29,7 +30,7 @@ $MAX_FILE = 307200;  // 300 Ko
 
 <html>
 <header>
-<title>AMAP Demo Web application V0-1</title>
+<title>AMAP Demo Web application V0-2</title>
 </header>
 <body>
 <center>
@@ -70,8 +71,17 @@ if ($_POST[page] != "Exec")
            <OPTION SELECTED  VALUE = TRUE>with columns header
            <OPTION VALUE = FALSE>with data
         </SELECT>
-         </td></tr></table>
+      </td></tr>
+      <tr><td>
+      Separator</td><td>
+        <SELECT NAME=sep>
+           <OPTION SELECTED  VALUE = "t">tabulation</option>
+           <OPTION VALUE = "s">space</option>
+           <OPTION VALUE = "c">comma</option>
+           <OPTION VALUE = 'sc'>semicolon</option>
+        </SELECT>
 
+      </td></tr></table>
 
       <INPUT TYPE=SUBMIT VALUE="Submit" name="GO">
     </form>    
@@ -85,7 +95,15 @@ else
 
    $HEADER = $_POST[header];
    $ROWNAMES = $_POST[rownames];
-
+   $SEP = $_POST[sep];
+   if($SEP == 't')
+      $SEP = "\t";
+   if($SEP == 'c')
+      $SEP = ",";
+   if($SEP == 'sc')
+      $SEP = ";";
+   if($SEP == 's')
+      $SEP = " ";
 
    /* Get upload data */
    if(is_uploaded_file ($_FILES['FileData']['tmp_name'] ))
@@ -108,7 +126,7 @@ else
 
 
    /* Read Data */
-   fwrite($fp,"data <- read.delim('$ID/data.txt',header=$HEADER,row.names=$ROWNAMES) \n" );
+   fwrite($fp,"data <- read.delim('$ID/data.txt',header=$HEADER,row.names=$ROWNAMES,sep='$SEP') \n" );
 
 
    fwrite($fp,"data <- scale(data)             \n");
@@ -124,8 +142,10 @@ else
    fwrite($fp,"data <- pca\$scores[,1:ncol]                          \n");
 
    /* Hierarchical clustering */
-   fwrite($fp,"hr <- as.dendrogram(hclusterpar(data))      \n");
-   fwrite($fp,"hc <- as.dendrogram(hclusterpar(t(data)))   \n");
+   fwrite($fp,"hr0 <- hclusterpar(data)      \n");
+   fwrite($fp,"hc0 <- hclusterpar(t(data))   \n");
+   fwrite($fp,"hr <- as.dendrogram(hr0)      \n");
+   fwrite($fp,"hc <- as.dendrogram(hc0)   \n");
 
    /* A pdf file */
    fwrite($fp,"pdf(file='$ID/Rplots.pdf')                        \n");
@@ -149,6 +169,11 @@ else
    fwrite($fp,"heatmap(as.matrix(data),Colv=hc,Rowv=hr)          \n");
    fwrite($fp,"dev.off()                                         \n");
 
+   fwrite($fp,"r2atr(hc0,file='$ID/cluster.atr')                  \n");
+   fwrite($fp,"r2gtr(hr0,file='$ID/cluster.gtr')                  \n");
+   fwrite($fp,"r2cdt(hr0,hc0,data ,file='$ID/cluster.cdt')         \n");
+
+
    fclose($fp);
 
 
@@ -169,6 +194,14 @@ else
    echo "<img src=$ID/pcabiplot.png></img><p>";
    echo "<img src=$ID/pcaplot2.png></img><p>";
    echo "<img src=$ID/heatmap.png></img><p>";
+
+   echo "3 files for <a href=http://magix.fri.uni-lj.si/freeview/>Freeview</a>";
+   echo " or <a href=http://rana.lbl.gov/>Treeview</a>: ";
+   echo "<a href=$ID/cluster.cdt>cdt</a> ";
+   echo "<a href=$ID/cluster.atr>atr</a> ";
+   echo "<a href=$ID/cluster.gtr>gtr</a> ";
+   echo "<p>";
+
    /* Signature  */
 
    echo "<p>This results made by <a

@@ -1,7 +1,7 @@
 ## Hierarchical clustering parallelized
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2005-03-22 12:37:59 lucas>
+## Last Modified : Time-stamp: <2005-10-01 21:04:48 antoine>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -12,7 +12,9 @@
 
 hclusterpar <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link = "complete", members = NULL, nbproc = 2)
 {
-                                        # take from dist
+  if(class(x) == "exprSet")
+    x <- exprs(x)
+  ## take from dist
   if (!is.na(pmatch(method, "euclidian"))) 
     method <- "euclidean"
   METHODS <- c("euclidean", "maximum", "manhattan", "canberra", 

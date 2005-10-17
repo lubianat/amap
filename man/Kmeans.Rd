@@ -13,7 +13,8 @@ Kmeans(x, centers, iter.max = 10, nstart = 1,
 \arguments{
   \item{x}{
     A numeric matrix of data, or an object that can be coerced to such a
-    matrix (such as a numeric vector or a data frame with all numeric columns).
+    matrix (such as a numeric vector or a data frame with all numeric
+    columns). Or an object of class "exprSet".    
   }
   \item{centers}{
     Either the number of clusters or a set of initial cluster centers.
@@ -58,6 +59,26 @@ Kmeans(x, centers, iter.max = 10, nstart = 1,
 
 \seealso{
   \code{\link{hcluster}},\code{\link[stats]{kmeans}}.
+}
+
+\examples{
+
+## a 2-dimensional example
+x <- rbind(matrix(rnorm(100, sd = 0.3), ncol = 2),
+           matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2))
+colnames(x) <- c("x", "y")
+(cl <- Kmeans(x, 2))
+plot(x, col = cl$cluster)
+points(cl$centers, col = 1:2, pch = 8, cex=2)
+
+## random starts do help here with too many clusters
+(cl <- Kmeans(x, 5, nstart = 25))
+plot(x, col = cl$cluster)
+points(cl$centers, col = 1:5, pch = 8)
+
+
+
+
 }
 
 

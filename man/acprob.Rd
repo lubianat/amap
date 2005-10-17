@@ -22,7 +22,7 @@ divide each column by standard deviation}
 \details{
   \code{acpgen}  compute robust pca. i.e. spectral analysis of a robust
   variance instead of usual variance. Robust variance: see
-  \code{\link[amap]{varrob}}
+  \code{\link{varrob}}
   }
 
   \value{
@@ -58,4 +58,4 @@ divide each column by standard deviation}
 }
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link{acp} \link[stats]{princomp} \link{acpgen}}
+\seealso{\link[stats]{princomp} \link{acpgen}}

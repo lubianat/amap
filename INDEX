@@ -1,11 +1,17 @@
-acp                     Principal component analysis
 acpgen                  Generalised principal component analysis
 acprob                  Robust principal component analysis
 Dist                    Distance Matrix Computation
 distpar                 Parallelized Distance Matrix Computation
+hc2Newick               Convert hclust objects to Newick format files
+hclust2treeview         Hierarchical clustering and treeview export
 hcluster                Hierarchical Clustering
 hclusterpar             Parallelized Hierarchical Clustering
 Kmeans                  K-Means Clustering
 lubisch                 Dataset Lubischew
 plot.acp                Graphics for Principal component Analysis
+r2cluster               Write to Cluster file format
+r2gtr                   Write to gtr, atr, cdt file format
+r2xcluster              Write to Xcluster file format
 varrob                  Robust variance
+xcluster                Hierarchical clustering
+xcluster2r              Importing Xcluster/Cluster output

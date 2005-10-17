@@ -1,4 +1,13 @@
-/*
+/*! \file : kmeans.c
+ * 
+ *
+ * \brief  K-means clustering 
+ *
+ * \date Created       : before 2005
+ * \date Last Modified : Time-stamp: <2005-10-09 14:06:38 antoine>
+ *
+ * \author R core team. Modified by A. Lucas for distance choice.
+ *
  *  R : A Computer Language for Statistical Data Analysis
  *  Copyright (C) 2004   The R Development Core Team.
  *
@@ -22,6 +31,19 @@
 #include "mva.h" 
 
 
+/** K-means clustering using Lloyd algorithm.
+ * \brief compute k-nearest centroid of our dataset.
+ * \param x matrix of size nxp: input data
+ * \param pn nb of individual (pn=n)
+ * \param pp number of observation by individual (pp=p)
+ * \param cen matrix of size k*p: centroids
+ * \param pk number of centroids (k)
+ * \param cl vector of flag of size n
+ * \param pmaxiter integer: maximum iteration
+ * \param nc vector of size k: number of individuals in cluster k.
+ * \param wss vector of size k: sum of square in each cluster.
+ * \param method: which method to use.
+ */
 void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl, 
 		  int *pmaxiter, int *nc, double *wss, int * method)
 {
@@ -33,7 +55,7 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
    */
     int n = *pn, k = *pk, p = *pp, maxiter = *pmaxiter;
     int iter, i, j, c, it, inew = 0;
-    double best, dd, tmp;
+    double best, dd;
     Rboolean updated;
 
     for(i = 0; i < n; i++) cl[i] = -1;

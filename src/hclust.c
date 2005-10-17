@@ -1,10 +1,19 @@
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+/** \file hclust.c
  *                                                            
- *   HIERARCHICAL CLUSTERING using (user-specified) criterion. 
+ *   \brief Hierarchical Clustering.
  *                                                          
- *   Created       : 14/11/02 
- *   Last Modified : Time-stamp: <2003-05-28 10:32:39 lucas>
+ *   \date Created       : 14/11/02 
+ *   \date Last Modified : Time-stamp: <2005-10-09 14:43:14 antoine>
  *
+
+ *  \author F. Murtagh, ESA/ESO/STECF, Garching, February 1986. 
+ *  \author Modifications for R: Ross Ihaka, Dec 1996                 
+ *                        Fritz Leisch, Jun 2000               
+ *   all vars declared:   Martin Maechler, Apr 2001            
+ *  \author C adaptation:        A. Lucas, Dec 2002
+ */
+
+/*
  *   Parameters:                                               
  *                                                          
  *   N                 the number of points being clustered     
@@ -41,23 +50,25 @@
 #define max( A , B )  ( ( A ) > ( B ) ? ( A ) : ( B ) )
 #define min( A , B )  ( ( A ) < ( B ) ? ( A ) : ( B ) )
 
+/** hierarchical clustering
+ * \brief allocate distance matrix execute function R_distance, launch 
+ * hclust on this distance matrix, and free memory of distance matrix.
+ * \param x: data nr x nc
+ * \param nr,nc number of row and columns		  
+ * \param membr: member, vector  1:nr		  
+ * \param method  integer -> distance method	  
+ * \param diag integer: if we compute diagonal in distance matrix (usually no)
+ * \param iopt    integer -> link used 
+ * \param ia, ib   result (merge)			  
+ * \param iorder  result (order)			  
+ * \param crit    result (height)			  
+ * \param result  flag  0 => correct		  
+ *               1 => Pb			  
+ *               2 => Cannot allocate memory 
+ *               3 => Pb with distance matrix
+ */
 
-int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,int *result)
-     /*
-      * x: data nr x nc
-      * membr: member, vector  1:nr
-      * method  integer -> distance method
-      * diag
-      * iopt    integer -> link used
-      * ia ib   result (merge)
-      * iorder  result (order)
-      * crit    result (height)
-      * result  flag  0 => correct
-      *               1 => Pb
-      *               2 => Cannot allocate memory
-      *               3 => Pb with distance matrix
-      */ 
-
+void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,int *result)
 {
   int  len;
   int flag;
@@ -72,7 +83,7 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
     {
       printf("AMAP: Not enought system memory to allocate matrix distance\n"); 
       *result = 2;
-      return(0);
+      return;
     }
 
   /*
@@ -85,7 +96,7 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
     {
       printf("AMAP: Unable to compute Hierarchical Clustering: missing values in distance matrix\n"); 
       *result = 3;
-      return(0);
+      return;
     }
 
   /*
@@ -97,7 +108,26 @@ int hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int
 }
 
 
-int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss,int *result)
+/** Hierachical clustering
+ * \brief compute hierachical clustering from a distance matrix 
+ * hclust can be called directly by R, or with hcluster C function.
+ * \param n number of individuals
+ * \param len = n (n-1) / 2 (size of distance matrix)
+ * \param *iopt integer -> link used
+ * \param ia, ib result (merge)
+ * \param iorder result (order)
+ * \param crit result (height)
+ * \param membr number of individuals in each cluster.
+ * \param diss distance matrix (size len)
+ * \param result  flag  0 => correct		  
+ *               1 => Pb			  
+ *               2 => Cannot allocate memory 
+ *               3 => Pb with distance matrix
+ *
+ * \note this is an adaptation of the fortran function designed from the
+ * R core team.
+ */
+void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss,int *result)
 {
 
   int im,jm,jj,i,j,ncl,ind,i2,j2,k,ind1,ind2,ind3;
@@ -107,7 +137,7 @@ int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cri
   short int *flag;
   int *iia;
   int *iib;
-  int *tmp;
+
 
   *result = 1;
   nn    = (int*) malloc (*n * sizeof(int));
@@ -117,7 +147,7 @@ int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cri
     {
       printf("AMAP: Not enought system memory \n"); 
       *result = 2;
-      return(0);
+      return;
     }
 
 
@@ -320,7 +350,7 @@ int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cri
     {
       printf("AMAP: Not enought system memory \n"); 
       *result = 2;
-      return(0);
+      return;
     }
 
 
@@ -346,7 +376,12 @@ int hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *cri
 
 
 
-
+/** Return indice 
+ * \brief The upper half diagonal distance matrix is stored as a vector...
+ * so distance between individual i and j is stored at postion ioffst(i,j)
+ * \param n number of individuals (distance matrix is nxn)
+ * \param i,j: indices in matrix
+ */
 int ioffst(int n,int i,int j)
      /* Map row I and column J of upper half diagonal symmetric matrix 
       * onto vector.  i < j 
@@ -381,7 +416,17 @@ int ioffst(int n,int i,int j)
 /*                                                             */
 /*-------------------------------------------------------------*/
 
-
+/** Hierachical clustering subroutine
+ * \brief compute hierachical clustering from a distance matrix 
+ * This routine is called by hclust
+ * \param n number of individuals
+ * \param ia, ib result (merge)
+ * \param iia, iib result (merge)
+ * \param iorder result (order)
+ *
+ * \note this is an adaptation of the fortran function designed from the
+ * R core team.
+ */
 void hcass2( int *n, int *ia,  int *ib,int *iorder, int *iia, int *iib)
 {
   int i,j,k,k1,k2,loc;

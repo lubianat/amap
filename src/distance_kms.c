@@ -1,4 +1,11 @@
-/*
+/*! \file distance_kms.c
+ * \brief all functions requiered for C function kmeans_Lloyd2.
+ *
+ *  \date Created: 2005
+ *  \date Last modified: Time-stamp: <2005-10-09 13:38:54 antoine>
+ *
+ *  \author Adapted from distance.c (R core members) by Antoine Lucas 
+ *
  *  R : A Computer Language for Statistical Data Analysis
  *  Copyright (C) 1995, 1996  Robert Gentleman and Ross Ihaka
  *  Copyright (C) 1998, 2001  Robert Gentleman, Ross Ihaka and the
@@ -28,6 +35,8 @@
 #include <R_ext/Error.h>
 #include "mva.h"
 
+/** \brief Distance euclidean (i.e. sqrt(sum of square) )
+ */
 double R_euclidean_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
     double dev, dist;
@@ -51,6 +60,8 @@ double R_euclidean_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, i
 
 }
 
+/** \brief Distance maximum (supremum norm)
+ */
 double R_maximum_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
     double dev, dist;
@@ -72,6 +83,8 @@ double R_maximum_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int
     return dist;
 }
 
+/** \brief Distance manhattan
+ */
 double R_manhattan_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
     double dist;
@@ -92,6 +105,8 @@ double R_manhattan_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, i
     return dist;
 }
 
+/** \brief Distance canberra
+ */
 double R_canberra_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
     double dist, sum, diff;
@@ -116,6 +131,8 @@ double R_canberra_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, in
     return dist;
 }
 
+/** \brief Distance binary
+ */
 double R_dist_binary_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
     int total, count, dist;
@@ -142,10 +159,9 @@ double R_dist_binary_kms(double *x, double *y, int nr1, int nr2, int nc, int i1,
     return (double) dist / count;
 }
 
-/* Pearson / Pearson centered (correlation)
- * Added by A. Lucas
+/** \brief Pearson / Pearson centered (correlation)
+ *  \note Added by A. Lucas
  */
-
 double R_pearson_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
     double num,sum1,sum2, dist;
@@ -172,9 +188,12 @@ double R_pearson_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int
 }
 
 
+/** \brief Distance correlation (Uncentered Pearson)
+ *  \note Added by A. Lucas
+ */
 double R_correlation_kms(double *x, double *y, int nr1, int nr2, int nc, int i1, int i2)
 {
-    double num,denum,sumx,sumy,sumxx,sumyy,sumxy,dist;
+    double num,denum,sumx,sumy,sumxx,sumyy,sumxy;
     int count,j;
 
     count= 0;
@@ -206,6 +225,18 @@ double R_correlation_kms(double *x, double *y, int nr1, int nr2, int nc, int i1,
 enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION};
 /* == 1,2,..., defined by order in the R function dist */
 
+/**
+ * R_distance_kms: compute distance between individual i1 and
+ * centroid i2
+ * \brief compute distance and call one of function R_euclidean or R_...
+ * \brief This function is called by kmeans_Lloyd2 
+ * \param x input matrix (individuals)
+ * \param y input matrix (centroids)
+ * \param nr1,nr2,nc number of row (nr1:x, nr2:y) and columns
+ *        nr individuals with nc values.
+ * \param i1, i2: indice of individuals (individual i1, centroid i2)
+ * \param method 1, 2,... method used
+ */
 double R_distance_kms(double *x,double *y, int nr1,int nr2, int nc,int i1,int i2, int *method)
 {
   /*

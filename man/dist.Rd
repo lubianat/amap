@@ -6,7 +6,9 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
 \alias{Dist}
 
 \arguments{
-  \item{x}{numeric matrix or (data frame).  Distances between the rows of
+  \item{x}{numeric matrix or (data frame) or an object of class
+    "exprSet".
+    Distances between the rows of
     \code{x} will be computed.}
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},

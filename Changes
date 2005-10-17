@@ -1,3 +1,15 @@
+Mon Oct 17 2005: 0.5-1
+  * minor change on doc (reference to acp function deleted)
+  * minor change to R Kmeans function
+  * load Biobase on startup when available.
+
+Mon Oct 03 2005: 0.5
+  * Delete function acp (recomand use of prcomp and princomp)
+  * add support of class "exprSet" in hcluster, dist and kmeans
+
+Tue Sep 27 2005
+  * merge packages ctc and amap
+
 Tue Jul 12 2005: 0.4-4
   * demo file
   * vignette

@@ -2,6 +2,26 @@ Kmeans <-
 function(x, centers, iter.max = 10, nstart = 1,
          method = "euclidean")
 {
+  dokmeans <- function()
+    {
+      Z <- .C("kmeans_Lloyd2", as.double(x), as.integer(m),
+              as.integer(ncol(x)),
+              centers = as.double(centers), as.integer(k),
+              c1 = integer(m), iter = as.integer(iter.max),
+              nc = integer(k), wss = double(k),
+              method=as.integer(method),
+              PACKAGE="amap")
+      if (Z$iter > iter.max) 
+        warning("did not converge in ", iter.max, " iterations", 
+                call. = FALSE)
+      if (any(Z$nc == 0)) 
+        warning("empty cluster: try a better set of initial centers", 
+                call. = FALSE)
+      Z
+    }
+
+
+  
   METHODS <- c("euclidean", "maximum", "manhattan", "canberra", 
                "binary","pearson","correlation")
   method <- pmatch(method, METHODS)
@@ -9,6 +29,9 @@ function(x, centers, iter.max = 10, nstart = 1,
     stop("invalid distance method")
   if (method == -1) 
     stop("ambiguous distance method")
+  
+  if(class(x) == "exprSet")
+      x <- exprs(x)
   
 
   x <- as.matrix(x)
@@ -48,31 +71,32 @@ function(x, centers, iter.max = 10, nstart = 1,
           nc = integer(k), wss = double(k),
           method=as.integer(method),
           PACKAGE="amap")
-    if(Z$iter > iter.max)
-      warning("did not converge in ",
-              iter.max, " iterations", call.=FALSE)
-    if(any(Z$nc == 0))
-      warning("empty cluster: try a better set of initial centers", call.=FALSE)
+  if(Z$iter > iter.max)
+    warning("did not converge in ",
+            iter.max, " iterations", call.=FALSE)
+  if(any(Z$nc == 0))
+    warning("empty cluster: try a better set of initial centers", call.=FALSE)
     
-    if(nstart >= 2 && !is.null(cn)) {
-      best <- sum(Z$wss)
-      for(i in 2:nstart) {
-        centers <- cn[sample(1:mm, k), , drop=FALSE]
-        ZZ <- do_one(nmeth)
-        if((z <- sum(ZZ$wss)) < best) {
-          Z <- ZZ
-          best <- z
-        }
+  if(nstart >= 2 && !is.null(cn)) {
+    best <- sum(Z$wss)
+    for(i in 2:nstart) {
+      centers <- cn[sample(1:mm, k), , drop=FALSE]
+      ZZ <- dokmeans()
+      if((z <- sum(ZZ$wss)) < best) {
+        Z <- ZZ
+        best <- z
       }
     }
-    centers <- matrix(Z$centers, k)
-    dimnames(centers) <- list(1:k, dimnames(x)[[2]])
-    cluster <- Z$c1
-    if(!is.null(rn <- rownames(x)))
-      names(cluster) <- rn
-    out <- list(cluster = cluster, centers = centers, withinss = Z$wss,
+  }
+  centers <- matrix(Z$centers, k)
+  dimnames(centers) <- list(1:k, dimnames(x)[[2]])
+  cluster <- Z$c1
+  if(!is.null(rn <- rownames(x)))
+    names(cluster) <- rn
+  
+  out <- list(cluster = cluster, centers = centers, withinss = Z$wss,
                 size = Z$nc)
-    class(out) <- "kmeans"
-    out
+  class(out) <- "kmeans"
+  out
 }
 

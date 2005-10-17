@@ -1,6 +1,4 @@
-% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
-%
-% building this document: (in R) Sweave ("amap.Rnw")
+% building this document: (in R) Sweave ("ctc.Rnw")
 \documentclass[a4paper]{article}
 
 \title{Amap Package}
@@ -26,11 +24,19 @@ Eulidean or Spearman (rank-based metric).
 
 We implement a principal component analysis (with robusts methods).
 
+We provide several functions for 
+conversion. Specially to  import data from
+Xcluster\footnote{http://genome-www.stanford.edu/\~\/sherlock/cluster.html} 
+ or Cluster\footnote{http://rana.lbl.gov/EisenSoftware.htm} 
+ software (very used for Gene's expression
+analysis), and to export clusters to TreeView or Freeview visualization
+software.
+
 \section{Usage}
 
 \subsection{Clustering}
 
-The standard way of building  a hierarchical clustering with amap:
+The standard way of building  a hierarchical clustering:
 <<echo=TRUE>>=
 library(amap)
 data(USArrests)
@@ -71,6 +77,70 @@ p <- acprob(lubisch,h=4)
 plot(p)
 @ 
 
+\subsection{Building hierarchical clustering with another software}
+
+We made these tools
+\begin{description}
+\item[r2xcluster] Write data table to Xcluster file format 
+<<echo=TRUE>>=
+r2xcluster(USArrests,file='USArrests_xcluster.txt')
+@ 
+ \item[r2cluster] Write data table to Cluster file format 
+<<echo=TRUE>>=
+r2cluster(USArrests,file='USArrests_xcluster.txt')
+@ 
+\item[xcluster] Hierarchical clustering (need Xcluster tool  by Gavin Sherlock) 
+\begin{verbatim}
+> h.xcl=xcluster(USArrests)
+> plot(h.xcl)
+\end{verbatim}
+ 
+It is roughtly the same as
+\begin{verbatim}
+> r2xcluster(USArrests,file='USArrests_xcluster.txt')
+> system('Xcluster -f USArrests_xcluster.txt -e 0 -p 0 -s 0 -l 0')
+> h.xcl=xcluster2r('USArrests_xcluster.gtr',labels=TRUE)
+\end{verbatim}
+
+
+\item[xcluster2r] Importing Xcluster/Cluster output 
+
+\end{description}                 
+
+
+\subsection{Using other visualization softwares}
+
+We now consider that we have an object of the type produced by 'hclust'
+(or a hierarchical cluster imported with previous functions) like:
+
+<<echo=TRUE>>=
+hr = hcluster(USArrests)
+hc = hcluster(t(USArrests))
+@ 
+
+
+
+\begin{description}
+\item[hc2Newick] Export hclust objects to Newick format files
+<<echo=TRUE>>=
+write(hc2Newick(hr),file='hclust.newick')
+@ 
+\item[r2gtr,r2atr,r2cdt] Export hclust objects to Freeview or Treeview
+visualization softwares
+<<echo=TRUE>>=
+r2atr(hc,file="cluster.atr")
+r2gtr(hr,file="cluster.gtr")
+r2cdt(hr,hc,USArrests ,file="cluster.cdt")
+@ 
+
+\item[hclust2treeview] Clustering and Export hclust objects to Freeview or Treeview
+visualization softwares 
+<<echo=TRUE>>=
+hclust2treeview(USArrests,file="cluster.cdt")
+@ 
+\end{description}
+
+
 
 \section{See Also}
 
@@ -84,6 +154,20 @@ All functions has got man pages, try
 \noindent
 Robust tools has been published: \cite{caussinu+ruiz} and
 \cite{caussinu+ruiz2}.
+
+\noindent
+Amap aims to interact with other softwares, some of them:
+\begin{description}
+\item[xcluster]
+made  by Gavin Scherlock, http://genome-www.stanford.edu/\~\/sherlock/cluster.html
+\item[Cluster, Treeview]
+made  by Michael Eisen, http://rana.lbl.gov/EisenSoftware.htm
+\item[Freeview]
+made by Marco Kavcic and Blaz Zupan,
+http://magix.fri.uni-lj.si/freeview
+\end{description}                 
+
+
 
 \bibliographystyle{plain}
 \bibliography{amap}

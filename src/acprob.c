@@ -1,22 +1,23 @@
-/*
- * File : acprob.c
+/*! \file : acprob.c
+ * 
  *
- * Description   : Robust principal component analysis
+ * \brief  Robust principal component analysis
  *
- * Created       : 06/11/02 
- * Last Modified : Time-stamp: <2003-02-12 15:20:33 lucas>
+ * \date Created       : 06/11/02 
+ * \date Last Modified : Time-stamp: <2005-10-09 13:50:13 antoine>
  *
  * This Message must remain attached to this source code at all times.
  * This source code may not be redistributed, nor may any executable
  * based upon this source code.
  *
- * Authored by Antoine Lucas (lucas@toulouse.inra.fr)
+ * \author  Antoine Lucas (antoinelucas@libertysurf.fr)
  *
  * Please notify me of any changes made to the code
  * 
  * 
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #ifndef M_PIl
@@ -33,6 +34,18 @@
 /* .C("noyau",as.double(0.6),as.character('g'),res=double(1)) */
 
 
+/*! noyau: base function for kernel computation
+ * \brief compute a kernel. called by W or VarRob
+ * \param u: input data (scalar)
+ * \param k: char, g, q, t, e, c, u for:
+ *        gaussien = (2*pi)^(-1/2) * exp(-u^2/2),
+ *        quartic   = 15/16 * (1-u^2)^2 * (abs(u)<1),
+ *        triweight = 35/32 * (1-u^2)^3 * (abs(u)<1),
+ *        epanechikov = 3/4 * (1-u^2) *   (abs(u)<1),
+ *        cosinus = pi/4 * cos (u*pi/2) * (abs(u)<1),
+ *        uniform = 1/2 * (abs(u)<1),
+ * \param res: output data: one value of type double
+ */
 void noyau(double *u, char **k,double *res)  
 {
   double pi= M_PIl;
@@ -60,7 +73,12 @@ void noyau(double *u, char **k,double *res)
         uniform = 1/2 * (abs(u)<1),
   */
 
-
+/** norm
+ * \brief compute norm: sqrt(x'.d.x). called by W or VarRob
+ * \param x: vector of size p
+ * \param p: size of vector x and matrix d
+ * \param d: matrix of size pxp
+ */
 double norm(double *x,int *p,double *d)
      /*
       * x:     vecteur p:1
@@ -76,7 +94,12 @@ double norm(double *x,int *p,double *d)
   return sqrt ( res );
 }
 
-
+/** mult
+ * \brief multiplication x.x' (return a matrix). called by W or VarRob
+ * \param x: vector of size p
+ * \param p: size of vector x and matrix d
+ * \param res: matrix of result
+ */
 void mult(double *x,int *p,double *res)
      /*
       * x: vecteur p:1
@@ -91,23 +114,26 @@ void mult(double *x,int *p,double *res)
 
 
 
-int W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
-     /*
-      * x: matrice des données n x p
-      * h: largeure de la fenetre (scalaire)
-      * d: matrice de produit scalaire p x p
-      * n: longueur de x
-      * p: largeure de x
-      * k: noyau utilise
-      *
-      * Convention:
-      *   la matrice x[i,j] (n x p) est remplacée par 
-      *   le vecteur x[i + j x n]  (i=0..n-1 ; j=0..p-1) 
-      *
-      * result  flag  0 => correct
-      *               1 => Pb
-      *               2 => Cannot allocate memory
-      */
+/** W compute a "local" variance This function is called directly by R
+ * \brief this functions compute a "local" variance, using a specific kernel.
+ * This function depends on function mult, norm and noyau
+ * \param x: matrix; input data n x p
+ * \param h: window size (scalar)
+ * \param d: scalar product matrix p x p
+ * \param n: length x
+ * \param p: number of columns of x
+ * \param kernel: kernel utilised
+ * \param res: matrix returned (allocated in R)
+ *
+ * \note
+ *   matrix x[i,j] (n x p) is substitute
+ *   by vector vecteur x[i + j x n]  (i=0..n-1 ; j=0..p-1) 
+ *
+ * \param result  flag  0 => correct
+ *               1 => Pb
+ *               2 => Cannot allocate memory
+ */
+void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
 {
   double *delta;
   double *temp;
@@ -122,7 +148,7 @@ int W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int
     {
       printf("AMAP: Not enought system memory \n"); 
       *result = 2; 
-      return(0);
+      return;
     }
 
 
@@ -156,18 +182,23 @@ int W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int
   *result = 0; 
 }
 
-int VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
-     /*
-      * x: matrice des données n x p
-      * h: largeure de la fenetre (scalaire)
-      * d: matrice de produit scalaire p x p
-      * n: longueur de x
-      * p: largeure de x
-      * k: noyau utilise
-      * result  flag  0 => correct
-      *               1 => Pb
-      *               2 => Cannot allocate memory
-      */
+
+/** VarRob: compute robust variance. Function called birecly by R
+ * \brief Robust variance... gives a low ponderation to isolated 
+ * values. This ponderation is determined with kernel and window size.
+ * This function depends on function mult, norm and noyau
+ * \param x: data matrix n x p
+ * \param h: kernel window size (scalar)
+ * \param d: matrix of scalar product p x p
+ * \param n: lenght of x
+ * \param p: length of x
+ * \param kernel: kernel used
+ * \param res result (matrix)
+ * \param result  flag  0 => correct
+ *               1 => Pb
+ *               2 => Cannot allocate memory
+ */
+void VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
 {
   int i,j;
   double *temp, *Xi;
@@ -180,7 +211,7 @@ int VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res
     {
       printf("AMAP: Not enought system memory \n"); 
       *result = 2;
-      return(0);
+      return;
     }
 
 
@@ -208,30 +239,3 @@ int VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res
 }
 
 
-/*
-main()
-{
-  double m[8]={1,2,3,4,5,6,7,8};
-  double d[4]={1,0,0,1};
-  int p=2,n=4;
-  double h=1;
-  char k1='k';
-  char *k2;
-  char **k3;
-  double res[4];
-
-  k2 = (char*) malloc ( sizeof(char));
-  k3 = (char**) malloc ( sizeof(char* ));
-  if(k2 == NULL || k3 == NULL )
-    {
-      printf("AMAP: Not enought system memory \n"); 
-      return(0);
-    }
-
-
-  k2 = &k1;
-  k3 = &k2;
-  W(m,&h,d,&n,&p,k3,res);
-
-}
-*/

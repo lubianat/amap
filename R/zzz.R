@@ -15,5 +15,11 @@
         have.stats <- "package:stats" %in% search()
         if(!have.stats)   require("stats")
       }
-}
+
+    if("Biobase" %in% .packages(all=TRUE))
+      require("Biobase")
+    else
+        exprs <<- function(x)
+            stop("You need to install Biobase package to use this object")
+  }
 

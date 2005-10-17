@@ -1,4 +1,5 @@
 \name{plot.acp}
+\alias{print.acp}
 \alias{plot.acp}
 \alias{biplot.acp}
 \alias{plot2.acp}
@@ -11,7 +12,9 @@ main='Individuals PCA',...)
 biplot.acp(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,
 main='Variables PCA',...)
 plot2.acp(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
-main='Scree Graph',ylab='Eigen Values')}
+main='Scree Graph',ylab='Eigen Values')
+print.acp(x, ...) 
+}
 
 \arguments{
 \item{x}{Result of acp or princomp}
@@ -48,10 +51,10 @@ standard deviation}
 \examples{
 data(lubisch)
 lubisch <- lubisch[,-c(1,8)]
-p <- acp(lubisch)
+p <- acpgen(lubisch,h1=1,h2=1/sqrt(2))
 plot(p)
 }
 \keyword{multivariate}
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link{acp},\link{acpgen},\link{acprob}, \link[stats]{princomp}}
+\seealso{\link{acpgen},\link{acprob}, \link[stats]{princomp}}

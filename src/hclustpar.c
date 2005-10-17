@@ -1,36 +1,12 @@
-/* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
- *                                                            
- *   HIERARCHICAL CLUSTERING using (user-specified) criterion. 
+/** \file hclustpar.c
+ * \brief Parallelized version of hcluster (use distpar routine)
+ *   
  *                                                          
- *   Created       : 14/11/02 
- *   Last Modified : Time-stamp: <2005-02-26 18:07:29 antoine>
+ *   \date Created       : 14/11/02 
+ *   \date Last Modified : Time-stamp: <2005-10-09 14:30:37 antoine>
  *
- *   Parameters:                                               
- *                                                          
- *   N                 the number of points being clustered     
- *   DISS(LEN)         dissimilarities in lower half diagonal   
- *                     storage; LEN = N.N-1/2,                  
- *   IOPT              clustering criterion to be used,         
- *   IA, IB, CRIT      history of agglomerations; dimensions    
- *                     N, first N-1 locations only used,        
- *   MEMBR, NN, DISNN  vectors of length N, used to store       
- *                     cluster cardinalities, current nearest   
- *                     neighbour, and the dissimilarity assoc.  
- *                     with the latter.                         
- *                     MEMBR must be initialized by R to the    
- *                     default of  rep(1, N)                    
- *   FLAG              boolean indicator of agglomerable obj.  
- *                     clusters.                                
- *                                                          
- *  
- *   Fortran algorithme:
- *   F. Murtagh, ESA/ESO/STECF, Garching, February 1986.        
- *   Modifications for R: Ross Ihaka, Dec 1996                 
- *                        Fritz Leisch, Jun 2000               
- *   all vars declared:   Martin Maechler, Apr 2001            
- *   C adaptation:        A. Lucas, Dec 2002
- * ------------------------------------------------------------ */
-
+ * \author Antoine Lucas.
+ */
 
 
 #include <stdlib.h>
@@ -41,24 +17,25 @@
 #define max( A , B )  ( ( A ) > ( B ) ? ( A ) : ( B ) )
 #define min( A , B )  ( ( A ) < ( B ) ? ( A ) : ( B ) )
 
-
+/** Paralelized hierarchical clustering
+ * \brief allocate distance matrix execute function R_distancepar, launch 
+ * hclust on this distance matrix, and free memory of distance matrix.
+ * \param x: data nr x nc
+ * \param nr,nc number of row and columns		  
+ * \param membr: member, vector  1:nr		  
+ * \param method  integer -> distance method	  
+ * \param diag integer: if we compute diagonal in distance matrix (usually no)
+ * \param iopt    integer -> link used 
+ * \param nbprocess nb of process for parallelization
+ * \param ia, ib   result (merge)			  
+ * \param iorder  result (order)			  
+ * \param crit    result (height)			  
+ * \param result  flag  0 => correct		  
+ *               1 => Pb			  
+ *               2 => Cannot allocate memory 
+ *               3 => Pb with distance matrix
+ */
 void hclusterpar(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,int *nbprocess,int * result)
-     /*
-      * x: data nr x nc
-      * membr: member, vector  1:nr
-      * method  integer -> distance method
-      * diag
-      * iopt    integer -> link used
-      * ia ib   result (merge)
-      * iorder  result (order)
-      * crit    result (height)
-      * nbprocess nb of process for parallelization
-      * result  flag  0 => correct
-      *               1 => Pb
-      *               2 => Cannot allocate memory
-      *               3 => Pb with distance matrix
-      */ 
-
 {
   int  len;
   int flag;

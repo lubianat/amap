@@ -97,18 +97,8 @@ plot(p,main='ACP robuste des individus')
 
 # See difference with acp
 
-p <- acp(lubisch)
-plot(p)
-
-# Other Data
-.Random.seed <- c(1,  416884367 ,1051235439)
-n <- 100   # Number of observations
-m <- 0     # Mean of 1 group
-temp <- cbind(rnorm(n,m,1),rnorm(n,0,10))
-m <- 10
-mat <- rbind(temp,cbind(rnorm(n,m,1),rnorm(n,0,10)))
-mat <- scale(mat,TRUE,TRUE)
-rm (m,n,temp) 
+p <- princomp(lubisch)
+class(p)<- "acp"
 
 }
 
@@ -133,7 +123,7 @@ rm (m,n,temp)
 \keyword{multivariate}
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
-\seealso{\link{acp} \link{acprob} \link[stats]{princomp} }
+\seealso{\link{acprob} \link[stats]{princomp} }
 
 
 

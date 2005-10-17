@@ -1,3 +1,12 @@
+/*! \file distancepar.c
+ * \brief all functions requiered for parallelize distance routines
+ *
+ *  \date Created: 2004
+ *  \date Last modified: Time-stamp: <2005-10-09 13:14:51 antoine>
+ *
+ *  \author Antoine Lucas 
+ */
+
 #include <stdlib.h>
 #include <math.h>
 
@@ -20,13 +29,25 @@ enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, 
 
 
 
+/**
+ * R_distance: compute parallelized distance. Function called direclty by R
+ * \brief compute distance and call function thread_dist
+ * that call one of function R_euclidean or R_...
+ * \param x input matrix
+ * \param nr,nc number of row and columns
+ *        nr individuals with nc values.
+ * \param d distance half matrix.
+ * \param diag if we compute diagonal of dist matrix (usualy: no).
+ * \param method 1, 2,... method used
+ * \param nbprocess: number of threads to create
+ * \param ierr error return; 1 good; 0 missing values
+ */
 void R_distancepar(double *x, int *nr, int *nc, double *d, int *diag, int *method,int *nbprocess, int * ierr)
 {
 #ifndef __MINGW_H
-    int dc,numero_thread;
+    int dc;
     short int * jobs;
     int  i;
-    double (*distfun)(double*, int, int, int, int, int) = NULL;
     pthread_t * th;
     void ** arguments;
 
@@ -83,11 +104,13 @@ void R_distancepar(double *x, int *nr, int *nc, double *d, int *diag, int *metho
 }
 
 #ifndef __MINGW_H
+/** thread_dist function that compute distance.
+ *
+ */
 void* thread_dist(void* arguments)
 {
 
-  long int nbprocess,no,nr,nc,i,j,dc,debut,fin,ij;
-  int * tmp;
+  long int nbprocess,nr,nc,i,j,dc,ij;
   short int *jobs;
   void ** arguments2; 
   double * d;

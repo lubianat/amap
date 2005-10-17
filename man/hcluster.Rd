@@ -9,8 +9,11 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
          link = "complete", members = NULL)
 }
 \arguments{
-  \item{x}{numeric matrix or (data frame).  Distances between the rows of
-    \code{x} will be computed.}
+  \item{x}{
+    A numeric matrix of data, or an object that can be coerced to such a
+    matrix (such as a numeric vector or a data frame with all numeric
+    columns). Or an object of class "exprSet".
+  }
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
     \code{"canberra"} \code{"binary"} \code{"pearson"},

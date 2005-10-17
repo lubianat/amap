@@ -1,7 +1,12 @@
 Dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
 {
-    ## account for possible spellings of euclid?an
-    if(!is.na(pmatch(method, "euclidian")))
+
+  if(class(x) == "exprSet")
+      x <- exprs(x)
+
+      
+  ## account for possible spellings of euclidean
+  if(!is.na(pmatch(method, "euclidian")))
 	method <- "euclidean"
 
     METHODS <- c("euclidean", "maximum", "manhattan", "canberra",
