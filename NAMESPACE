@@ -2,11 +2,12 @@ useDynLib(amap)
 
 export("Kmeans","acp","pca","K","W","WsansC","varrob",
 	"varrobsansC","acpgen","acprob","plot2","plotAll",
-	"plot.acp","print.acp","biplot.acp")
+	"plot.acp","print.acp","biplot.acp","pop","diss")
 
 S3method("print","acp")
 S3method("plot","acp")
 S3method("biplot","acp")
+S3method("print","pop")
 
 export("Dist","distpar","hcluster","hclusterpar")
 

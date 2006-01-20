@@ -1,4 +1,8 @@
-Sat Nov 12 2005:
+Tue Jan 20 2006: 0.7-1
+  * new function pop (optimal partition)
+  * new function diss (dissimilarity)
+
+Sat Nov 12 2005: 0.6
   * new function burt, matlogic & afc
   * split functions concerning interactions with other software in 
     package ctc

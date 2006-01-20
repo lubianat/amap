@@ -1,6 +1,6 @@
 Package: amap
-Version: 0.6
-Date: 2005-10-17
+Version: 0.7-1
+Date: 2006-20-01
 Title: Another Multidimensional Analysis Package 
 Author: Antoine Lucas 
 Maintainer: Antoine Lucas <antoinelucas@libertysurf.fr>
@@ -9,4 +9,4 @@ Description: Tools for Clustering and Principal
 	parallelized functions).	
 License: GPL
 URL: http://mulcyber.toulouse.inra.fr/projects/amap/
-Packaged: Thu Nov 17 09:11:45 2005; lucas
+Packaged: Tue Jan 24 10:30:53 2006; lucas
