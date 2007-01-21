@@ -188,8 +188,10 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
     V      <- data.frame(V)
     scores <- data.frame(scores)
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
-    dimnames(V)[[1]] <- dimnames(x)[[2]]
-    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    if(!is.null( dimnames(x)[[2]] ))
+      dimnames(V)[[1]] <- dimnames(x)[[2]]
+    if(!is.null( dimnames(x)[[1]] ))
+      dimnames(scores)[[1]] <- dimnames(x)[[1]]
     dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
     eig    <- sqrt(EIG$values)
     sdev   <- apply(scores,2,sd)    
@@ -217,8 +219,10 @@ acprob <- function(x,h=1,center=TRUE,reduce=TRUE,kernel="gaussien")
     V      <- data.frame(V)
     scores <- data.frame(scores)
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
-    dimnames(V)[[1]] <- dimnames(x)[[2]]
-    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    if(!is.null( dimnames(x)[[2]] ))
+      dimnames(V)[[1]] <- dimnames(x)[[2]]
+    if(!is.null( dimnames(x)[[1]] ))
+      dimnames(scores)[[1]] <- dimnames(x)[[1]]
     dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
     sdev   <- apply(scores,2,sd)    
     res  <- list(eig=val,sdev=sdev,scores=scores,loadings=V)

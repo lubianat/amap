@@ -1,3 +1,11 @@
+Mon Jan 22 2007: 0.7-3
+  * dimnames(x)[[1]] <- NULL seems not to be allowed anymore.
+    -> changes in acp.R acprob.R
+
+Wed Jan 21 2007: 0.7-2
+  * correct package dependences
+  * minor changes in documentation
+
 Tue Jan 20 2006: 0.7-1
   * new function pop (optimal partition)
   * new function diss (dissimilarity)

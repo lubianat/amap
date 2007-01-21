@@ -34,6 +34,12 @@ distpar(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
 
 }
 
+\references{
+  Antoine Lucas and Sylvain Jasson, \emph{Using amap and ctc Packages
+    for Huge Clustering}, R News, 2006, vol 6, issue 5 pages 58-60.
+  }
+
+
 \seealso{
   \code{\link{Dist}}
 }

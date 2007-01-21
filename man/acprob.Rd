@@ -55,6 +55,10 @@ divide each column by standard deviation}
   Structures by Means of Principal Component Analysis. In Data Science
   and its Applications} (eds Y. Escoufier and C. Hayashi),
   pp. 177-192. Tokyo: Academic Press.
+
+  Antoine Lucas and Sylvain Jasson, \emph{Using amap and ctc Packages
+  for Huge Clustering}, R News, 2006, vol 6, issue 5 pages 58-60.
+
 }
 
 \author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}

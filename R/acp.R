@@ -35,8 +35,10 @@ acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
     V      <- data.frame(V)
     scores <- data.frame(scores)
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
-    dimnames(V)[[1]] <- dimnames(x)[[2]]
-    dimnames(scores)[[1]] <- dimnames(x)[[1]]
+    if(!is.null( dimnames(x)[[2]] ))
+      dimnames(V)[[1]] <- dimnames(x)[[2]]
+    if(!is.null(dimnames(x)[[1]]))
+      dimnames(scores)[[1]] <- dimnames(x)[[1]]
     dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
 
     ##cmpr <- x %*% (sqrt(wV) * as.matrix(V))
