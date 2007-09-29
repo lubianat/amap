@@ -1,12 +1,14 @@
 \name{hcluster}
 \title{Hierarchical Clustering}
 \alias{hcluster}
+\alias{hclusterpar}
 \description{
   Hierarchical cluster analysis.
 }
 \usage{
 hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
-         link = "complete", members = NULL)
+         link = "complete", members = NULL, nbproc = 2,
+         doubleprecision = TRUE)
 }
 \arguments{
   \item{x}{
@@ -29,6 +31,10 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
     \code{"average"}, \code{"mcquitty"}, \code{"median"} or
     \code{"centroid"}.}
   \item{members}{\code{NULL} or a vector with length size of \code{d}.}
+  \item{nbproc}{integer, number of subprocess for parallelization}
+  \item{doubleprecision}{True: use of double precision for distance
+    matrix computation; False: use simple precision}
+  
 }
 \value{
   An object of class \bold{hclust} which describes the
@@ -87,7 +93,7 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
   by Antoine Lucas \url{http://mulcyber.toulouse.inra.fr/projects/amap/}.
 }
 \seealso{
-  \code{\link{Dist}}, \code{\link{hclusterpar}},
+  \code{\link{Dist}},
   \code{\link[stats]{hclust}}, \code{\link[stats]{kmeans}}.
 }
 
@@ -118,6 +124,29 @@ opar <- par(mfrow = c(1, 2))
 plot(hc,  labels = FALSE, hang = -1, main = "Original Tree")
 plot(hc1, labels = FALSE, hang = -1, main = "Re-start from 10 clusters")
 par(opar)
+
+
+## other combinaison are possible
+
+hc <- hcluster(USArrests,method = "euc",link = "ward", nbproc= 1,
+doubleprecision = TRUE)
+hc <- hcluster(USArrests,method = "max",link = "single", nbproc= 2,
+doubleprecision = TRUE)
+hc <- hcluster(USArrests,method = "man",link = "complete", nbproc= 1,
+doubleprecision = TRUE)
+hc <- hcluster(USArrests,method = "can",link = "average", nbproc= 2,
+doubleprecision = TRUE)
+hc <- hcluster(USArrests,method = "bin",link = "mcquitty", nbproc= 1,
+doubleprecision = FALSE)
+hc <- hcluster(USArrests,method = "pea",link = "median", nbproc= 2,
+doubleprecision = FALSE)
+hc <- hcluster(USArrests,method = "cor",link = "centroid", nbproc= 1,
+doubleprecision = FALSE)
+hc <- hcluster(USArrests,method = "spe",link = "complete", nbproc= 2,
+doubleprecision = FALSE)
+
+
+
 }
 \keyword{multivariate}
 \keyword{cluster}

@@ -23,12 +23,12 @@ or from an Array of Signed Similarities.
  Theory is explained at \url{http://petitjeanmichel.free.fr/itoweb.petitjean.class.html}
  
  Marcotorchino F.
- \emph{Agrégation des similarités en classification automatique.}
- Thèse de Doctorat d'Etat en Mathématiques,
- Université Paris VI, 25 June 1981.
+ \emph{Agr\'egation des similarit\'es en classification automatique.}
+ Th\'ese de Doctorat d'Etat en Math\'ematiques,
+ Universit\'e Paris VI, 25 June 1981.
 
  Petitjean M.
- \emph{Agrégation des similarités: une solution oubliée.}
+ \emph{Agr\'egation des similarit\'es: une solution oubli\'ee.}
  RAIRO Oper. Res. 2002,36[1],101-108.
 
   }
@@ -51,7 +51,7 @@ matrix(c(1,1,1,1,1
 pop(diss(data))
 
 
-## pop from a dissimilarity matrix
+## pop from a dissimilarity matrix
 
 d <-2 * matrix(c(9,  8,  5,  7,  7,  2
 ,  8,  9,  2,  5,  1,  7

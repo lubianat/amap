@@ -10,7 +10,7 @@
 
 
 
-hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link = "complete", members = NULL)
+hclusterpar <- hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link = "complete", members = NULL, nbproc = 2, doubleprecision = TRUE)
 {
 
   if(class(x) == "exprSet")
@@ -46,6 +46,10 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
   if (length(members) != N) 
     stop("Invalid length of members")
   n <- N
+
+  precision <- 1
+  if(doubleprecision)
+    precision <- 2
   
   hcl <- .C("hcluster",
             x = as.double(x),
@@ -59,6 +63,8 @@ hcluster <- function (x, method = "euclidean", diag = FALSE, upper = FALSE, link
             order = integer(n),
             crit = double(n),
             members = as.double(members),
+            nbprocess  = as.integer(nbproc),
+            precision  = as.integer(precision),
             res  = as.integer (1),
             DUP = FALSE,
             NAOK=TRUE,

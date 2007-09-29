@@ -1,4 +1,4 @@
-Dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
+Dist <- function(x, method="euclidean", nbproc = 1, diag=FALSE, upper=FALSE)
 {
 
   if(class(x) == "exprSet")
@@ -25,6 +25,7 @@ Dist <- function(x, method="euclidean", diag=FALSE, upper=FALSE)
 	    d = double(N*(N - 1)/2),
 	    diag  = as.integer(FALSE),
 	    method= as.integer(method),
+            nbproc = as.integer(nbproc),
             ierr=as.integer(0),
 	    DUP = FALSE,
             NAOK=TRUE,

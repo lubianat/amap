@@ -49,7 +49,7 @@ divide each column by standard deviation}
   Caussinus, H and Ruiz-Gazen, A. (1993): \emph{Projection Pursuit and
   Generalized Principal Component Analyses, in New Directions in
   Statistical Data Analysis and Robustness} (eds.  Morgenthaler et
-  al.), pp. 35-46. Birkäuser Verlag Basel.
+  al.), pp. 35-46. Birk\"auser Verlag Basel.
 
   Caussinus, H. and Ruiz-Gazen, A. (1995). \emph{Metrics for Finding Typical
   Structures by Means of Principal Component Analysis. In Data Science

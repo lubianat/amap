@@ -42,7 +42,7 @@ matrix(c(1,1,1,1,1
 
 diss(data)
 
-## With weights
+## With weights
 diss(data,w=c(1,1,2,2,3))
 
 }

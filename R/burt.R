@@ -17,19 +17,19 @@ matlogic <- function(x)
   res <- as.integer(matrix(0,ncol=k,nrow=n))
   x <- c(x,recursive=TRUE)
   
-  res <- .C("matind",
-            as.integer(nblev),
-            as.integer(x),
-            res=res,
-            n,
-            m,
-            as.integer(k),
-            PACKAGE="amap")
+  result <- .C("matind",
+               as.integer(nblev),
+               as.integer(x),
+               res=res,
+               as.integer(n),
+               as.integer(m),
+               as.integer(k),
+               PACKAGE="amap")
 
-  res <- matrix(res$res,ncol=k)
-  rownames(res) <- rownames
-  colnames(res) <- colnamesnew
-  res
+  result <- matrix(result$res,ncol=k)
+  rownames(result) <- rownames
+  colnames(result) <- colnamesnew
+  result
   
 }
 

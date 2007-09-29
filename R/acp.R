@@ -27,6 +27,7 @@ acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
     EIG  <- eigen( (t(x)* wI) %*% (x * wV) ,symmetric=FALSE) 
     V    <- EIG$vector    # ou bien: V=svd(x)$v
 
+    EIG$values <- Re(EIG$values)
     V    <- V %*% diag(sign(EIG$values))
     val  <- sqrt(abs(EIG$values))
 

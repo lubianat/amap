@@ -47,7 +47,7 @@ print.acp(x, ...)
 
 \references{
   A. Carlier
-  Analyse des données Multidimensionnelles
+  Analyse des donn\'ees Multidimensionnelles
   \url{http://www.lsp.ups-tlse.fr/Carlier/enseignement.html}
 }
 

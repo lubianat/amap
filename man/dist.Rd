@@ -1,7 +1,7 @@
 \name{Dist}
 \title{Distance Matrix Computation}
 \usage{
-Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
+Dist(x, method = "euclidean", nbproc = 1, diag = FALSE, upper = FALSE)
 }
 \alias{Dist}
 
@@ -15,6 +15,7 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
     \code{"canberra"}, \code{"binary"}, \code{"pearson"},
     \code{"correlation"} or \code{"spearman"}.
     Any unambiguous substring can be given.}
+  \item{nbproc}{integer, Number of subprocess for parallelization}
   \item{diag}{logical value indicating whether the diagonal of the
     distance matrix should be printed by \code{print.dist}.}
   \item{upper}{logical value indicating whether the upper triangle of the
@@ -111,13 +112,17 @@ Dist(x, method = "euclidean", diag = FALSE, upper = FALSE)
   \code{\link[cluster]{daisy}} in the \file{cluster} package with more
   possibilities in the case of \emph{mixed} (contiuous / categorical)
   variables.
- \code{\link[stats]{dist}}  \code{\link{hclust}}.
+ \code{\link[stats]{dist}}  \code{\link{hcluster}}.
 }
 \examples{
 x <- matrix(rnorm(100), nrow=5)
 Dist(x)
 Dist(x, diag = TRUE)
 Dist(x, upper = TRUE)
+
+
+## compute dist with 8 threads
+Dist(x,nbproc=8)
 
 }
 \keyword{multivariate}

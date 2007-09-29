@@ -58,32 +58,6 @@ W <- function(x,h,D=NULL,kernel="gaussien")
 }
 
 
-WsansC <- function(x,h,D=NULL,kernel="gaussien")
-{
-    x   <- as.matrix(x)
-    n   <- dim(x)[1]
-    p   <- dim(x)[2]
-    if (is.null(D)) {
-        D <- diag(1,p)
-    }
-
-    som    <- 0
-    result <- 0
-    for(i in 1:(n-1) )
-        {
-        for(j in (i+1):n)
-            {
-            Delta <- x[i,]-x[j,]
-            norm <- sqrt(t(Delta) %*%D %*%Delta)
-            k <- K ( norm /h,kernel)   # K ( |Delta|/h )
-            k <- as.numeric(k)
-            som <- som + k
-            result <- result + k * Delta %*% t(Delta)
-            }
-        }
-    result /   som
-}
-
 varrob <- function(x,h,D=NULL,kernel="gaussien")
 {
     x   <- as.matrix(x)
@@ -118,32 +92,6 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
     Sinv <- solve(S)
     solve ( Sinv - D / h)
 }
-
-
-varrobsansC <- function(x,h,D=NULL,kernel="gaussien")
-{
-    n   <- dim(x)[1]
-    p   <- dim(x)[2]
-    if (is.null(D)) {
-        D <- diag(1,p)
-    }
-    x   <- as.matrix(x)
-    x   <- scale(x ,center = TRUE, scale = FALSE)
-    som <- 0
-    res <- 0
-    for (i in 1:n )
-    {
-        k <- K (  sqrt(t(x[i,]) %*%D %*% x[i,]) /h,kernel)
-        k <- as.numeric(k)
-        res <- res + k * x[i,] %*% t( x[i,])
-        som <- som + k
-    }
-    S <- res / som
-    Sinv <- solve(S)
-    solve ( Sinv -  D / h )
-
-}
-
 
 
 acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")

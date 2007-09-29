@@ -1,3 +1,9 @@
+Sat Sep 29 2007
+  * clustering possible with float precision; use of templates
+  * suppression of duplicated code(used for no thread / multiple thread)
+  * use of more safe parameter to thead function
+  * correction on man page: only ascii characters
+
 Mon Jan 22 2007: 0.7-3
   * dimnames(x)[[1]] <- NULL seems not to be allowed anymore.
     -> changes in acp.R acprob.R

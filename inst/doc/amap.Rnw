@@ -43,7 +43,7 @@ heatmap(as.matrix(USArrests),
 @ 
 On a multiprocessor computer:
 <<echo=TRUE>>=
-h = hclusterpar(USArrests,nbproc=4)   
+h = hcluster(USArrests,nbproc=4)   
 @ 
 The K-means clustering:
 <<echo=TRUE,results=hide>>=

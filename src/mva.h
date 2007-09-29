@@ -22,43 +22,13 @@
 
 void dblcen(double *a, int *na);
 
-void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method,
-	       int * ierr);
 
-double R_euclidean(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt);
-double R_maximum  (double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt);
-double R_manhattan(double *x, int nr, int nc, int i1, int i2,int * flag, void **opt);
-double R_canberra (double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt);
-double R_dist_binary(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt);
-double R_pearson(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt);
-double R_correlation(double *x, int nr, int nc, int i1, int i2,int * flag, void ** opt);
-double R_spearman(double *x, int nr, int nc, int i1, int i2,int * flag, void **opt);
-
-
-
-void rsort_rank_order(double *x, int *order, int *rank, int * n);
 
 
 
 
 SEXP R_cutree(SEXP merge, SEXP which);
 
-
-
-int ioffst(int n,int i,int j);
-
-void hcass2( int *n, int *ia,  int *ib,int *iorder, int *iia, int *iib);
-
-void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr, int *result);
-
-
-
-void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss, int *result);
-
-
-
-void R_distancepar(double *x, int *nr, int *nc, double *d, int *diag, int *method,int *nbprocess,int *ierr);
-void* thread_dist(void* arguments);
 
 double R_distance_kms(double *x,double *y, int nr1,int nr2, int nc,int i1,int i2, int *method);
 

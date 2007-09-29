@@ -5,9 +5,7 @@ afc                     Correspondance factorial analysis.
 burt                    Compute burt table from a factor dataframe.
 diss                    Compute a dissimilarity matrix
 Dist                    Distance Matrix Computation
-distpar                 Parallelized Distance Matrix Computation
 hcluster                Hierarchical Clustering
-hclusterpar             Parallelized Hierarchical Clustering
 Kmeans                  K-Means Clustering
 lubisch                 Dataset Lubischew
 plot.acp                Graphics for Principal component Analysis

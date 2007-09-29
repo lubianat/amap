@@ -1,13 +1,12 @@
 \name{VarRob}
 \alias{varrob}
-\alias{varrobsansC}
+
 
 \title{Robust variance}
 \description{Compute a robust variance}
 
 \usage{
 varrob(x,h,D=NULL,kernel="gaussien")
-varrobsansC(x,h,D=NULL,kernel="gaussien")
 }
 
 \arguments{
@@ -42,7 +41,7 @@ A matrix
 
 \references{
   H. Caussinus, S. Hakam, A. Ruiz-Gazen
-  Projections révélatrices contrôlées: groupements et structures
+  Projections r\'ev\'elatrices contr\^ol\'ees: groupements et structures
   diverses.
   2002, to appear in Rev. Statist. Appli.
 }
