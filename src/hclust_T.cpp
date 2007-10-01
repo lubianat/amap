@@ -5,6 +5,7 @@
 #include "hclust_T.h"
 #include "distance_T.h"
 #include "hclust.h"
+#include <stdio.h>
 
 
 namespace hclust_T

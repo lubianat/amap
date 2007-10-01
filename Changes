@@ -1,4 +1,12 @@
-Sat Sep 29 2007
+
+Mon Sep 31 2007
+  * add parameter labels to plot.acp
+  * use matrix instead of data.frame in internal pca data.
+  * remove #include <pthread.h> when built with windows.
+  * k-means hclust and dist use common functions for distance computation
+  * k-means possible with spearman distance
+
+Sat Sep 29 2007: 0.8
   * clustering possible with float precision; use of templates
   * suppression of duplicated code(used for no thread / multiple thread)
   * use of more safe parameter to thead function

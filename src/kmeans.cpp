@@ -28,7 +28,9 @@
 
 #include <R.h>
 /*#include "modreg.h" */ /* for declarations for registration */ 
-#include "mva.h" 
+#include "kmeans.h" 
+
+#include "distance_T.h" 
 
 
 /** K-means clustering using Lloyd algorithm.
@@ -57,6 +59,23 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
     int iter, i, j, c, it, inew = 0;
     double best, dd;
     Rboolean updated;
+    void * opt[3];
+    int  ierr[0];
+    double * data_tri;
+    int * order_tri;
+    int * rank_tri;
+    
+    if(*method == distance_T<double>::SPEARMAN)
+      {
+	data_tri  = (double * ) malloc (2*  p * sizeof(double));
+	order_tri  = (int * ) malloc (2 * p * sizeof(int));
+	rank_tri  = (int * ) malloc (2 * p * sizeof(int));
+	if( (data_tri == NULL) || (order_tri == NULL) || (rank_tri == NULL)) 
+	  error("distance(): unable to alloc memory");
+	opt[0] = (void *) data_tri;
+	opt[1] = (void *) order_tri;
+	opt[2] = (void *) rank_tri;
+      }
 
     for(i = 0; i < n; i++) cl[i] = -1;
     for(iter = 0; iter < maxiter; iter++) {
@@ -66,14 +85,9 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
 	    best = R_PosInf;
 	    for(j = 0; j < k; j++) {
 
-		dd = R_distance_kms(x,cen,n,k,p,i,j,method);
-		/*printf("| %f",dd*dd);
-		dd = 0.0;
-		for(c = 0; c < p; c++) {
-		    tmp = x[i+n*c] - cen[j+k*c];
-		    dd += tmp * tmp;
-		}
-		printf(": %f ",dd);*/
+  	        dd = distance_T<double>::distance_kms(x,cen,n,k,p,i,j,method,ierr,opt);
+		/*printf("| %f",dd);
+		 */
 		if(dd < best) {
 		    best = dd;
 		    inew = j+1;
@@ -99,7 +113,7 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
     /*    for(j = 0; j < k; j++) wss[j] = 0.0; */
     for(i = 0; i < n; i++) {
 	it = cl[i] - 1;
-	wss[it] = R_distance_kms(x,cen,n,k,p,i,it,method);
+	wss[it] = distance_T<double>::distance_kms(x,cen,n,k,p,i,it,method,ierr,opt);
 	wss[it] = wss[it] * (wss[it]) ;
 	/*
 	for(c = 0; c < p; c++) {
@@ -107,4 +121,12 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
 	    wss[it] += tmp * tmp;
 	    }*/
     }
+
+
+    if(*method == distance_T<double>::SPEARMAN)
+      {
+	free(data_tri);
+	free(rank_tri);
+	free(order_tri);	
+      }
 }

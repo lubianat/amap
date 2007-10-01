@@ -23,7 +23,7 @@ function(x, centers, iter.max = 10, nstart = 1,
 
   
   METHODS <- c("euclidean", "maximum", "manhattan", "canberra", 
-               "binary","pearson","correlation")
+               "binary","pearson","correlation","spearman")
   method <- pmatch(method, METHODS)
   if (is.na(method)) 
     stop("invalid distance method")

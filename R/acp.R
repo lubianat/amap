@@ -33,8 +33,9 @@ acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
 
     scores <- x %*% V
 
-    V      <- data.frame(V)
-    scores <- data.frame(scores)
+    V      <- as.matrix(V)
+    scores <- as.matrix(scores)
+
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
     if(!is.null( dimnames(x)[[2]] ))
       dimnames(V)[[1]] <- dimnames(x)[[2]]
@@ -67,7 +68,7 @@ print.acp <- function(x, ...)
 #   SECTION GRAPHIQUES
 #
 
-plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',variables=TRUE,...)
+plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',variables=TRUE,labels=NULL,...)
 {
     U    <- x$scores
     XLAB <- paste(label,i)
@@ -80,7 +81,11 @@ plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main=
     
     title(xlab=XLAB,ylab=YLAB,main=main)
     if(text){
-        text(labels=dimnames(x$scores)[[1]],U[,i],U[,j],col=col,...)   
+      if(is.null(labels))
+        {
+          labels=dimnames(x$scores)[[1]]
+        }
+        text(labels=labels,U[,i],U[,j],col=col,...)   
     }
     else{
         points(U[,i],U[,j],col=col,...) 

@@ -300,7 +300,7 @@ C
 C
       DOUBLE PRECISION       COUTS (N*N) ,
      ,           BORNTH , Z0 , Z , DELTAZ , ZSAVE , ZNEW ,
-     ,           FLOAT , ABS
+     ,           ABS
 C
       INTEGER    FMBVR , TRIABS , ALLSOL 
 C

@@ -1,6 +1,6 @@
 Package: amap
-Version: 0.8
-Date: 2007-09-29
+Version: 0.8-1
+Date: 2007-10-01
 Suggests: Biobase
 Title: Another Multidimensional Analysis Package 
 Author: Antoine Lucas 
@@ -10,4 +10,4 @@ Description: Tools for Clustering and Principal
 	parallelized functions).	
 License: GPL
 URL: http://mulcyber.toulouse.inra.fr/projects/amap/
-Packaged: Sat Sep 29 11:42:08 2007; antoine
+Packaged: Mon Oct  1 19:00:45 2007; antoine

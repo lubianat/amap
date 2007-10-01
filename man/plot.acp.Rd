@@ -8,7 +8,7 @@
 \description{Graphics for Principal component Analysis}
 \usage{
 plot.acp(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',
-main='Individuals PCA',variables=TRUE,...)
+main='Individuals PCA',variables=TRUE,labels=NULL,...)
 biplot.acp(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,
 main='Variables PCA',circle=TRUE,...)
 plot2(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',
@@ -26,6 +26,7 @@ values}
 \item{eigen}{a logical value indicating whether we use eigen values or
 standard deviation}
 \item{label}{label for X and Y axis}
+\item{labels}{labels naming individuals}
 \item{col}{Color of plot}
 \item{main}{Title of graphic}
 \item{ylab}{Y label}

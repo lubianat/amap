@@ -133,8 +133,8 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
 
     scores <- x %*% Winv %*% V
 
-    V      <- data.frame(V)
-    scores <- data.frame(scores)
+    V      <- as.matrix(V)
+    scores <- as.matrix(scores)
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
     if(!is.null( dimnames(x)[[2]] ))
       dimnames(V)[[1]] <- dimnames(x)[[2]]
@@ -164,8 +164,8 @@ acprob <- function(x,h=1,center=TRUE,reduce=TRUE,kernel="gaussien")
 
     scores <- x %*% V
 
-    V      <- data.frame(V)
-    scores <- data.frame(scores)
+    V      <- as.matrix(V)
+    scores <- as.matrix(scores)
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
     if(!is.null( dimnames(x)[[2]] ))
       dimnames(V)[[1]] <- dimnames(x)[[2]]
