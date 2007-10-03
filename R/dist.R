@@ -10,7 +10,7 @@ Dist <- function(x, method="euclidean", nbproc = 1, diag=FALSE, upper=FALSE)
 	method <- "euclidean"
 
     METHODS <- c("euclidean", "maximum", "manhattan", "canberra",
-                 "binary","pearson","correlation","spearman")
+                 "binary","pearson","correlation","spearman","kendall")
     method <- pmatch(method, METHODS)
     if(is.na(method))
 	stop("invalid distance method")

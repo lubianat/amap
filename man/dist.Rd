@@ -13,7 +13,7 @@ Dist(x, method = "euclidean", nbproc = 1, diag = FALSE, upper = FALSE)
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
     \code{"canberra"}, \code{"binary"}, \code{"pearson"},
-    \code{"correlation"} or \code{"spearman"}.
+    \code{"correlation"}, \code{"spearman"} or \code{"kendall"}.
     Any unambiguous substring can be given.}
   \item{nbproc}{integer, Number of subprocess for parallelization}
   \item{diag}{logical value indicating whether the diagonal of the
@@ -68,6 +68,12 @@ Dist(x, method = "euclidean", nbproc = 1, diag = FALSE, upper = FALSE)
       \code{cor.test(x[i,],x[j,],method="spearman")$statistic}
 	
     }
+
+    \item{\code{kendall}:}{Compute a distance based on rank.
+      \eqn{\sum_{i,j} K_{i,j}(x,y)} with \eqn{K_{i,j}(x,y)}
+      is 0 if \eqn{x_i, x_j} in same order as \eqn{y_i,y_j},
+      1 if not.
+    }
   }
 
   Missing values are allowed, and are excluded from all computations
@@ -107,6 +113,10 @@ Dist(x, method = "euclidean", nbproc = 1, diag = FALSE, upper = FALSE)
 \references{
   Mardia, K. V., Kent, J. T. and Bibby, J. M. (1979)
   \emph{Multivariate Analysis.} London: Academic Press.
+
+  Wikipedia
+  \url{http://en.wikipedia.org/wiki/Kendall_tau_distance}
+  
 }
 \seealso{
   \code{\link[cluster]{daisy}} in the \file{cluster} package with more

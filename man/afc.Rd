@@ -17,6 +17,7 @@ afc(x)
 }
 
 \examples{
+\dontrun{
 color <- as.factor(c('blue','red','red','blue','red'))
 size <- as.factor(c('large','large','small','medium','large'))
 x <- data.frame(color,size)
@@ -26,7 +27,7 @@ afc.2 <- afc(matlogic(x))
 
 plotAll(afc.1)
 plotAll(afc.2)
-
+}
 }
 
 \keyword{multivariate}

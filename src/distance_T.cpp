@@ -38,9 +38,11 @@
 #include "distance_T.h"
 #include "distance.h"
 
+
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <R_ext/Arith.h>
 #include <R_ext/Error.h>
 #include <limits>
@@ -53,11 +55,38 @@
 #define MIN( A , B )  ( ( A ) < ( B ) ? ( A ) : ( B ) )
 
 
-/** \brief Distance euclidean (i.e. sqrt(sum of square) )
- */
+// ---------------------------------------------------------
+// Distance euclidean (i.e. sqrt(sum of square) )
+//
+// Euclidean distance between 2 vectors a,b is
+//  d = sqrt[ sum_i (a_i - b_i)^2 ]
+//
+// This function compute distance between 2 vectors x[i1,] & y[i2,]
+// x and y are matrix; we use here only line i1 from x and
+// line i2 from y. Number of column (nc) is the same in x and y,
+// number of column can differ (nr_x, nr_y).
+//
+// Flag will be set to 0 if NA value computed in distance
+//
+// When call by function distance or hclust, x and y are the same; it computes
+// distance between vector x[i1,] and x[i2,]
+//
+// \param x matrix of size nr_x * nc; line i1 is of interest
+// \param y matrix of size nr_y * nc; line i1 is of interest
+// \param nr_x number of row in matrix x
+// \param nr_y number of row in matrix y
+// \param nc number of column in matrix x or y
+// \param i1 row choosen in matrix x
+// \param i2 row choosen in matrix y
+// \param flag set to 0 if NA value computed in distance
+// \param opt: unused
+// 
+//  Return: distance value
+//
+// ---------------------------------------------------------
 template<class T> T  distance_T<T>::R_euclidean(double * x, double * y , int nr_x, int nr_y, int nc, 
 						int i1, int i2,
-						int * flag, void ** opt)
+						int * flag, T_tri & opt)
 {
   T dev, dist;
   int count, j;
@@ -73,7 +102,7 @@ template<class T> T  distance_T<T>::R_euclidean(double * x, double * y , int nr_
     i1 += nr_x;
     i2 += nr_y;
   }
-  if(count == 0)
+  if(count == 0) // NA for all j: 
     { 
       *flag = 0;
       return NA_REAL;
@@ -83,11 +112,39 @@ template<class T> T  distance_T<T>::R_euclidean(double * x, double * y , int nr_
   return sqrt(dist);
 }
 
-/** \brief Distance maximum (supremum norm)
- */
+// ---------------------------------------------------------
+//
+// Distance maximum (supremum norm)
+//
+// Maximum distance between 2 vectors a,b is
+// d = max |ai - bi |
+//
+// This function compute distance between 2 vectors x[i1,] & y[i2,]
+// x and y are matrix; we use here only line i1 from x and
+// line i2 from y. Number of column (nc) is the same in x and y,
+// number of column can differ (nr_x, nr_y).
+//
+// Flag will be set to 0 if NA value computed in distance
+//
+// When call by function distance or hclust, x and y are the same; it computes
+// distance between vector x[i1,] and x[i2,]
+//
+// \param x matrix of size nr_x * nc; line i1 is of interest
+// \param y matrix of size nr_y * nc; line i1 is of interest
+// \param nr_x number of row in matrix x
+// \param nr_y number of row in matrix y
+// \param nc number of column in matrix x or y
+// \param i1 row choosen in matrix x
+// \param i2 row choosen in matrix y
+// \param flag set to 0 if NA value computed in distance
+// \param opt: unused
+//
+//  Return: distance value
+//
+// ---------------------------------------------------------
 template<class T> T  distance_T<T>::R_maximum(double * x, double * y , int nr_x, int nr_y, int nc, 
 					      int i1, int i2,
-					      int * flag, void ** opt)
+					      int * flag, T_tri & opt)
 {
   T dev, dist;
   int count, j;
@@ -112,11 +169,39 @@ template<class T> T  distance_T<T>::R_maximum(double * x, double * y , int nr_x,
   return dist;
 }
 
-/** \brief Distance manhattan
- */
+
+// ---------------------------------------------------------
+// Distance manhattan (i.e. sum of abs difference )
+//
+// manhattan distance between 2 vectors a,b is
+//  d = sum_i | a_i - b_i |
+//
+// This function compute distance between 2 vectors x[i1,] & y[i2,]
+// x and y are matrix; we use here only line i1 from x and
+// line i2 from y. Number of column (nc) is the same in x and y,
+// number of column can differ (nr_x, nr_y).
+//
+// Flag will be set to 0 if NA value computed in distance
+//
+// When call by function distance or hclust, x and y are the same; it computes
+// distance between vector x[i1,] and x[i2,]
+//
+// \param x matrix of size nr_x * nc; line i1 is of interest
+// \param y matrix of size nr_y * nc; line i1 is of interest
+// \param nr_x number of row in matrix x
+// \param nr_y number of row in matrix y
+// \param nc number of column in matrix x or y
+// \param i1 row choosen in matrix x
+// \param i2 row choosen in matrix y
+// \param flag set to 0 if NA value computed in distance
+// \param opt: unused
+// 
+//  Return: distance value
+//
+// ---------------------------------------------------------
 template<class T> T  distance_T<T>::R_manhattan(double * x, double * y , int nr_x, int nr_y, int nc, 
 						int i1, int i2,
-						int * flag, void ** opt)
+						int * flag, T_tri & opt)
 {
   T dist;
   int count, j;
@@ -140,11 +225,38 @@ template<class T> T  distance_T<T>::R_manhattan(double * x, double * y , int nr_
   return dist;
 }
 
-/** \brief Distance canberra
- */
+// ---------------------------------------------------------
+// Distance Camberra
+//
+// Camberra distance between 2 vectors a,b is
+//  d = sum_i | a_i - b_i | / | a_i + b_i |
+//
+// This function compute distance between 2 vectors x[i1,] & y[i2,]
+// x and y are matrix; we use here only line i1 from x and
+// line i2 from y. Number of column (nc) is the same in x and y,
+// number of column can differ (nr_x, nr_y).
+//
+// Flag will be set to 0 if NA value computed in distance
+//
+// When call by function distance or hclust, x and y are the same; it computes
+// distance between vector x[i1,] and x[i2,]
+//
+// \param x matrix of size nr_x * nc; line i1 is of interest
+// \param y matrix of size nr_y * nc; line i1 is of interest
+// \param nr_x number of row in matrix x
+// \param nr_y number of row in matrix y
+// \param nc number of column in matrix x or y
+// \param i1 row choosen in matrix x
+// \param i2 row choosen in matrix y
+// \param flag set to 0 if NA value computed in distance
+// \param opt: unused
+// 
+//  Return: distance value
+//
+// ---------------------------------------------------------
 template<class T> T  distance_T<T>::R_canberra(double * x, double * y , int nr_x, int nr_y, int nc, 
 					       int i1, int i2,
-					       int * flag, void ** opt)
+					       int * flag, T_tri & opt)
 {
   T dist, sum, diff;
   int count, j;
@@ -176,7 +288,7 @@ template<class T> T  distance_T<T>::R_canberra(double * x, double * y , int nr_x
  */
 template<class T> T  distance_T<T>::R_dist_binary(double * x, double * y , int nr_x, int nr_y, int nc, 
 						  int i1, int i2,
-						  int * flag, void ** opt)
+						  int * flag, T_tri & opt)
 {
   int total, count, dist;
   int j;
@@ -211,7 +323,7 @@ template<class T> T  distance_T<T>::R_dist_binary(double * x, double * y , int n
  */
 template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x, int nr_y, int nc, 
 					      int i1, int i2,
-					      int * flag, void ** opt)
+					      int * flag, T_tri & opt)
 {
   T num,sum1,sum2, dist;
   int count,j;
@@ -246,7 +358,7 @@ template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x,
  */
 template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int nr_x, int nr_y, int nc, 
 						  int i1, int i2,
-						  int * flag, void ** opt)
+						  int * flag, T_tri & opt)
 {
   T num,denum,sumx,sumy,sumxx,sumyy,sumxy;
   int count,j;
@@ -286,29 +398,28 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
  */
 template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x, int nr_y, int nc, 
 					       int i1, int i2,
-					       int * flag, void ** opt)
+					       int * flag, T_tri & opt)
 {
   int j;
-  double * data_tri;
-  int * order_tri;
-  int * rank_tri;
+  double * data_tri_x = opt.data_tri_x;
+  int * order_tri_x = opt.order_tri_x;
+  int * rank_tri_x = opt.rank_tri_x;
+  double * data_tri_y = opt.data_tri_y;
+  int * order_tri_y = opt.order_tri_y;
+  int * rank_tri_y = opt.rank_tri_y;
   int n;
   T diffrang=0;
 
-  // initialisation of variables they are 3 vectors of size 2*nc 
-  data_tri = (double * ) opt[0];
-  order_tri = (int * )   opt[1];
-  rank_tri  = (int * )   opt[2];
   for(j = 0 ; j < nc ; j++) {
     if(!(R_FINITE(x[i1]) && R_FINITE(y[i2])))
       {
 	*flag = 0;
 	return NA_REAL;	
       }
-    order_tri[j] = rank_tri[j] = j;
-    order_tri[j+nc] = rank_tri[j+nc] = j;
-    data_tri[j] = x[i1];
-    data_tri[j+nc] = y[i2];
+    order_tri_x[j] = rank_tri_x[j] = 
+      order_tri_y[j] = rank_tri_y[j] = j;
+    data_tri_x[j] = x[i1];
+    data_tri_y[j] = y[i2];
     i1 += nr_x;
     i2 += nr_y;
   }
@@ -316,14 +427,15 @@ template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x
   n  = nc;
   /* sort and compute rank */
   /* First list */
-  rsort_rank_order(data_tri, order_tri,rank_tri, &n);
+  rsort_rank_order(data_tri_x, order_tri_x,rank_tri_x, &n);
   /* Second list */
-  rsort_rank_order(&(data_tri[nc]),&( order_tri[nc]),&(rank_tri[nc]), &n);
+  rsort_rank_order(data_tri_y, order_tri_y,rank_tri_y, &n);
 
   for(j=0;j<nc;j++)
     {
-      diffrang += pow((T) ( rank_tri[j] - rank_tri[j+nc]),2);
+      diffrang += pow((T) ( rank_tri_x[j] - rank_tri_y[j]),2);
     }
+
   return(  diffrang );
 
   /*
@@ -334,6 +446,121 @@ template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x
    */
 
 }
+
+
+/** \brief Kendall distance (rank base metric)
+ * 1 - corr_kendall(x,y)
+ *
+ *  \note Added by A. Lucas
+ *
+template<class T> T  distance_T<T>::R_kendall_corr(double * x, double * y , int nr_x, int nr_y, int nc, 
+						   int i1, int i2,
+						   int * flag, T_tri & opt)
+{
+  int j,k;
+  double * data_tri_x = opt.data_tri_x;
+  int * order_tri_x = opt.order_tri_x;
+  int * rank_tri_x = opt.rank_tri_x;
+  double * data_tri_y = opt.data_tri_y;
+  int * order_tri_y = opt.order_tri_y;
+  int * rank_tri_y = opt.rank_tri_y;
+  int n;
+  T dist,P=0;
+
+  for(j = 0 ; j < nc ; j++) {
+    if(!(R_FINITE(x[i1]) && R_FINITE(y[i2])))
+      {
+	*flag = 0;
+	return NA_REAL;	
+      }
+    order_tri_x[j] = rank_tri_x[j] = 
+      order_tri_y[j] = rank_tri_y[j] = j;
+    data_tri_x[j] = x[i1];
+    data_tri_y[j] = y[i2];
+    i1 += nr_x;
+    i2 += nr_y;
+  }
+
+  n  = nc;
+  // sort and compute rank 
+  // First list 
+  rsort_rank_order(data_tri_x, order_tri_x,rank_tri_x, &n);
+  // Second list 
+  rsort_rank_order(data_tri_y, order_tri_y,rank_tri_y, &n);
+
+  for(j=0;j<nc;j++)
+    {
+     
+      for(k=j+1; k < nc; ++k)
+	if(rank_tri_y[order_tri_x[j]] < rank_tri_y[order_tri_x[k]])
+	  ++P;
+    }
+
+  dist = 2 - ( 4*P / (n * (n-1) ) ) ;
+
+  return( dist );
+
+}
+*/
+
+/** \brief Kendall distance (rank base metric)
+ *
+ *
+ *  \note Added by A. Lucas
+ */
+template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x, int nr_y, int nc, 
+					      int i1, int i2,
+					      int * flag, T_tri & opt)
+{
+  int j,k;
+  double * data_tri_x = opt.data_tri_x;
+  int * order_tri_x = opt.order_tri_x;
+  int * rank_tri_x = opt.rank_tri_x;
+  double * data_tri_y = opt.data_tri_y;
+  int * order_tri_y = opt.order_tri_y;
+  int * rank_tri_y = opt.rank_tri_y;
+  int n;
+  T dist,P=0;
+  bool ordre_x,ordre_y;
+
+  for(j = 0 ; j < nc ; j++) {
+    if(!(R_FINITE(x[i1]) && R_FINITE(y[i2])))
+      {
+	*flag = 0;
+	return NA_REAL;	
+      }
+    order_tri_x[j] = rank_tri_x[j] = 
+      order_tri_y[j] = rank_tri_y[j] = j;
+    data_tri_x[j] = x[i1];
+    data_tri_y[j] = y[i2];
+    i1 += nr_x;
+    i2 += nr_y;
+  }
+
+  n  = nc;
+  /* sort and compute rank */
+  /* First list */
+  rsort_rank_order(data_tri_x, order_tri_x,rank_tri_x, &n);
+  /* Second list */
+  rsort_rank_order(data_tri_y, order_tri_y,rank_tri_y, &n);
+
+  for(j=0;j<nc;j++)
+    {     
+      for(k=j+1; k < nc; ++k)
+	{
+	  ordre_x = rank_tri_x[j] < rank_tri_x[k];
+	  ordre_y = rank_tri_y[j] < rank_tri_y[k];
+	  if(ordre_x != ordre_y)
+	    ++P;
+	}
+    }
+
+  dist = 2* P / (n * (n-1) )  ;
+
+  return( dist );
+
+}
+
 
 /**
  * R_distance: compute parallelized distance. Function called direclty by R
@@ -439,11 +666,9 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   int * method;
   int * ierr;
   /* for spearman dist */
-  void *opt[3] ;
-  double * data_tri = 0;
-  int * order_tri = 0;
-  int * rank_tri = 0;
-  T (*distfun)(double*,double*,int, int, int, int, int, int *, void **) = NULL;
+  T_tri opt ;
+
+  T (*distfun)(double*,double*,int, int, int, int, int, int *, T_tri &) = NULL;
 
 
   short int no = arguments[0].id;
@@ -455,6 +680,8 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   method =  arguments[0].method;
   nbprocess = arguments[0].nbprocess;
   ierr =  arguments[0].ierr;
+
+  
 
     
   switch(*method) {
@@ -481,20 +708,29 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
     break;
   case SPEARMAN:
     distfun = R_spearman;
-    data_tri  = (double * ) malloc (2*  (nc) * sizeof(double));
-    order_tri  = (int * ) malloc (2 * (nc) * sizeof(int));
-    rank_tri  = (int * ) malloc (2 * (nc) * sizeof(int));
-    if( (data_tri == NULL) || (order_tri == NULL) || (rank_tri == NULL)) 
-      error("distance(): unable to alloc memory");
-    opt[0] = (void *) data_tri;
-    opt[1] = (void *) order_tri;
-    opt[2] = (void *) rank_tri;
     break;
+  case KENDALL:
+    distfun = R_kendall;
+    break;
+
 
   default:
     error("distance(): invalid distance");
   }
-    
+
+  
+  if( (*method == SPEARMAN) ||  (*method == KENDALL))
+    {
+      opt.data_tri_x  = (double * ) malloc ( (nc) * sizeof(double));
+      opt.order_tri_x  = (int * ) malloc ( (nc) * sizeof(int));
+      opt.rank_tri_x  = (int * ) malloc ( (nc) * sizeof(int));
+      opt.data_tri_y  = (double * ) malloc ( (nc) * sizeof(double));
+      opt.order_tri_y  = (int * ) malloc ( (nc) * sizeof(int));
+      opt.rank_tri_y  = (int * ) malloc ( (nc) * sizeof(int));
+      if( (opt.data_tri_x == NULL) || (opt.order_tri_x == NULL) || (opt.rank_tri_x == NULL) ||
+	  (opt.data_tri_y == NULL) || (opt.order_tri_y == NULL) || (opt.rank_tri_y == NULL)) 
+	error("distance(): unable to alloc memory");
+    }
 
   /*
     debut = ((nr+1) / nbprocess + 1 ) * no ;
@@ -523,11 +759,14 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
 	}
     }
 
-  if((*method) == SPEARMAN)
+    if( (*method == SPEARMAN) ||  (*method == KENDALL))
     {
-      free(data_tri);
-      free(order_tri);
-      free(rank_tri);
+	free(opt.data_tri_x);
+	free(opt.rank_tri_x);
+	free(opt.order_tri_x);	
+	free(opt.data_tri_y);
+	free(opt.rank_tri_y);
+	free(opt.order_tri_y);	
     }
 
   return (void*)0;
@@ -557,7 +796,7 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   * \param opt optional parameter send to spearman dist.
  */
 template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,int nr2, int nc,int i1,int i2, int *method, 
-						 int * ierr, void ** opt)
+						 int * ierr, T_tri & opt)
 {
   /*
    * compute distance x[i1,*] - y[i2,*]
@@ -568,7 +807,7 @@ template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,in
   
   T res;
 
-  T (*distfun)(double*,double*,int, int, int, int, int, int *, void **) = NULL;
+  T (*distfun)(double*,double*,int, int, int, int, int, int *, T_tri &) = NULL;
 
   
   switch(*method) {
@@ -595,6 +834,9 @@ template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,in
     break;
   case SPEARMAN:
     distfun = R_spearman;
+    break;
+  case KENDALL:
+    distfun = R_kendall;
     break;
 
   default:

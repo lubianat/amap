@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2005-11-14 22:09:16 antoine>
+#  Last Modified : Time-stamp: <2007-10-02 19:07:26 antoine>
 #
 #  Description   : Principal component analysis
 #                  
@@ -11,7 +11,6 @@
 #  Licence       : GPL 
 #
 #-------------------------------------------------------
-
 
 
 acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
@@ -33,8 +32,8 @@ acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
 
     scores <- x %*% V
 
-    V      <- as.matrix(V)
-    scores <- as.matrix(scores)
+    V      <- as.matrix(Re(V))
+    scores <- as.matrix(Re(scores))
 
     dimnames(V)[[2]] <- paste("Comp",1:dim(x)[2])
     if(!is.null( dimnames(x)[[2]] ))

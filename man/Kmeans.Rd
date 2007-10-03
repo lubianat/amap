@@ -29,7 +29,7 @@ Kmeans(x, centers, iter.max = 10, nstart = 1,
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
     \code{"canberra"}, \code{"binary"}, \code{"pearson"} ,
-    \code{"correlation"} or \code{"spearman"}.
+    \code{"correlation"}, \code{"spearman"} or \code{"kendall"}.
     Any unambiguous substring can be given.}
 }
 \details{
