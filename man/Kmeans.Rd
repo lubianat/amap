@@ -39,7 +39,7 @@ Kmeans(x, centers, iter.max = 10, nstart = 1,
   the cluster centre).
 
   The algorithm of Lloyd--Forgy is used; method="euclidean" should
-  return same result as with function \link[stat]{kmeans}.
+  return same result as with function \link[stats]{kmeans}.
 }
 
 \note{

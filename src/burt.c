@@ -9,8 +9,20 @@
  * \param n,m size of matrix data.
  * 
  *
+  color   size           color.blue color.red size.large size.medium size.small
+   blue  large                    1         0          1           0          0
+    red  large		          0         1          1           0          0
+    red  small     => 	          0         1          0           0          1
+   blue medium		          1         0          0           1          0
+    red  large		          0         1          1           0          0
 
+    nblev = 2,3
 
+    x  = 1 1 
+         2 1
+         2 2  
+         1 3
+         2 1
  */
 
 void matind(int * nblev,int * data,int * res, int * n, int * m,int * k)

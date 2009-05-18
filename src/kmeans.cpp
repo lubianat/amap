@@ -4,7 +4,7 @@
  * \brief  K-means clustering 
  *
  * \date Created       : before 2005
- * \date Last Modified : Time-stamp: <2005-10-09 14:06:38 antoine>
+ * \date Last Modified : Time-stamp: <2009-10-11 09:45:13 antoine>
  *
  * \author R core team. Modified by A. Lucas for distance choice.
  *
@@ -61,7 +61,7 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
     double best, dd;
     Rboolean updated;
     distance_T<double>::T_tri opt;
-    int  ierr[0];
+    int  ierr[1];
     double * data_tri;
     int * order_tri;
     int * rank_tri;
