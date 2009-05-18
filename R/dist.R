@@ -1,4 +1,4 @@
-Dist <- function(x, method="euclidean", nbproc = 1, diag=FALSE, upper=FALSE)
+Dist <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
 {
 
   if(class(x) == "exprSet")

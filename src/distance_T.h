@@ -50,6 +50,20 @@ template<class T> class distance_T
 
  public:
 
+  /** \brief R_distance compute parallelized distance. 
+   *
+   * compute distance and call function thread_dist
+   * that call one of function R_euclidean or R_...
+   *
+   * \param x input matrix
+   * \param nr,nc number of row and columns
+   *        nr individuals with nc values.
+   * \param d distance half matrix.
+   * \param diag if we compute diagonal of dist matrix (usualy: no).
+   * \param method 1, 2,... method used (correspond to the enum)
+   * \param nbprocess: number of threads to create
+   * \param ierr error return; 1 good; 0 missing values
+   */
   static void distance(double *x, int *nr, int *nc, T *d, int *diag,
 		       int *method,int *nbprocess, int * ierr);
 
@@ -65,7 +79,7 @@ template<class T> class distance_T
    * \param nr1,nr2,nc number of row (nr1:x, nr2:y) and columns
    *        nr individuals with nc values.
    * \param i1, i2: indice of individuals (individual i1, centroid i2)
-   * \param method 1, 2,... method used
+   * \param method 1, 2,... method used (correspond to the enum)
    * \param ierr for NA 0 if no value can be comuted due to NA
    * \param opt optional parameter required for spearman
    */

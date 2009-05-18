@@ -3,7 +3,7 @@
  *   \brief Hierarchical Clustering.
  *                                                          
  *   \date Created       : 14/11/02 
- *   \date Last Modified : Time-stamp: <2005-10-09 14:43:14 antoine>
+ *   \date Last Modified : Time-stamp: <2007-10-03 20:33:11 antoine>
  *
 
  *  \author F. Murtagh, ESA/ESO/STECF, Garching, February 1986. 
@@ -122,20 +122,6 @@ void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,in
 
 
 
-/** Return indice 
- * \brief The upper half diagonal distance matrix is stored as a vector...
- * so distance between individual i and j is stored at postion ioffst(i,j)
- * \param n number of individuals (distance matrix is nxn)
- * \param i,j: indices in matrix
- */
-int ioffst(int n,int i,int j)
-     /* Map row I and column J of upper half diagonal symmetric matrix 
-      * onto vector.  i < j 
-      */
-{
-  return j+i*n-(i+1)*(i+2)/2 ;
-}
-
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 /*                                                             */
@@ -162,18 +148,7 @@ int ioffst(int n,int i,int j)
 /*                                                             */
 /*-------------------------------------------------------------*/
 
-/** Hierachical clustering subroutine
- * \brief compute hierachical clustering from a distance matrix 
- * This routine is called by hclust
- * \param n number of individuals
- * \param ia, ib result (merge)
- * \param iia, iib result (merge)
- * \param iorder result (order)
- *
- * \note this is an adaptation of the fortran function designed from the
- * R core team.
- */
-void hcass2( int *n, int *ia,  int *ib,int *iorder, int *iia, int *iib)
+void hierclust::hcass2( int *n, int *ia,  int *ib,int *iorder, int *iia, int *iib)
 {
   int i,j,k,k1,k2,loc;
 

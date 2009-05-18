@@ -16,7 +16,7 @@ matlogic <- function(x)
   k <- sum(nblev)
   res <- as.integer(matrix(0,ncol=k,nrow=n))
   x <- c(x,recursive=TRUE)
-  
+
   result <- .C("matind",
                as.integer(nblev),
                as.integer(x),

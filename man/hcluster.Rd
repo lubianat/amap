@@ -31,7 +31,8 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
     \code{"average"}, \code{"mcquitty"}, \code{"median"} or
     \code{"centroid"}.}
   \item{members}{\code{NULL} or a vector with length size of \code{d}.}
-  \item{nbproc}{integer, number of subprocess for parallelization}
+  \item{nbproc}{integer, number of subprocess for parallelization [Linux
+  & Mac only]}
   \item{doubleprecision}{True: use of double precision for distance
     matrix computation; False: use simple precision}
   
@@ -87,6 +88,9 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
    For more details, see documentation of \code{hclust} and \code{dist}.
 
 }
+
+\note{Multi-thread (parallelisation) is disable on Windows.}
+
 \author{
   The \code{hcluster} function is based on C code adapted from Cran
   Fortran routine

@@ -1,7 +1,7 @@
 \name{Dist}
 \title{Distance Matrix Computation}
 \usage{
-Dist(x, method = "euclidean", nbproc = 1, diag = FALSE, upper = FALSE)
+Dist(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
 }
 \alias{Dist}
 
@@ -118,6 +118,8 @@ Dist(x, method = "euclidean", nbproc = 1, diag = FALSE, upper = FALSE)
   \url{http://en.wikipedia.org/wiki/Kendall_tau_distance}
   
 }
+\note{Multi-thread (parallelisation) is disable on Windows.}
+
 \seealso{
   \code{\link[cluster]{daisy}} in the \file{cluster} package with more
   possibilities in the case of \emph{mixed} (contiuous / categorical)

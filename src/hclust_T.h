@@ -17,6 +17,19 @@ namespace hclust_T
 				 double *membr,T *diss,int *result);
   
 
+  /** \brief  Return indice 
+   *
+   *  The upper half diagonal distance matrix is stored as a vector...
+   * so distance between individual i and j is stored at postion ioffst(i,j)
+   *
+   * \param n number of individuals (distance matrix is nxn)
+   * \param i,j: indices in matrix
+   */
+  inline int ioffst(int n,int i,int j)
+  {
+    return j+i*n-(i+1)*(i+2)/2 ;
+  }
+
 }
 
 #endif

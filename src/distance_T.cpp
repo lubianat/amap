@@ -2,7 +2,7 @@
  * \brief all functions requiered for R dist function and C hcluster function.
  *
  *  \date Created: probably in 1995
- *  \date Last modified: Time-stamp: <2005-10-09 13:12:06 antoine>
+ *  \date Last modified: Time-stamp: <2007-10-03 20:05:41 antoine>
  *
  *  \author R core members, and lately: Antoine Lucas 
  *
@@ -393,9 +393,38 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
   return 1 - (num / denum);
 }
 
-/** \brief Spearman distance (rank base metric)
- *  \note Added by A. Lucas
- */
+// ---------------------------------------------------------
+// Distance Spearman
+//
+// Spearman distance between 2 vectors a,b is
+//  d = sum_i (rank(a_i) - rank(b_i) )^2
+//
+// If one NA found: return NA
+//
+// This function compute distance between 2 vectors x[i1,] & y[i2,]
+// x and y are matrix; we use here only line i1 from x and
+// line i2 from y. Number of column (nc) is the same in x and y,
+// number of column can differ (nr_x, nr_y).
+//
+// Flag will be set to 0 if NA value computed in distance
+//
+// When call by function distance or hclust, x and y are the same; it computes
+// distance between vector x[i1,] and x[i2,]
+//
+// \param x matrix of size nr_x * nc; line i1 is of interest
+// \param y matrix of size nr_y * nc; line i1 is of interest
+// \param nr_x number of row in matrix x
+// \param nr_y number of row in matrix y
+// \param nc number of column in matrix x or y
+// \param i1 row choosen in matrix x
+// \param i2 row choosen in matrix y
+// \param flag set to 0 if NA value computed in distance
+// \param opt:  a set of 6 vectors of size nc, allocated but uninitialised. 
+//         aim of this parameter is to avoid several vector allocation 
+// 
+//  Return: distance value
+//
+// ---------------------------------------------------------
 template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x, int nr_y, int nc, 
 					       int i1, int i2,
 					       int * flag, T_tri & opt)
@@ -503,11 +532,41 @@ template<class T> T  distance_T<T>::R_kendall_corr(double * x, double * y , int 
 }
 */
 
-/** \brief Kendall distance (rank base metric)
- *
- *
- *  \note Added by A. Lucas
- */
+// ---------------------------------------------------------
+// Distance Kendall
+//
+// Kendall distance between 2 vectors a,b is
+//  d = sum_i Kij (x,y)
+//
+// With Kij(x,y) is 0 if xi,xj in same order as yi,yj;
+ //                 1 if not
+//
+// If one NA found: return NA
+//
+// This function compute distance between 2 vectors x[i1,] & y[i2,]
+// x and y are matrix; we use here only line i1 from x and
+// line i2 from y. Number of column (nc) is the same in x and y,
+// number of column can differ (nr_x, nr_y).
+//
+// Flag will be set to 0 if NA value computed in distance
+//
+// When call by function distance or hclust, x and y are the same; it computes
+// distance between vector x[i1,] and x[i2,]
+//
+// \param x matrix of size nr_x * nc; line i1 is of interest
+// \param y matrix of size nr_y * nc; line i1 is of interest
+// \param nr_x number of row in matrix x
+// \param nr_y number of row in matrix y
+// \param nc number of column in matrix x or y
+// \param i1 row choosen in matrix x
+// \param i2 row choosen in matrix y
+// \param flag set to 0 if NA value computed in distance
+// \param opt:  a set of 6 vectors of size nc, allocated but uninitialised. 
+//         aim of this parameter is to avoid several vector allocation 
+// 
+//  Return: distance value
+//
+// ---------------------------------------------------------
 template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x, int nr_y, int nc, 
 					      int i1, int i2,
 					      int * flag, T_tri & opt)
@@ -562,19 +621,21 @@ template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x,
 }
 
 
-/**
- * R_distance: compute parallelized distance. Function called direclty by R
- * \brief compute distance and call function thread_dist
- * that call one of function R_euclidean or R_...
- * \param x input matrix
- * \param nr,nc number of row and columns
- *        nr individuals with nc values.
- * \param d distance half matrix.
- * \param diag if we compute diagonal of dist matrix (usualy: no).
- * \param method 1, 2,... method used
- * \param nbprocess: number of threads to create
- * \param ierr error return; 1 good; 0 missing values
- */
+// ---------------------------------------------------------
+//
+// R_distance: compute parallelized distance. Function called direclty by R
+// \brief compute distance and call function thread_dist
+// that call one of function R_euclidean or R_...
+// \param x input matrix
+// \param nr,nc number of row and columns
+//        nr individuals with nc values.
+// \param d distance half matrix.
+// \param diag if we compute diagonal of dist matrix (usualy: no).
+// \param method 1, 2,... method used
+// \param nbprocess: number of threads to create
+// \param ierr error return; 1 good; 0 missing values
+//
+// ---------------------------------------------------------
 template<class T> void  distance_T<T>::distance(double *x, int *nr,
 						int *nc, T *d, int *diag, 
 						int *method,int *nbprocess, 
@@ -777,24 +838,24 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
 
 
 
-
-
-
-
-/**
- * R_distance_kms: compute distance between individual i1 and
- * centroid i2
- * \brief compute distance and call one of function R_euclidean or R_...
- * \brief This function is called by kmeans_Lloyd2 
- * \param x input matrix (individuals)
- * \param y input matrix (centroids)
- * \param nr1,nr2,nc number of row (nr1:x, nr2:y) and columns
- *        nr individuals with nc values.
- * \param i1, i2: indice of individuals (individual i1, centroid i2)
- * \param method 1, 2,... method used
-  * \param ierr for NA 0 if no value can be comuted due to NA
-  * \param opt optional parameter send to spearman dist.
- */
+// ---------------------------------------------------------
+//
+// R_distance_kms: compute distance between individual i1 and
+// centroid i2
+//
+// compute distance and call one of function R_euclidean or R_...
+// This function is called by kmeans_Lloyd2 
+//
+// \param x input matrix (individuals)
+// \param y input matrix (centroids)
+// \param nr1,nr2,nc number of row (nr1:x, nr2:y) and columns
+//        nr individuals with nc values.
+// \param i1, i2: indice of individuals (individual i1, centroid i2)
+// \param method 1, 2,... method used
+// \param ierr for NA 0 if no value can be comuted due to NA
+// \param opt optional parameter send to spearman dist.
+//
+// ---------------------------------------------------------
 template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,int nr2, int nc,int i1,int i2, int *method, 
 						 int * ierr, T_tri & opt)
 {
@@ -809,7 +870,7 @@ template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,in
 
   T (*distfun)(double*,double*,int, int, int, int, int, int *, T_tri &) = NULL;
 
-  
+  // choice of distance
   switch(*method) {
   case EUCLIDEAN:
     distfun = R_euclidean;
@@ -842,7 +903,8 @@ template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,in
   default:
     error("distance(): invalid distance");
   }
-    
+
+  // here: distance computation
   res = distfun(x,y, nr1,nr2, nc, i1, i2,ierr, opt);
   return( res);
 }

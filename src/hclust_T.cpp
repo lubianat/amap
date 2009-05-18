@@ -296,7 +296,7 @@ namespace hclust_T
 
 
   
-    hcass2(n,ia,ib,iorder,iia,iib);
+    hierclust::hcass2(n,ia,ib,iorder,iia,iib);
   
 
     /*
