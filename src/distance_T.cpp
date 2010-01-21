@@ -2,7 +2,7 @@
  * \brief all functions requiered for R dist function and C hcluster function.
  *
  *  \date Created: probably in 1995
- *  \date Last modified: Time-stamp: <2007-10-03 20:05:41 antoine>
+ *  \date Last modified: Time-stamp: <2010-01-21 18:42:14 antoine>
  *
  *  \author R core members, and lately: Antoine Lucas 
  *
@@ -47,7 +47,7 @@
 #include <R_ext/Error.h>
 #include <limits>
 
-#ifndef __MINGW_H
+#ifndef WIN32
 #include <pthread.h>
 #endif
 
@@ -682,7 +682,7 @@ template<class T> void  distance_T<T>::distance(double *x, int *nr,
 		res = 0 => missings values */
 
 
-#ifndef __MINGW_H
+#ifndef WIN32
   pthread_t * th = (pthread_t *) malloc ( *nbprocess * sizeof(pthread_t));
 
   for (i=0; i < *nbprocess ; i++)
