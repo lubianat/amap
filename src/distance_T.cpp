@@ -2,7 +2,7 @@
  * \brief all functions requiered for R dist function and C hcluster function.
  *
  *  \date Created: probably in 1995
- *  \date Last modified: Time-stamp: <2010-01-21 18:42:14 antoine>
+ *  \date Last modified: Time-stamp: <2011-11-04 22:05:55 antoine>
  *
  *  \author R core members, and lately: Antoine Lucas 
  *
@@ -38,7 +38,6 @@
 #include "distance_T.h"
 #include "distance.h"
 
-
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
@@ -47,7 +46,7 @@
 #include <R_ext/Error.h>
 #include <limits>
 
-#ifndef WIN32
+#ifndef __MINGW_H
 #include <pthread.h>
 #endif
 
@@ -332,7 +331,6 @@ template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x,
   num = 0;
   sum1 = 0;
   sum2 = 0;
-
   for(j = 0 ; j < nc ; j++) {
     if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
       num += (x[i1] * y[i2]);
@@ -351,6 +349,43 @@ template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x,
   dist = 1 - ( num / sqrt(sum1 * sum2) );
   return dist;
 }
+
+/** \brief Absoulute Pearson / Pearson uncentered (correlation)
+ *  \note Added by L. Cerulo
+ */
+template<class T> T  distance_T<T>::R_abspearson(double * x, double * y , int nr_x, int nr_y, int nc, 
+																							int i1, int i2,
+																							int * flag, T_tri & opt)
+{
+	T num,sum1,sum2, dist;
+  int count,j;
+	
+  count= 0;
+  num = 0;
+  sum1 = 0;
+  sum2 = 0;
+  for(j = 0 ; j < nc ; j++) {
+    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
+      num += (x[i1] * y[i2]);
+      sum1 += (x[i1] * x[i1]);
+      sum2 += (y[i2] * y[i2]);
+      count++;
+    }
+    i1 += nr_x;
+    i2 += nr_y;
+  }
+  if(count == 0) 
+	{
+		*flag = 0;
+		return NA_REAL;
+	}
+  dist = ( num / sqrt(sum1 * sum2) );
+	if (dist<0) {
+		dist*=-1;
+	}
+  return (1-dist);	
+}
+
 
 
 /** \brief Distance correlation (Uncentered Pearson)
@@ -391,6 +426,53 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
   num = sumxy - ( sumx*sumy /count );
   denum = sqrt( (sumxx - (sumx*sumx /count ) )* (sumyy - (sumy*sumy /count ) ) );
   return 1 - (num / denum);
+}
+
+/** \brief Absolute Distance correlation (Uncentered Pearson)
+ *  \note Added by L. Cerulo
+ */
+template<class T> T  distance_T<T>::R_abscorrelation(double * x, double * y , int nr_x, int nr_y, int nc, 
+																									int i1, int i2,
+																									int * flag, T_tri & opt)
+{
+  T num,denum,sumx,sumy,sumxx,sumyy,sumxy,dist,term;
+  int count,j;
+	
+  count= 0;
+  sumx=0;
+  sumy=0;
+  sumxx=0;
+  sumyy=0;
+  sumxy=0;
+	
+	
+  for(j = 0 ; j < nc ; j++) {
+    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
+      sumxy += (x[i1] * y[i2]);
+      sumx += x[i1];
+      sumy += y[i2];
+      sumxx += x[i1] * x[i1];
+      sumyy += y[i2] * y[i2];
+      count++;
+    }
+    i1 += nr_x;
+    i2 += nr_y;
+  }
+  if(count == 0)
+	{
+		*flag = 0;
+		return NA_REAL;
+	}
+  num = sumxy - ( sumx*sumy /count );
+
+	term=(sumxx - (sumx*sumx /count ) )* (sumyy - (sumy*sumy /count ) );
+	if (term<=0) return 1;
+	denum = sqrt( term );
+	dist=num/denum;
+	if (dist<0) {
+		dist*=-1;
+	}
+  return (1-dist);	
 }
 
 // ---------------------------------------------------------
@@ -639,7 +721,7 @@ template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x,
 template<class T> void  distance_T<T>::distance(double *x, int *nr,
 						int *nc, T *d, int *diag, 
 						int *method,int *nbprocess, 
-						int * ierr)
+						int * ierr,int i2)
 {
 
 
@@ -677,12 +759,13 @@ template<class T> void  distance_T<T>::distance(double *x, int *nr,
       arguments[i].method = method;
       arguments[i].nbprocess= *nbprocess;
       arguments[i].ierr=ierr;
+			arguments[i].i2=i2;
     }
   *ierr = 1; /* res = 1 => no missing values
 		res = 0 => missings values */
 
 
-#ifndef WIN32
+#ifndef __MINGW_H
   pthread_t * th = (pthread_t *) malloc ( *nbprocess * sizeof(pthread_t));
 
   for (i=0; i < *nbprocess ; i++)
@@ -702,17 +785,69 @@ template<class T> void  distance_T<T>::distance(double *x, int *nr,
   // p_thread not yet used on windows.
 
   arguments[0].nbprocess = 1;
+	arguments[0].i2 = i2;
   thread_dist((void *)arguments);
 #endif
 
   free( arguments );
 
+}
+
+//template<class T> T  distance_T<T>::distance(double * x, double * y , int nr_x, int nr_y, int nc, 
 
 
+//
+// get the distance function
+//
+
+template<class T>  void distance_T<T>::getDistfunction(int method,distfunction& distfun)
+{
+  //  T (*distfun)(double*,double*,int, int, int, int, int, int *, T_tri &) = NULL;
+  
+  switch(method) 
+    {
+    case EUCLIDEAN:
+      distfun = R_euclidean;
+      break;
+    case MAXIMUM:
+      distfun = R_maximum;
+      break;
+    case MANHATTAN:
+      distfun = R_manhattan;
+      break;
+    case CANBERRA:
+      distfun = R_canberra;
+      break;
+    case BINARY:
+      distfun = R_dist_binary;
+      break;
+    case PEARSON:
+      distfun = R_pearson;
+      break;
+    case CORRELATION:
+      distfun = R_correlation;
+      break;
+    case SPEARMAN:
+      distfun = R_spearman;
+      break;
+    case KENDALL:
+      distfun = R_kendall;
+      break;
+    case ABSPEARSON:
+      distfun = R_abspearson;
+      break;
+    case ABSCORRELATION:
+      distfun = R_abscorrelation;
+      break;			
+    default:
+      {
+	error("distance(): invalid distance");
+	distfun = R_euclidean;
+      }
+}
 
 
 }
-
 
 /** thread_dist function that compute distance.
  *
@@ -729,8 +864,9 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   /* for spearman dist */
   T_tri opt ;
 
-  T (*distfun)(double*,double*,int, int, int, int, int, int *, T_tri &) = NULL;
 
+
+  distfunction distfun;
 
   short int no = arguments[0].id;
   nr = *arguments[0].nr;
@@ -741,43 +877,10 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   method =  arguments[0].method;
   nbprocess = arguments[0].nbprocess;
   ierr =  arguments[0].ierr;
+  int i2 =  arguments[0].i2;
 
   
-
-    
-  switch(*method) {
-  case EUCLIDEAN:
-    distfun = R_euclidean;
-    break;
-  case MAXIMUM:
-    distfun = R_maximum;
-    break;
-  case MANHATTAN:
-    distfun = R_manhattan;
-    break;
-  case CANBERRA:
-    distfun = R_canberra;
-    break;
-  case BINARY:
-    distfun = R_dist_binary;
-    break;
-  case PEARSON:
-    distfun = R_pearson;
-    break;
-  case CORRELATION:
-    distfun = R_correlation;
-    break;
-  case SPEARMAN:
-    distfun = R_spearman;
-    break;
-  case KENDALL:
-    distfun = R_kendall;
-    break;
-
-
-  default:
-    error("distance(): invalid distance");
-  }
+  getDistfunction(*method,distfun);
 
   
   if( (*method == SPEARMAN) ||  (*method == KENDALL))
@@ -790,7 +893,7 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
       opt.rank_tri_y  = (int * ) malloc ( (nc) * sizeof(int));
       if( (opt.data_tri_x == NULL) || (opt.order_tri_x == NULL) || (opt.rank_tri_x == NULL) ||
 	  (opt.data_tri_y == NULL) || (opt.order_tri_y == NULL) || (opt.rank_tri_y == NULL)) 
-	error("distance(): unable to alloc memory");
+ 	error("distance(): unable to alloc memory");
     }
 
   /*
@@ -806,28 +909,45 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   int fin = (int) floor(((nr+1.)*nbprocess - sqrt( (nr+1.)*(nr+1.) * nbprocess * nbprocess - (nr+1.)*(nr+1.) * nbprocess * (no+1.)  ) )/nbprocess);
 
     
-  //printf("Thread %d debut %d fin %d\n",no,debut,fin);    
+  //printf("Thread %d debut %d fin %d i2=%d met=%d\n",no,debut,fin,i2,*method);    
 
 
   // here: the computation !
   //    for(j = 0 ; j <= nr ; j++)
-  for(j = debut ; j < fin ; j++)
+  if (i2==-1) /* compute all distance matrix*/
     {
-      ij = (2 * (nr-dc) - j +1) * (j) /2 ;
-      for(i = j+dc ; i < nr ; i++)
+      for(j = debut ; j < fin ; j++)
 	{
-	  d[ij++] = distfun(x,x,nr, nr, nc, i, j,ierr,opt);
+	  ij = (2 * (nr-dc) - j +1) * (j) /2 ;
+	  for(i = j+dc ; i < nr ; i++)
+	    {
+	      d[ij++] = distfun(x,x,nr, nr, nc, i, j,ierr,opt);
+	    }
 	}
-    }
+  } 
+  else { /* updates the distance only for i2*/
+    for(j = debut ; j < fin ; j++)
+      {
+	if (i2!=j) {
+	  int ind1 = j+i2*nr-(i2+1)*(i2+2)/2;
+	  if (i2 > j)
+	    ind1 = i2+j*nr-(j+1)*(j+2)/2;
+	  d[ind1] = distfun(x,x,nr, nr, nc, i2, j,ierr,opt);
+	  //printf("updated dist %d %d %f\n",i2,j,d[ind1]);
+	}
+	
+      }
+  }
 
-    if( (*method == SPEARMAN) ||  (*method == KENDALL))
+	
+  if( (*method == SPEARMAN) ||  (*method == KENDALL))
     {
-	free(opt.data_tri_x);
-	free(opt.rank_tri_x);
-	free(opt.order_tri_x);	
-	free(opt.data_tri_y);
-	free(opt.rank_tri_y);
-	free(opt.order_tri_y);	
+      free(opt.data_tri_x);
+      free(opt.rank_tri_x);
+      free(opt.order_tri_x);	
+      free(opt.data_tri_y);
+      free(opt.rank_tri_y);
+      free(opt.order_tri_y);	
     }
 
   return (void*)0;
@@ -868,41 +988,9 @@ template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,in
   
   T res;
 
-  T (*distfun)(double*,double*,int, int, int, int, int, int *, T_tri &) = NULL;
+  distfunction distfun;
 
-  // choice of distance
-  switch(*method) {
-  case EUCLIDEAN:
-    distfun = R_euclidean;
-    break;
-  case MAXIMUM:
-    distfun = R_maximum;
-    break;
-  case MANHATTAN:
-    distfun = R_manhattan;
-    break;
-  case CANBERRA:
-    distfun = R_canberra;
-    break;
-  case BINARY:
-    distfun = R_dist_binary;
-    break;
-  case PEARSON:
-    distfun = R_pearson;
-    break;
-  case CORRELATION:
-    distfun = R_correlation;
-    break;
-  case SPEARMAN:
-    distfun = R_spearman;
-    break;
-  case KENDALL:
-    distfun = R_kendall;
-    break;
-
-  default:
-    error("distance(): invalid distance");
-  }
+  getDistfunction(*method,distfun);
 
   // here: distance computation
   res = distfun(x,y, nr1,nr2, nc, i1, i2,ierr, opt);

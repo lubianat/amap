@@ -13,7 +13,8 @@ Dist(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
     \code{"canberra"}, \code{"binary"}, \code{"pearson"},
-    \code{"correlation"}, \code{"spearman"} or \code{"kendall"}.
+     \code{"abspearson"},  \code{"correlation"},
+    \code{"abscorrelation"}, \code{"spearman"} or \code{"kendall"}.
     Any unambiguous substring can be given.}
   \item{nbproc}{integer, Number of subprocess for parallelization}
   \item{diag}{logical value indicating whether the diagonal of the
@@ -53,12 +54,31 @@ Dist(x, method = "euclidean", nbproc = 2, diag = FALSE, upper = FALSE)
     \item{\code{pearson}:}{Also named "not centered Pearson"
       \eqn{1 - \frac{\sum_i x_i y_i}{\sqrt{\sum_i x_i^2 %
 	   \sum_i y_i^2}}}{%
-	sum(x_i y_i) / sqrt [sum(x_i^2) sum(y_i^2)]}.
+	1 - sum(x_i y_i) / sqrt [sum(x_i^2) sum(y_i^2)]}.
+    }
+
+    \item{\code{abspearson}:}{Absolute Pearson
+      \eqn{1 - \left| \frac{\sum_i x_i y_i}{\sqrt{\sum_i x_i^2 %
+	   \sum_i y_i^2}} \right| }{%
+	1 - |sum(x_i y_i) / sqrt [sum(x_i^2) sum(y_i^2)] |}.
     }
 
     \item{\code{correlation}:}{Also named "Centered Pearson"
       \eqn{1 - corr(x,y)}.  
     }
+    
+    \item{\code{abscorrelation}:}{Absolute correlation
+      \eqn{1 - | corr(x,y) |}
+      with
+
+      \eqn{ corr(x,y) = \frac{\sum_i x_i y_i -\frac1n \sum_i x_i \sum_i%
+y_i}{% frac: 2nd part
+\sqrt{\left(\sum_i x_i^2 -\frac1n \left( \sum_i x_i \right)^2 %
+\right)%
+\left( \sum_i  y_i^2 -\frac1n \left( \sum_i y_i \right)^2 %
+\right)}  }}.  
+    }
+
     \item{\code{spearman}:}{Compute a distance based on rank.
       \eqn{\sum(d_i^2)}{sum (d_i^2)} where \eqn{d_i} is the difference
       in rank between \eqn{x_i} and \eqn{y_i}.
@@ -135,6 +155,10 @@ Dist(x, upper = TRUE)
 
 ## compute dist with 8 threads
 Dist(x,nbproc=8)
+
+
+Dist(x,method="abscorrelation")
+Dist(x,method="kendall")
 
 }
 \keyword{multivariate}

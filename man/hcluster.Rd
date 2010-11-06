@@ -18,8 +18,9 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
   }
   \item{method}{the distance measure to be used. This must be one of
     \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"},
-    \code{"canberra"} \code{"binary"} \code{"pearson"},
-    \code{"correlation"}, \code{"spearman"} or \code{"kendall"}.
+    \code{"canberra"}, \code{"binary"}, \code{"pearson"},
+     \code{"abspearson"},  \code{"correlation"},
+    \code{"abscorrelation"}, \code{"spearman"} or \code{"kendall"}.
     Any unambiguous substring can be given.}
   \item{diag}{logical value indicating whether the diagonal of the
     distance matrix should be printed by \code{print.dist}.}
@@ -29,7 +30,8 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
     be (an unambiguous abbreviation of) one of
     \code{"ward"}, \code{"single"}, \code{"complete"},
     \code{"average"}, \code{"mcquitty"}, \code{"median"} or
-    \code{"centroid"}.}
+    \code{"centroid"},\code{"centroid2"}.}
+  
   \item{members}{\code{NULL} or a vector with length size of \code{d}.}
   \item{nbproc}{integer, number of subprocess for parallelization [Linux
   & Mac only]}
@@ -85,7 +87,7 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
      = hclust(dist(x, method = "euclidean"),method = "complete"))}   
    It use twice less memory, as it doesn't store distance matrix.
 
-   For more details, see documentation of \code{hclust} and \code{dist}.
+   For more details, see documentation of \code{hclust} and \code{Dist}.
 
 }
 
@@ -144,9 +146,15 @@ hc <- hcluster(USArrests,method = "bin",link = "mcquitty", nbproc= 1,
 doubleprecision = FALSE)
 hc <- hcluster(USArrests,method = "pea",link = "median", nbproc= 2,
 doubleprecision = FALSE)
+hc <- hcluster(USArrests,method = "abspea",link = "median", nbproc= 2,
+doubleprecision = FALSE)
 hc <- hcluster(USArrests,method = "cor",link = "centroid", nbproc= 1,
 doubleprecision = FALSE)
+hc <- hcluster(USArrests,method = "abscor",link = "centroid", nbproc= 1,
+doubleprecision = FALSE)
 hc <- hcluster(USArrests,method = "spe",link = "complete", nbproc= 2,
+doubleprecision = FALSE)
+hc <- hcluster(USArrests,method = "ken",link = "complete", nbproc= 2,
 doubleprecision = FALSE)
 
 

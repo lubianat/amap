@@ -2,10 +2,12 @@
 #define _AMAP_HCLUST_TEMPLATE_CPP 1
 
 
-#include "hclust_T.h"
-#include "distance_T.h"
 #include "hclust.h"
+#include "distance_T.h"
+#include "distance.h"
+#include "hclust_T.h"
 #include <stdio.h>
+
 
 
 namespace hclust_T
@@ -50,7 +52,7 @@ namespace hclust_T
     /*
      * Calculate d: distance matrix
      */
-    distance_T<T>::distance(x,nr,nc,d,diag,method,nbprocess,&flag);
+    distance_T<T>::distance(x,nr,nc,d,diag,method,nbprocess,&flag,-1);
     if(flag == 0)
       {
 	printf("AMAP: Unable to compute Hierarchical Clustering: missing values in distance matrix\n"); 
@@ -58,30 +60,39 @@ namespace hclust_T
 	return;
       }
 
+
     /*
      *  Hierarchical clustering
      */
-    hclust_T::hclust<T>(nr,&len,iopt ,ia ,ib,iorder,crit,membr,d,result);
-    free(d); 
-    
+      hclust_T::hclust<T>(nbprocess,x,*nr,*nc,method,nr,&len,iopt ,ia ,ib,iorder,crit,membr,d,result);
+		free(d); 
     *result = 0;
     
   }
 
 
-  template <class T> void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,T *diss,int *result)
+	
+  template <class T> void hclust(int * nbprocess,double *mx,int nr, int nc,
+				 int *method,int *n,int *len, int *iopt ,int *ia , 
+				 int *ib,int *iorder,double *crit,double *membr,T *diss,int *result)
   {
     int im,jm,jj,i,j,ncl,ind,i2,j2,k,ind1,ind2,ind3;
     double inf,dmin,x,xx;
     int *nn;
+    int *items = NULL;
     double *disnn;
     short int *flag;
     int *iia;
     int *iib;
+    int count,h,idx1,idxitem1,idx2;
 
     
     *result = 1;
     nn    = (int*) malloc (*n * sizeof(int));
+    if(*iopt==CENTROID2) 
+      {
+	items   = (int*) malloc (*n*nc * sizeof(int));
+      }
     disnn = (double*) malloc (*n * sizeof(double));
     flag  = (short int*) malloc (*n * sizeof(short int));
     if(nn == NULL || disnn == NULL || flag == NULL )
@@ -94,7 +105,18 @@ namespace hclust_T
     
     /* Initialisation */
     for ( i=0; i<*n ; i++)
-      flag[i]=1;
+      {
+	flag[i]=1;
+	idxitem1=i;
+	if(items != NULL) 
+	  {
+	    for ( j=0; j<nc ; j++) 
+	      {
+		items[idxitem1]=1;  /* only one item per cluster and per coordinate for iopt==8*/
+		idxitem1+=nr;
+	      }
+	  }
+      }
     
     ncl=*n;
     inf= 1e20;
@@ -126,11 +148,13 @@ namespace hclust_T
 	/*
 	 * Next, determine least diss. using list of NNs
 	 */
+			
 	dmin = inf;
 	for ( i=0; i<(*n-1) ; i++)
 	  {
 	    if( flag[i] )
 	      {
+					
 		if (disnn[i] < dmin )
 		  {
 		    dmin = disnn[i];
@@ -139,6 +163,7 @@ namespace hclust_T
 		  }
 	      }
 	  }
+ 
 	ncl = ncl-1;
 	
 	/*
@@ -157,6 +182,69 @@ namespace hclust_T
 	 */
 	flag[j2]=0;
 	dmin=inf;
+	jj=0;
+
+	/*
+	 * Cluster3 CENTROID METHOD - IOPT=8.
+	 */
+	if (*iopt==CENTROID2) 
+	  {
+	    /* compute centroind coordinates*/
+	    idx1=i2;
+	    idx2=j2;
+	    ind3=ioffst(*n,i2,j2);
+	    //printf("Aggregate %d-%d %d-%d (method=%d, dmin=%f (%f))\n",i2,j2,im,jm,*method,dmin,diss[ind3]);
+	    for(h = 0 ; h< nc ; h++) 
+	      {
+		if(R_FINITE(mx[idx1]) && R_FINITE(mx[idx2])) 
+		  {
+		    mx[idx1] = (items[idx1]*mx[idx1] + items[idx2]*mx[idx2])/(items[idx1]+items[idx2]);
+		    items[idx1]+=items[idx2];
+		    
+		  }
+		else
+		  {
+		    if(!R_FINITE(mx[idx1]) && R_FINITE(mx[idx2])) 
+		      {
+			mx[idx1] = mx[idx2];
+			items[idx1]=items[idx2];
+		      }
+		  }
+		idx1 += nr;
+		idx2 += nr;
+	      }
+	    int flg;
+	    int dg=0;
+	    /* recompute all distances in parallel */
+	    distance_T<T>::distance(mx,&nr,&nc,diss,&dg,method,nbprocess,&flg, i2);
+	    /*update disnn and nn*/
+	    for  ( k=0; k< *n ; k++) 
+	      {		
+		if(flag[k] && (k != i2) )
+		  {
+		    if (i2 < k)
+		      {
+			ind1 = ioffst(*n,i2,k);
+		      }
+		    else
+		      {
+			ind1 = ioffst(*n,k,i2);
+		      }
+
+		    if( (i2 < k) && ( diss[ind1] < dmin ) )
+		      {
+			dmin = diss[ind1];
+			jj=k;
+		      }
+		    if( (i2 > k) && (nn[k]!=j2) && ( diss[ind1] < disnn[k] ) )
+		      {
+			disnn[k]=diss[ind1];
+			nn[k]=i2;
+		      }
+		  }
+	      }
+	  } 
+	else 
 	for ( k=0; k< *n ; k++)
 	  { 
 	    if(flag[k] && (k != i2) )
@@ -199,7 +287,7 @@ namespace hclust_T
 		    /*
 		     * WARD'S MINIMUM VARIANCE METHOD - IOPT=1.
 		     */	      
-		  case 1: 
+		  case WARD: 
 		    {
 		      diss[ind1] = (membr[i2]+membr[k])* diss[ind1] + 
 			(membr[j2]+membr[k])* diss[ind2] - 
@@ -210,59 +298,65 @@ namespace hclust_T
 		    /*
 		     * SINGLE LINK METHOD - IOPT=2.
 		     */
-		  case 2: diss[ind1] = MIN (diss[ind1],diss[ind2]); break; 
+		  case SINGLE: diss[ind1] = MIN (diss[ind1],diss[ind2]); break; 
 		    /*
 		     * COMPLETE LINK METHOD - IOPT=3.
 		     */
-		  case 3: diss[ind1] = MAX (diss[ind1],diss[ind2]); break; 
+		  case COMPLETE: diss[ind1] = MAX (diss[ind1],diss[ind2]); break; 
 		    /*
 		     * AVERAGE LINK (OR GROUP AVERAGE) METHOD - IOPT=4.
 		     */
-		  case 4:  diss[ind1] = ( membr[i2] * diss[ind1] +
+		  case AVERAGE:  diss[ind1] = ( membr[i2] * diss[ind1] +
 					  membr[j2] * diss[ind2] ) /
 			     (membr[i2] + membr[j2]); 
 		    break; 
 		    /*
 		     *  MCQUITTY'S METHOD - IOPT=5.
 		     */
-		  case 5:  diss[ind1] = 0.5 * diss[ind1]+0.5*diss[ind2]; 
+		  case MCQUITTY:  diss[ind1] = 0.5 * diss[ind1]+0.5*diss[ind2]; 
 		    break;
 		    /*
 		     * MEDIAN (GOWER'S) METHOD - IOPT=6.
 		     */
-		  case 6:  diss[ind1] = 0.5* diss[ind1]+0.5*diss[ind2] -0.25*xx;
+		  case MEDIAN:  diss[ind1] = 0.5* diss[ind1]+0.5*diss[ind2] -0.25*xx;
 		    break;
 		    /*
 		     * CENTROID METHOD - IOPT=7.
 		     */
-		  case 7:
+		  case CENTROID:
 		    diss[ind1] = (membr[i2]*diss[ind1] + membr[j2]*diss[ind2] - 
 				  membr[i2] * membr[j2]*xx /
 				  (membr[i2] + membr[j2]) ) /
 		      (membr[i2] + membr[j2]);
 		    break;
 		  } /* end switch */
-		if( (i2 <= k) && ( diss[ind1] < dmin ) )
+					
+	
+		if( (i2 < k) && ( diss[ind1] < dmin ) )
 		  {
 		    dmin = diss[ind1];
 		    jj=k;
+		  }
+		if( (i2 > k) && (nn[k]!=j2) && ( diss[ind1] < disnn[k] ) )
+		  {
+		    disnn[k]=diss[ind1];
+		    nn[k]=i2;
 		  }
 	      } /* 800 */
 	  }
 	membr[i2] = membr[i2] +   membr[j2];
 	disnn[i2] = dmin;
-
+				
 	nn[i2] = jj;
-
-
+	
 	/*
 	 *  Update list of NNs insofar as this is required.
 	 */
+	
 	for ( i=0; i< (*n-1) ; i++)
 	  {
 	    if( flag[i] && ((nn[i] == i2 ) || (nn[i] == j2) ) )
 	      {
-		/* (Redetermine NN of I:)   */
 		dmin = inf;
 		for  ( j=i+1; j< *n ; j++)
 		  {
@@ -277,6 +371,7 @@ namespace hclust_T
 		  }
 	      }
 	  }
+	/*printf("%d/%d\n",ncl,*n);*/
       } /* end of while */
 
   
@@ -284,6 +379,8 @@ namespace hclust_T
     free(disnn);
     free(flag);
 
+    if(items != NULL )
+      free(items);
   
     iia = (int*) malloc (*n * sizeof(int));
     iib = (int*) malloc (*n * sizeof(int));

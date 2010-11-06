@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2005-10-01 20:14:25 antoine>
+## Last Modified : Time-stamp: <2011-11-04 22:55:20 antoine>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -20,7 +20,8 @@ hclusterpar <- hcluster <- function (x, method = "euclidean", diag = FALSE, uppe
   if (!is.na(pmatch(method, "euclidian"))) 
     method <- "euclidean"
   METHODS <- c("euclidean", "maximum", "manhattan", "canberra", 
-               "binary","pearson","correlation","spearman","kendall")
+               "binary","pearson","correlation","spearman","kendall",
+               "abspearson","abscorrelation")
   method <- pmatch(method, METHODS)
   if (is.na(method)) 
     stop("invalid distance method")
@@ -32,7 +33,7 @@ hclusterpar <- hcluster <- function (x, method = "euclidean", diag = FALSE, uppe
   
                                         #take from hclust
   METHODSLINKS <- c("ward", "single", "complete", "average", "mcquitty", 
-                    "median", "centroid")
+                    "median", "centroid","centroid2")
   
   link <- pmatch(link, METHODSLINKS)
   if (is.na(link)) 

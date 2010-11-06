@@ -3,7 +3,7 @@
  *   \brief Hierarchical Clustering.
  *                                                          
  *   \date Created       : 14/11/02 
- *   \date Last Modified : Time-stamp: <2007-10-03 20:33:11 antoine>
+ *   \date Last Modified : Time-stamp: <2011-11-04 22:29:32 antoine>
  *
 
  *  \author F. Murtagh, ESA/ESO/STECF, Garching, February 1986. 
@@ -72,8 +72,13 @@
  */
 void hclust(int *n,int *len, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,double *diss,int *result)
 {
-  hclust_T::hclust<double>(n,len,iopt ,ia ,ib,iorder,
-			   crit,membr,diss, result);
+  int nbprocess = 1;
+  if (*iopt!=hclust_T::CENTROID2) 
+    {
+
+      hclust_T::hclust<double>(&nbprocess,NULL,*n,*n,NULL,n,len,iopt ,ia ,ib,iorder,
+			       crit,membr,diss, result);
+    }
 } /* end function hclust */
 
 

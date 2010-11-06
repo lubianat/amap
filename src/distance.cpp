@@ -20,9 +20,8 @@
 void R_distance(double *x, int *nr, int *nc, double *d, int *diag, int *method,int *nbprocess, int * ierr)
 {
 
-
   distance_T<double>::distance(x,nr,nc, d,diag,method,
-			       nbprocess, ierr);
+			       nbprocess, ierr,-1);
 }
 
 

@@ -9,8 +9,7 @@ template<class T> class distance_T
 
  public:
   /* == 1,2,..., defined by order in the r function dist */
-  enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, SPEARMAN,
-  KENDALL};
+  enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, SPEARMAN,  KENDALL, ABSPEARSON, ABSCORRELATION};
 
   
   struct T_tri
@@ -23,6 +22,8 @@ template<class T> class distance_T
     int * rank_tri_y;
   };
 
+
+  typedef T (* distfunction)(double*,double*,int, int, int, int, int, int *, T_tri &);
 
  private:
 
@@ -38,6 +39,7 @@ template<class T> class distance_T
     int * method;
     int  nbprocess;
     int * ierr;
+    int i2;
   };
 
 
@@ -49,6 +51,10 @@ template<class T> class distance_T
   ~distance_T();
 
  public:
+
+  /** return a distance function, depending on method
+   */
+  static void getDistfunction(int method,distfunction & distfun);
 
   /** \brief R_distance compute parallelized distance. 
    *
@@ -63,10 +69,13 @@ template<class T> class distance_T
    * \param method 1, 2,... method used (correspond to the enum)
    * \param nbprocess: number of threads to create
    * \param ierr error return; 1 good; 0 missing values
+   * \param i2: if -1: ignored, else, compute
+   *            distance between individual i2 and others
    */
   static void distance(double *x, int *nr, int *nc, T *d, int *diag,
-		       int *method,int *nbprocess, int * ierr);
+		       int *method,int *nbprocess, int * ierr,int i2);
 
+	
 
   /** \brief R_distance_kms: compute distance between individual i1 and
    * centroid i2
@@ -263,6 +272,19 @@ template<class T> class distance_T
 			 int i1, int i2,
 			 int * flag, T_tri & opt);
 
+	/** \brief Pearson / Pearson centered (correlation)
+   *  \note Added by L. Cerulo
+   */
+  static T R_abspearson(double * x, double * y , int nr_x, int nr_y, int nc, 
+			 int i1, int i2,
+			 int * flag, T_tri & opt);
+	
+  /** \brief Distance correlation (Uncentered Pearson)
+   *  \note Added by L. Cerulo
+   */
+  static T R_abscorrelation(double * x, double * y , int nr_x, int nr_y, int nc, 
+												 int i1, int i2,
+												 int * flag, T_tri & opt);
 
   /** \brief Spearman distance (rank base metric)
    *

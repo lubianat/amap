@@ -3,16 +3,21 @@
 #ifndef _AMAP_HCLUST_TEMPLATE
 #define _AMAP_HCLUST_TEMPLATE 1
 
+
 namespace hclust_T
 {
+
+
+  enum {WARD=1,SINGLE,COMPLETE,AVERAGE,MCQUITTY,MEDIAN,CENTROID,CENTROID2};
+
 
   template <class T> void hcluster(double *x, int *nr, int *nc, 
 				   int *diag, int *method, int *iopt ,
 				   int *ia , int *ib,int *iorder,
 				   double *crit,double *membr,
 				   int *nbprocess, int * result);
-  
-  template <class T> void hclust(int *n,int *len, int *iopt ,int *ia ,
+
+  template <class T> void hclust(int *nbprocess,double *mx,int nr, int nc,int *method,int *n,int *len, int *iopt ,int *ia ,
 				 int *ib,int *iorder,double *crit,
 				 double *membr,T *diss,int *result);
   
