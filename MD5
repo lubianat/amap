@@ -1,5 +1,6 @@
-cf9d6e21f2aafde27cc8a8311418406a *Changes
-dfea1aeccf60760a52947510a7a3f63b *DESCRIPTION
+9133ec95d2ea00504fc911315221b6cc *Changes
+aa2ae31f9afa0e7c0c17eb8be8bb19a1 *DESCRIPTION
+9b87025f779cbf59c4e611807d010a61 *INDEX
 753f0c075f7ef78696cc1e7007375604 *NAMESPACE
 83af4b0f904e391523d0750277d707d2 *R/Kmeans.R
 1741be036592b0caa6c466557bf35dca *R/acp.R
@@ -19,7 +20,7 @@ ffec123e2067afe88ddc15000edd6b43 *demo/amap.R
 3bd2d55b74106e5429df3ca5dedd1438 *exec/amap.php
 1f6194916110fe560cbdd55fc1b13ae2 *inst/doc/amap.Rnw
 b83d1692381d779844bebf1efe5baa71 *inst/doc/amap.bib
-7a3ea9b2654acec9d3ea0538325384a8 *inst/doc/amap.pdf
+e47425b546753b88b081e3ee5cac292c *inst/doc/amap.pdf
 4b4d7b5c3e76ddb88efb90d592d9c74c *inst/doc/amap_sdd.tex
 ad2d0d627c159d48e64309fdf01358a8 *inst/doc/amap_srs.tex
 fd3bdd9a56b153e377e4e5fc174a4e74 *inst/po/fr/LC_MESSAGES/R-amap.mo
@@ -45,7 +46,7 @@ b29ec63cec27d773cf2a56cb3c3f4d05 *src/acprob.c
 3089a2ec0f8e806c906f8de689a9886e *src/diss.c
 db4ec8b56049723d68bf9663f81cb16b *src/distance.cpp
 c02e545dc20cb3e9b671f772b2df3ad6 *src/distance.h
-5da8be81d472bb70e04d8f82b37627ef *src/distance_T.cpp
+b6352fa0f30d217d7eca5043f02f590b *src/distance_T.cpp
 068634e8aa41fbe14b7491b651346eb4 *src/distance_T.h
 37aa2ae8966ad80a389c519d22de0fcb *src/hclust.cpp
 0e3abe844fc77200d92d78bf4600817e *src/hclust.h

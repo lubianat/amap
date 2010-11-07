@@ -1,3 +1,9 @@
+
+Sun Nov 06 2011: 0.8-6
+  * fix distances pearson and correlation (problem with vector 0,0,0...)
+  * add new distances: absolute pearson, absolute correlation
+  * add new link "centroid2"
+
 Fri Oct 23 2009:0.8-4
   * minor bug fix
 
