@@ -2,7 +2,7 @@
 #ifndef _AMAP_DISTANCE_TEMPLATE
 #define _AMAP_DISTANCE_TEMPLATE 1
 
-
+#include "smartPtr.h"
 
 template<class T> class distance_T
 {
@@ -12,14 +12,32 @@ template<class T> class distance_T
   enum { EUCLIDEAN=1, MAXIMUM, MANHATTAN, CANBERRA, BINARY ,PEARSON, CORRELATION, SPEARMAN,  KENDALL, ABSPEARSON, ABSCORRELATION};
 
   
-  struct T_tri
+  class T_tri
   {
-    double * data_tri_x;
-    int * order_tri_x;
-    int * rank_tri_x;
-    double * data_tri_y;
-    int * order_tri_y;
-    int * rank_tri_y;
+  public:
+    SmartPtr<double> data_tri_x;
+    SmartPtr<int> order_tri_x;
+    SmartPtr<int> rank_tri_x;
+    SmartPtr<double> data_tri_y;
+    SmartPtr<int> order_tri_y;
+    SmartPtr<int> rank_tri_y;
+
+    T_tri() :
+      data_tri_x(0),
+      order_tri_x(0),
+      rank_tri_x(0),
+      data_tri_y(0),
+      order_tri_y(0),
+      rank_tri_y(0) {};
+    
+    void reset(int size) {
+      data_tri_x.reset(size);
+      order_tri_x.reset(size);
+      rank_tri_x.reset(size);
+      data_tri_y.reset(size);
+      order_tri_y.reset(size);
+      rank_tri_y.reset(size);
+    }
   };
 
 

@@ -31,8 +31,10 @@ function(x, centers, iter.max = 10, nstart = 1,
     stop("ambiguous distance method")
   
   if(class(x) == "exprSet")
-      x <- exprs(x)
-  
+  { 
+    library(Biobase)
+     x <- exprs(x)
+  }
 
   x <- as.matrix(x)
   m <- nrow(x)

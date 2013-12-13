@@ -7,8 +7,10 @@
 #include "distance.h"
 #include "hclust_T.h"
 #include <stdio.h>
+#include "smartPtr.h"
 
-
+#include "R.h"
+#include <new>
 
 namespace hclust_T
 {
@@ -34,40 +36,34 @@ namespace hclust_T
    */
   template <class T> void hcluster(double *x, int *nr, int *nc, int *diag, int *method, int *iopt ,int *ia , int *ib,int *iorder,double *crit,double *membr,int *nbprocess, int * result)
   {
-    int  len;
+
+    int  len = (*nr * (*nr-1) )/2;
     int flag;
-    T *d;
+    SmartPtr<T> d (len);
     
     *result = 1;
     
-
-    len = (*nr * (*nr-1) )/2; 
-    d = (T*) malloc (len * sizeof(T));
-    if(d == NULL )
-      {
-	printf("AMAP: Not enought system memory to allocate matrix distance\n"); 
-	*result = 2;
-	return;
-      }
+    
     /*
      * Calculate d: distance matrix
      */
-    distance_T<T>::distance(x,nr,nc,d,diag,method,nbprocess,&flag,-1);
+    distance_T<T>::distance(x,nr,nc,d.get(),diag,method,nbprocess,&flag,-1);
     if(flag == 0)
       {
-	printf("AMAP: Unable to compute Hierarchical Clustering: missing values in distance matrix\n"); 
+	Rprintf("AMAP: Unable to compute Hierarchical Clustering: missing values in distance matrix\n"); 
 	*result = 3;
 	return;
       }
-
-
+    
+    
     /*
      *  Hierarchical clustering
      */
-      hclust_T::hclust<T>(nbprocess,x,*nr,*nc,method,nr,&len,iopt ,ia ,ib,iorder,crit,membr,d,result);
-		free(d); 
+    hclust_T::hclust<T>(nbprocess,x,*nr,*nc,method,nr,&len,iopt ,ia ,ib,iorder,crit,membr,d.get(),result);
+	
     *result = 0;
-    
+  
+  
   }
 
 
@@ -78,37 +74,28 @@ namespace hclust_T
   {
     int im,jm,jj,i,j,ncl,ind,i2,j2,k,ind1,ind2,ind3;
     double inf,dmin,x,xx;
-    int *nn;
-    int *items = NULL;
-    double *disnn;
-    short int *flag;
-    int *iia;
-    int *iib;
+    SmartPtr<int> nn (*n);
+    SmartPtr<int> items (0);
+    SmartPtr<double> disnn(*n);
+    SmartPtr<short int> flag(*n);
+
     int count,h,idx1,idxitem1,idx2;
 
     
     *result = 1;
-    nn    = (int*) malloc (*n * sizeof(int));
+    
+
     if(*iopt==CENTROID2) 
       {
-	items   = (int*) malloc (*n*nc * sizeof(int));
+	items.reset(*n * nc);
       }
-    disnn = (double*) malloc (*n * sizeof(double));
-    flag  = (short int*) malloc (*n * sizeof(short int));
-    if(nn == NULL || disnn == NULL || flag == NULL )
-      {
-	printf("AMAP: Not enought system memory \n"); 
-	*result = 2;
-	return;
-      }
-    
     
     /* Initialisation */
     for ( i=0; i<*n ; i++)
       {
 	flag[i]=1;
 	idxitem1=i;
-	if(items != NULL) 
+	if(items.get() != NULL) 
 	  {
 	    for ( j=0; j<nc ; j++) 
 	      {
@@ -375,25 +362,11 @@ namespace hclust_T
       } /* end of while */
 
   
-    free(nn);
-    free(disnn);
-    free(flag);
-
-    if(items != NULL )
-      free(items);
+      
+    SmartPtr<int> iia (*n );
+    SmartPtr<int> iib (*n );
   
-    iia = (int*) malloc (*n * sizeof(int));
-    iib = (int*) malloc (*n * sizeof(int));
-    if(iia == NULL || iib == NULL )
-      {
-	printf("AMAP: Not enought system memory \n"); 
-	*result = 2;
-	return;
-      }
-
-
-  
-    hierclust::hcass2(n,ia,ib,iorder,iia,iib);
+    hierclust::hcass2(n,ia,ib,iorder,iia.get(),iib.get());
   
 
     /*
@@ -406,8 +379,6 @@ namespace hclust_T
 	ib[i]= iib[i];
       }
 
-    free(iia);
-    free(iib);
   
     *result = 0;
   }

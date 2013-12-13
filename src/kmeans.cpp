@@ -4,7 +4,7 @@
  * \brief  K-means clustering 
  *
  * \date Created       : before 2005
- * \date Last Modified : Time-stamp: <2011-11-03 22:19:14 antoine>
+ * \date Last Modified : Time-stamp: <2013-12-03 21:42:43 antoine>
  *
  * \author R core team. Modified by A. Lucas for distance choice.
  *
@@ -68,16 +68,7 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
     
     if( (*method == distance_T<double>::SPEARMAN) ||  (*method == distance_T<double>::KENDALL))
       {
-	opt.data_tri_x  = (double * ) malloc ( p * sizeof(double));
-	opt.order_tri_x  = (int * ) malloc ( p * sizeof(int));
-	opt.rank_tri_x  = (int * ) malloc ( p * sizeof(int));
-	opt.data_tri_y  = (double * ) malloc ( p * sizeof(double));
-	opt.order_tri_y  = (int * ) malloc ( p * sizeof(int));
-	opt.rank_tri_y  = (int * ) malloc ( p * sizeof(int));
-	if( (opt.data_tri_x == NULL) || (opt.order_tri_x == NULL) || (opt.rank_tri_x == NULL) ||
-	    (opt.data_tri_y == NULL) || (opt.order_tri_y == NULL) || (opt.rank_tri_y == NULL)) 
-	  error("distance(): unable to alloc memory");
-
+	opt.reset(p);
       }
 
     for(i = 0; i < n; i++) cl[i] = -1;
@@ -126,13 +117,4 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
     }
 
 
-    if( (*method == distance_T<double>::SPEARMAN) ||  (*method == distance_T<double>::KENDALL))
-      {
-	free(opt.data_tri_x);
-	free(opt.rank_tri_x);
-	free(opt.order_tri_x);	
-	free(opt.data_tri_y);
-	free(opt.rank_tri_y);
-	free(opt.order_tri_y);	
-      }
 }

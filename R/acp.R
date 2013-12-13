@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2007-10-02 19:07:26 antoine>
+#  Last Modified : Time-stamp: <2013-12-02 19:32:49 antoine>
 #
 #  Description   : Principal component analysis
 #                  
@@ -67,24 +67,24 @@ print.acp <- function(x, ...)
 #   SECTION GRAPHIQUES
 #
 
-plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',variables=TRUE,labels=NULL,...)
+plot.acp <- function(x,i=1,j=2,text=TRUE,label='Composants',col='darkblue',main='Individuals PCA',variables=TRUE,individual.label=NULL,...)
 {
     U    <- x$scores
     XLAB <- paste(label,i)
     YLAB <- paste(label,j)
     plot.new()
     plot.window(range(U[,i]),range(U[,j]))
-    axis(1,label=TRUE,tick=TRUE)
-    axis(2,label=TRUE,tick=TRUE)
+    axis(1,labels=TRUE,tick=TRUE)
+    axis(2,labels=TRUE,tick=TRUE)
     box()
     
     title(xlab=XLAB,ylab=YLAB,main=main)
     if(text){
-      if(is.null(labels))
+      if(is.null(individual.label))
         {
-          labels=dimnames(x$scores)[[1]]
+          individual.label=dimnames(x$scores)[[1]]
         }
-        text(labels=labels,U[,i],U[,j],col=col,...)   
+        text(labels=individual.label,U[,i],U[,j],col=col,...)   
     }
     else{
         points(U[,i],U[,j],col=col,...) 
@@ -107,14 +107,14 @@ biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,ma
     # PLOT DES AXES
     plot.new()
     plot.window(LIM,LIM)
-    axis(1,label=TRUE,tick=TRUE)
-    axis(2,label=TRUE,tick=TRUE)
+    axis(1,labels=TRUE,tick=TRUE)
+    axis(2,labels=TRUE,tick=TRUE)
     box()
     title(xlab=XLAB,ylab=YLAB,main=main)
 
 
     # PLOT DU NOM DES FLECHES
-    text(U[,i]*1.3,U[,j]*1.3,labels=dimnames(U)[[1]],col=col)   
+    text(x=U[,i]*1.3,y=U[,j]*1.3,labels=dimnames(U)[[1]],col=col)   
 
     # PLOT DES FLECHES
     arrows(0,0,U[,i],U[,j],length = length,col=col)

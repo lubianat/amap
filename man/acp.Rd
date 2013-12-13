@@ -8,7 +8,7 @@
 \usage{
 acp(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
 pca(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
-print.acp(x, ...) 
+\S3method{print}{acp}(x, ...) 
 }
 
 

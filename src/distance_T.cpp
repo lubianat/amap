@@ -2,7 +2,7 @@
  * \brief all functions requiered for R dist function and C hcluster function.
  *
  *  \date Created: probably in 1995
- *  \date Last modified: Time-stamp: <2011-11-08 21:06:41 antoine>
+ *  \date Last modified: Time-stamp: <2013-12-03 21:38:11 antoine>
  *
  *  \author R core members, and lately: Antoine Lucas 
  *
@@ -395,7 +395,7 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
 						  int i1, int i2,
 						  int * flag, T_tri & opt)
 {
-  T num,denum,sumx,sumy,sumxx,sumyy,sumxy;
+  T num,denum2,sumx,sumy,sumxx,sumyy,sumxy;
   int count,j;
 
   count= 0;
@@ -424,8 +424,12 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
       return NA_REAL;
     }
   num = sumxy - ( sumx*sumy /count );
-  denum = sqrt( (sumxx - (sumx*sumx /count ) )* (sumyy - (sumy*sumy /count ) ) );
-  return 1 - (num / denum);
+  denum2 =  (sumxx - (sumx*sumx /count ) )* (sumyy - (sumy*sumy /count ) ) ;
+  if(denum2 <=0)
+    {
+      return 0;
+    }
+  return 1 - (num / sqrt(denum2));
 }
 
 /** \brief Absolute Distance correlation (Uncentered Pearson)
@@ -512,12 +516,12 @@ template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x
 					       int * flag, T_tri & opt)
 {
   int j;
-  double * data_tri_x = opt.data_tri_x;
-  int * order_tri_x = opt.order_tri_x;
-  int * rank_tri_x = opt.rank_tri_x;
-  double * data_tri_y = opt.data_tri_y;
-  int * order_tri_y = opt.order_tri_y;
-  int * rank_tri_y = opt.rank_tri_y;
+  double * data_tri_x = opt.data_tri_x.get();
+  int * order_tri_x = opt.order_tri_x.get();
+  int * rank_tri_x = opt.rank_tri_x.get();
+  double * data_tri_y = opt.data_tri_y.get();
+  int * order_tri_y = opt.order_tri_y.get();
+  int * rank_tri_y = opt.rank_tri_y.get();
   int n;
   T diffrang=0;
 
@@ -654,12 +658,12 @@ template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x,
 					      int * flag, T_tri & opt)
 {
   int j,k;
-  double * data_tri_x = opt.data_tri_x;
-  int * order_tri_x = opt.order_tri_x;
-  int * rank_tri_x = opt.rank_tri_x;
-  double * data_tri_y = opt.data_tri_y;
-  int * order_tri_y = opt.order_tri_y;
-  int * rank_tri_y = opt.rank_tri_y;
+  double * data_tri_x = opt.data_tri_x.get();
+  int * order_tri_x = opt.order_tri_x.get();
+  int * rank_tri_x = opt.rank_tri_x.get();
+  double * data_tri_y = opt.data_tri_y.get();
+  int * order_tri_y = opt.order_tri_y.get();
+  int * rank_tri_y = opt.rank_tri_y.get();
   int n;
   T dist,P=0;
   bool ordre_x,ordre_y;
@@ -759,7 +763,7 @@ template<class T> void  distance_T<T>::distance(double *x, int *nr,
       arguments[i].method = method;
       arguments[i].nbprocess= *nbprocess;
       arguments[i].ierr=ierr;
-			arguments[i].i2=i2;
+      arguments[i].i2=i2;
     }
   *ierr = 1; /* res = 1 => no missing values
 		res = 0 => missings values */
@@ -885,15 +889,7 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   
   if( (*method == SPEARMAN) ||  (*method == KENDALL))
     {
-      opt.data_tri_x  = (double * ) malloc ( (nc) * sizeof(double));
-      opt.order_tri_x  = (int * ) malloc ( (nc) * sizeof(int));
-      opt.rank_tri_x  = (int * ) malloc ( (nc) * sizeof(int));
-      opt.data_tri_y  = (double * ) malloc ( (nc) * sizeof(double));
-      opt.order_tri_y  = (int * ) malloc ( (nc) * sizeof(int));
-      opt.rank_tri_y  = (int * ) malloc ( (nc) * sizeof(int));
-      if( (opt.data_tri_x == NULL) || (opt.order_tri_x == NULL) || (opt.rank_tri_x == NULL) ||
-	  (opt.data_tri_y == NULL) || (opt.order_tri_y == NULL) || (opt.rank_tri_y == NULL)) 
- 	error("distance(): unable to alloc memory");
+      opt.reset(nc);
     }
 
   /*
@@ -938,17 +934,6 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
 	
       }
   }
-
-	
-  if( (*method == SPEARMAN) ||  (*method == KENDALL))
-    {
-      free(opt.data_tri_x);
-      free(opt.rank_tri_x);
-      free(opt.order_tri_x);	
-      free(opt.data_tri_y);
-      free(opt.rank_tri_y);
-      free(opt.order_tri_y);	
-    }
 
   return (void*)0;
     

@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2011-11-04 22:55:20 antoine>
+## Last Modified : Time-stamp: <2014-02-26 19:03:13 antoine>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -67,7 +67,6 @@ hclusterpar <- hcluster <- function (x, method = "euclidean", diag = FALSE, uppe
             nbprocess  = as.integer(nbproc),
             precision  = as.integer(precision),
             res  = as.integer (1),
-            DUP = FALSE,
             NAOK=TRUE,
             PACKAGE= "amap")
 

@@ -1,3 +1,13 @@
+Wed Feb 26 2014
+  * remove DUP=FALSE in .C call.
+
+Tue Dec 03 2013
+  * remove [again] printf in C++ code
+  * fix memory leaks
+  * add non-regression tests.
+
+Wed Sep 11 2013
+  * remove printf in C/c++ code
 
 Sun Nov 06 2011: 0.8-6
   * fix distances pearson and correlation (problem with vector 0,0,0...)

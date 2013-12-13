@@ -4,7 +4,7 @@
  * \brief  Robust principal component analysis
  *
  * \date Created       : 06/11/02 
- * \date Last Modified : Time-stamp: <2005-10-09 13:50:13 antoine>
+ * \date Last Modified : Time-stamp: <2013-12-03 22:05:39 antoine>
  *
  * This Message must remain attached to this source code at all times.
  * This source code may not be redistributed, nor may any executable
@@ -20,10 +20,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "R.h"
 #ifndef M_PIl
 #define M_PIl          3.1415926535897932384626433832795029L  /* pi */
 #endif
-
+#include "smartPtr.h"
+#include "acprob.h"
 
 /* Compiliation: */
 /* R CMD SHLIB acprob.c */
@@ -135,22 +137,12 @@ void mult(double *x,int *p,double *res)
  */
 void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
 {
-  double *delta;
-  double *temp;
+  SmartPtr<double> delta (*p);
+  SmartPtr<double> temp (*p * *p);
   double N=0,K=0,som=0;
   int i,j,k,l;
   
   *result = 1; 
-  delta = (double*) malloc (*p * sizeof(double));
-  temp  = (double*) malloc (*p * *p * sizeof(double));
-
-  if(delta == NULL || temp == NULL )
-    {
-      printf("AMAP: Not enought system memory \n"); 
-      *result = 2; 
-      return;
-    }
-
 
   for (l=0; l < (*p * *p) ; l++)
     res[l]=0;
@@ -161,14 +153,14 @@ void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, in
 	  /* delta = Xi-Xj  (ligne i et j de la matrice X) */
 	  for (k=0; k < *p ; k++)
 	    delta[k]=x[i+(k * *n)]- x[j+(k * *n)];
-	  N = norm(delta,p,d)/ *h;
+	  N = norm(delta.get(),p,d)/ *h;
 
 	  /* tmp2 = K ( |delta/h|^2 )  */
 	  noyau(&N,kernel,&K);
 	  som += K;
 
 	 /*   temp = delta * delta'  (matrice) */
-	  mult(delta,p,temp);
+	  mult(delta.get(),p,temp.get());
 	  for (l=0; l < (*p * *p) ; l++)
 	    res[l] += temp[l] * K ;
 	}
@@ -177,8 +169,7 @@ void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, in
   for (l=0; l < (*p * *p) ; l++)
     res[l] = res[l] / som ;
 
-  free(delta);
-  free(temp);
+
   *result = 0; 
 }
 
@@ -201,18 +192,11 @@ void W(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, in
 void VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result)
 {
   int i,j;
-  double *temp, *Xi;
+  SmartPtr<double> temp (*p * *p);
+  SmartPtr<double> Xi (*p);
   double N=0,K=0,som=0;
 
   *result = 1;
-  temp  = (double*) malloc (*p * *p * sizeof(double));
-  Xi = (double*) malloc (*p * sizeof(double));
-  if(temp == NULL || Xi == NULL )
-    {
-      printf("AMAP: Not enought system memory \n"); 
-      *result = 2;
-      return;
-    }
 
 
   som = 0;
@@ -221,10 +205,10 @@ void VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *re
       for (j=0; j < *p ; j++)
 	Xi[j]=x[i+(j * *n)];
      
-      N = norm(Xi,p,d)/ *h;
+      N = norm(Xi.get(),p,d)/ *h;
       noyau(&N,kernel,&K);
 
-      mult(Xi,p,temp);
+      mult(Xi.get(),p,temp.get());
       for (j=0; j < (*p * *p) ; j++)
 	res[j] += temp[j] * K ;
       som += K;
@@ -233,8 +217,7 @@ void VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *re
   for (j=0; j < (*p * *p) ; j++)
     res[j] = res[j] / som ;
 
-  free(Xi);
-  free(temp);
+
   *result = 0;
 }
 

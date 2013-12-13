@@ -2,8 +2,10 @@ Dist <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
 {
 
   if(class(x) == "exprSet")
-      x <- exprs(x)
-
+  {
+      library(Biobase)
+      x <- Biobase::exprs(x)
+  }
       
   ## account for possible spellings of euclidean
   if(!is.na(pmatch(method, "euclidian")))
@@ -27,7 +29,6 @@ Dist <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
 	    method= as.integer(method),
             nbproc = as.integer(nbproc),
             ierr=as.integer(0),
-	    DUP = FALSE,
             NAOK=TRUE,
             PACKAGE="amap"
             )$d
