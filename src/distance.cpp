@@ -2,7 +2,7 @@
 #include "distance.h"
 #include "distance_T.h"
 
-
+using namespace amap;
 
 /**
  * R_distance: compute parallelized distance. Function called direclty by R

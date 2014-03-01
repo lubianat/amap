@@ -47,7 +47,7 @@ namespace hclust_T
     /*
      * Calculate d: distance matrix
      */
-    distance_T<T>::distance(x,nr,nc,d.get(),diag,method,nbprocess,&flag,-1);
+    amap::distance_T<T>::distance(x,nr,nc,d.get(),diag,method,nbprocess,&flag,-1);
     if(flag == 0)
       {
 	Rprintf("AMAP: Unable to compute Hierarchical Clustering: missing values in distance matrix\n"); 
@@ -203,7 +203,7 @@ namespace hclust_T
 	    int flg;
 	    int dg=0;
 	    /* recompute all distances in parallel */
-	    distance_T<T>::distance(mx,&nr,&nc,diss,&dg,method,nbprocess,&flg, i2);
+	    amap::distance_T<T>::distance(mx,&nr,&nc,diss,&dg,method,nbprocess,&flg, i2);
 	    /*update disnn and nn*/
 	    for  ( k=0; k< *n ; k++) 
 	      {		

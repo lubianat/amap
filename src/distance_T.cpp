@@ -2,7 +2,7 @@
  * \brief all functions requiered for R dist function and C hcluster function.
  *
  *  \date Created: probably in 1995
- *  \date Last modified: Time-stamp: <2013-12-03 21:38:11 antoine>
+ *  \date Last modified: Time-stamp: <2014-03-01 13:07:20 antoine>
  *
  *  \author R core members, and lately: Antoine Lucas 
  *
@@ -53,7 +53,7 @@
 #define MAX( A , B )  ( ( A ) > ( B ) ? ( A ) : ( B ) )
 #define MIN( A , B )  ( ( A ) < ( B ) ? ( A ) : ( B ) )
 
-
+namespace amap {
 // ---------------------------------------------------------
 // Distance euclidean (i.e. sqrt(sum of square) )
 //
@@ -83,23 +83,20 @@
 //  Return: distance value
 //
 // ---------------------------------------------------------
-template<class T> T  distance_T<T>::R_euclidean(double * x, double * y , int nr_x, int nr_y, int nc, 
-						int i1, int i2,
+template<class T> T  distance_T<T>::R_euclidean(vecteur<double> & x, vecteur<double> & y ,
 						int * flag, T_tri & opt)
 {
   T dev, dist;
-  int count, j;
+  int count, i;
 
   count= 0;
   dist = 0;
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      dev = (x[i1] - y[i2]);
+  for(i = 0 ; i < x.size() && i < y.size() ; i++) {
+    if(R_FINITE(x[i]) && R_FINITE(y[i])) {
+      dev = (x[i] - y[i]);
       dist += dev * dev;
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
   }
   if(count == 0) // NA for all j: 
     { 
@@ -107,7 +104,7 @@ template<class T> T  distance_T<T>::R_euclidean(double * x, double * y , int nr_
       return NA_REAL;
     }
 
-  if(count != nc) dist /= ((T)count/nc);
+  if(count != x.size()) dist /= ((T)count/x.size());
   return sqrt(dist);
 }
 
@@ -141,8 +138,7 @@ template<class T> T  distance_T<T>::R_euclidean(double * x, double * y , int nr_
 //  Return: distance value
 //
 // ---------------------------------------------------------
-template<class T> T  distance_T<T>::R_maximum(double * x, double * y , int nr_x, int nr_y, int nc, 
-					      int i1, int i2,
+template<class T> T  distance_T<T>::R_maximum(vecteur<double> & x, vecteur<double> & y ,
 					      int * flag, T_tri & opt)
 {
   T dev, dist;
@@ -150,15 +146,14 @@ template<class T> T  distance_T<T>::R_maximum(double * x, double * y , int nr_x,
 
   count = 0;
   dist = std::numeric_limits<T>::min();
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      dev = fabs(x[i1] - y[i2]);
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      dev = fabs(x[j] - y[j]);
       if(dev > dist)
 	dist = dev;
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0)
     {
@@ -198,8 +193,7 @@ template<class T> T  distance_T<T>::R_maximum(double * x, double * y , int nr_x,
 //  Return: distance value
 //
 // ---------------------------------------------------------
-template<class T> T  distance_T<T>::R_manhattan(double * x, double * y , int nr_x, int nr_y, int nc, 
-						int i1, int i2,
+template<class T> T  distance_T<T>::R_manhattan(vecteur<double> & x, vecteur<double> & y ,
 						int * flag, T_tri & opt)
 {
   T dist;
@@ -207,20 +201,19 @@ template<class T> T  distance_T<T>::R_manhattan(double * x, double * y , int nr_
 
   count = 0;
   dist = 0;
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      dist += fabs(x[i1] - y[i2]);
+  for(j = 0 ; j < x.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      dist += fabs(x[j] - y[j]);
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0)
     {
       *flag = 0;
       return NA_REAL;
     }
-  if(count != nc) dist /= ((T)count/nc);
+  if(count != x.size()) dist /= ((T)count/x.size());
   return dist;
 }
 
@@ -253,8 +246,7 @@ template<class T> T  distance_T<T>::R_manhattan(double * x, double * y , int nr_
 //  Return: distance value
 //
 // ---------------------------------------------------------
-template<class T> T  distance_T<T>::R_canberra(double * x, double * y , int nr_x, int nr_y, int nc, 
-					       int i1, int i2,
+template<class T> T  distance_T<T>::R_canberra(vecteur<double> & x, vecteur<double> & y ,
 					       int * flag, T_tri & opt)
 {
   T dist, sum, diff;
@@ -262,31 +254,29 @@ template<class T> T  distance_T<T>::R_canberra(double * x, double * y , int nr_x
 
   count = 0;
   dist = 0;
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      sum = fabs(x[i1] + y[i2]);
-      diff = fabs(x[i1] - y[i2]);
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      sum = fabs(x[j] + y[j]);
+      diff = fabs(x[j] - y[j]);
       if (sum > DBL_MIN || diff > DBL_MIN) {
 	dist += diff/sum;
 	count++;
       }
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0)
     {
       *flag = 0;
       return NA_REAL;
     }
-  if(count != nc) dist /= ((T)count/nc);
+  if(count != x.size()) dist /= ((T)count/x.size());
   return dist;
 }
 
 /** \brief Distance binary
  */
-template<class T> T  distance_T<T>::R_dist_binary(double * x, double * y , int nr_x, int nr_y, int nc, 
-						  int i1, int i2,
+template<class T> T  distance_T<T>::R_dist_binary(vecteur<double> & x, vecteur<double> & y ,
 						  int * flag, T_tri & opt)
 {
   int total, count, dist;
@@ -296,16 +286,15 @@ template<class T> T  distance_T<T>::R_dist_binary(double * x, double * y , int n
   count = 0;
   dist = 0;
 
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      if(x[i1] || y[i2]){
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      if(x[j] || y[j]){
 	count++;
-	if( ! (x[i1] && y[i2]) ) dist++;
+	if( ! (x[j] && y[j]) ) dist++;
       }
       total++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
 
   if(total == 0)
@@ -320,8 +309,7 @@ template<class T> T  distance_T<T>::R_dist_binary(double * x, double * y , int n
 /** \brief Pearson / Pearson centered (correlation)
  *  \note Added by A. Lucas
  */
-template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x, int nr_y, int nc, 
-					      int i1, int i2,
+template<class T> T  distance_T<T>::R_pearson(vecteur<double> & x, vecteur<double> & y ,
 					      int * flag, T_tri & opt)
 {
   T num,sum1,sum2, dist;
@@ -331,15 +319,14 @@ template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x,
   num = 0;
   sum1 = 0;
   sum2 = 0;
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      num += (x[i1] * y[i2]);
-      sum1 += (x[i1] * x[i1]);
-      sum2 += (y[i2] * y[i2]);
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      num += (x[j] * y[j]);
+      sum1 += (x[j] * x[j]);
+      sum2 += (y[j] * y[j]);
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0) 
     {
@@ -353,26 +340,24 @@ template<class T> T  distance_T<T>::R_pearson(double * x, double * y , int nr_x,
 /** \brief Absoulute Pearson / Pearson uncentered (correlation)
  *  \note Added by L. Cerulo
  */
-template<class T> T  distance_T<T>::R_abspearson(double * x, double * y , int nr_x, int nr_y, int nc, 
-																							int i1, int i2,
-																							int * flag, T_tri & opt)
+template<class T> T  distance_T<T>::R_abspearson(vecteur<double> & x, vecteur<double> & y ,
+						 int * flag, T_tri & opt)
 {
-	T num,sum1,sum2, dist;
+  T num,sum1,sum2, dist;
   int count,j;
 	
   count= 0;
   num = 0;
   sum1 = 0;
   sum2 = 0;
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      num += (x[i1] * y[i2]);
-      sum1 += (x[i1] * x[i1]);
-      sum2 += (y[i2] * y[i2]);
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      num += (x[j] * y[j]);
+      sum1 += (x[j] * x[j]);
+      sum2 += (y[j] * y[j]);
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0) 
 	{
@@ -391,8 +376,7 @@ template<class T> T  distance_T<T>::R_abspearson(double * x, double * y , int nr
 /** \brief Distance correlation (Uncentered Pearson)
  *  \note Added by A. Lucas
  */
-template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int nr_x, int nr_y, int nc, 
-						  int i1, int i2,
+template<class T> T  distance_T<T>::R_correlation(vecteur<double> & x, vecteur<double> & y ,
 						  int * flag, T_tri & opt)
 {
   T num,denum2,sumx,sumy,sumxx,sumyy,sumxy;
@@ -406,17 +390,16 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
   sumxy=0;
 
 
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      sumxy += (x[i1] * y[i2]);
-      sumx += x[i1];
-      sumy += y[i2];
-      sumxx += x[i1] * x[i1];
-      sumyy += y[i2] * y[i2];
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      sumxy += (x[j] * y[j]);
+      sumx += x[j];
+      sumy += y[j];
+      sumxx += x[j] * x[j];
+      sumyy += y[j] * y[j];
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0)
     {
@@ -435,9 +418,8 @@ template<class T> T  distance_T<T>::R_correlation(double * x, double * y , int n
 /** \brief Absolute Distance correlation (Uncentered Pearson)
  *  \note Added by L. Cerulo
  */
-template<class T> T  distance_T<T>::R_abscorrelation(double * x, double * y , int nr_x, int nr_y, int nc, 
-																									int i1, int i2,
-																									int * flag, T_tri & opt)
+template<class T> T  distance_T<T>::R_abscorrelation(vecteur<double> & x, vecteur<double> & y ,
+						     int * flag, T_tri & opt)
 {
   T num,denum,sumx,sumy,sumxx,sumyy,sumxy,dist,term;
   int count,j;
@@ -450,17 +432,16 @@ template<class T> T  distance_T<T>::R_abscorrelation(double * x, double * y , in
   sumxy=0;
 	
 	
-  for(j = 0 ; j < nc ; j++) {
-    if(R_FINITE(x[i1]) && R_FINITE(y[i2])) {
-      sumxy += (x[i1] * y[i2]);
-      sumx += x[i1];
-      sumy += y[i2];
-      sumxx += x[i1] * x[i1];
-      sumyy += y[i2] * y[i2];
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(R_FINITE(x[j]) && R_FINITE(y[j])) {
+      sumxy += (x[j] * y[j]);
+      sumx += x[j];
+      sumy += y[j];
+      sumxx += x[j] * x[j];
+      sumyy += y[j] * y[j];
       count++;
     }
-    i1 += nr_x;
-    i2 += nr_y;
+
   }
   if(count == 0)
 	{
@@ -511,8 +492,7 @@ template<class T> T  distance_T<T>::R_abscorrelation(double * x, double * y , in
 //  Return: distance value
 //
 // ---------------------------------------------------------
-template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x, int nr_y, int nc, 
-					       int i1, int i2,
+template<class T> T  distance_T<T>::R_spearman(vecteur<double> & x, vecteur<double> & y ,
 					       int * flag, T_tri & opt)
 {
   int j;
@@ -525,28 +505,27 @@ template<class T> T  distance_T<T>::R_spearman(double * x, double * y , int nr_x
   int n;
   T diffrang=0;
 
-  for(j = 0 ; j < nc ; j++) {
-    if(!(R_FINITE(x[i1]) && R_FINITE(y[i2])))
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(!(R_FINITE(x[j]) && R_FINITE(y[j])))
       {
 	*flag = 0;
 	return NA_REAL;	
       }
     order_tri_x[j] = rank_tri_x[j] = 
       order_tri_y[j] = rank_tri_y[j] = j;
-    data_tri_x[j] = x[i1];
-    data_tri_y[j] = y[i2];
-    i1 += nr_x;
-    i2 += nr_y;
+    data_tri_x[j] = x[j];
+    data_tri_y[j] = y[j];
+
   }
 
-  n  = nc;
+  n  = x.size();
   /* sort and compute rank */
   /* First list */
   rsort_rank_order(data_tri_x, order_tri_x,rank_tri_x, &n);
   /* Second list */
   rsort_rank_order(data_tri_y, order_tri_y,rank_tri_y, &n);
 
-  for(j=0;j<nc;j++)
+  for(j=0;j< x.size();j++)
     {
       diffrang += pow((T) ( rank_tri_x[j] - rank_tri_y[j]),2);
     }
@@ -653,8 +632,7 @@ template<class T> T  distance_T<T>::R_kendall_corr(double * x, double * y , int 
 //  Return: distance value
 //
 // ---------------------------------------------------------
-template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x, int nr_y, int nc, 
-					      int i1, int i2,
+template<class T> T  distance_T<T>::R_kendall(vecteur<double> & x, vecteur<double>& y ,
 					      int * flag, T_tri & opt)
 {
   int j,k;
@@ -668,30 +646,29 @@ template<class T> T  distance_T<T>::R_kendall(double * x, double * y , int nr_x,
   T dist,P=0;
   bool ordre_x,ordre_y;
 
-  for(j = 0 ; j < nc ; j++) {
-    if(!(R_FINITE(x[i1]) && R_FINITE(y[i2])))
+  for(j = 0 ; j < x.size() && j < y.size() ; j++) {
+    if(!(R_FINITE(x[j]) && R_FINITE(y[j])))
       {
 	*flag = 0;
 	return NA_REAL;	
       }
     order_tri_x[j] = rank_tri_x[j] = 
       order_tri_y[j] = rank_tri_y[j] = j;
-    data_tri_x[j] = x[i1];
-    data_tri_y[j] = y[i2];
-    i1 += nr_x;
-    i2 += nr_y;
+    data_tri_x[j] = x[j];
+    data_tri_y[j] = y[j];
+
   }
 
-  n  = nc;
+  n  = x.size();
   /* sort and compute rank */
   /* First list */
   rsort_rank_order(data_tri_x, order_tri_x,rank_tri_x, &n);
   /* Second list */
   rsort_rank_order(data_tri_y, order_tri_y,rank_tri_y, &n);
 
-  for(j=0;j<nc;j++)
+  for(j=0;j<x.size();j++)
     {     
-      for(k=j+1; k < nc; ++k)
+      for(k=j+1; k < x.size(); ++k)
 	{
 	  ordre_x = rank_tri_x[j] < rank_tri_x[k];
 	  ordre_y = rank_tri_y[j] < rank_tri_y[k];
@@ -883,6 +860,8 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   ierr =  arguments[0].ierr;
   int i2 =  arguments[0].i2;
 
+
+  matrice<double> myMatrice (x, nr, nc);
   
   getDistfunction(*method,distfun);
 
@@ -905,6 +884,9 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
   int fin = (int) floor(((nr+1.)*nbprocess - sqrt( (nr+1.)*(nr+1.) * nbprocess * nbprocess - (nr+1.)*(nr+1.) * nbprocess * (no+1.)  ) )/nbprocess);
 
     
+  if (fin > nr) {
+    fin = nr;
+  }
   //printf("Thread %d debut %d fin %d i2=%d met=%d\n",no,debut,fin,i2,*method);    
 
 
@@ -917,18 +899,24 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
 	  ij = (2 * (nr-dc) - j +1) * (j) /2 ;
 	  for(i = j+dc ; i < nr ; i++)
 	    {
-	      d[ij++] = distfun(x,x,nr, nr, nc, i, j,ierr,opt);
+	      vecteur<double> rowI = myMatrice.getRow(i);
+	      vecteur<double> rowJ = myMatrice.getRow(j);
+	      d[ij++] = distfun(rowI, rowJ ,ierr,opt);
 	    }
 	}
   } 
   else { /* updates the distance only for i2*/
+    //printf("DEBUG AL : %d %d %d\n", i2, nr, nc);
     for(j = debut ; j < fin ; j++)
       {
 	if (i2!=j) {
 	  int ind1 = j+i2*nr-(i2+1)*(i2+2)/2;
 	  if (i2 > j)
 	    ind1 = i2+j*nr-(j+1)*(j+2)/2;
-	  d[ind1] = distfun(x,x,nr, nr, nc, i2, j,ierr,opt);
+
+	  vecteur<double> rowI = myMatrice.getRow(i2);
+	  vecteur<double> rowJ = myMatrice.getRow(j);
+	  d[ind1] = distfun(rowI, rowJ,ierr,opt);
 	  //printf("updated dist %d %d %f\n",i2,j,d[ind1]);
 	}
 	
@@ -961,7 +949,7 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
 // \param opt optional parameter send to spearman dist.
 //
 // ---------------------------------------------------------
-template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,int nr2, int nc,int i1,int i2, int *method, 
+template <class T> T distance_T<T>::distance_kms(vecteur<double> & x, vecteur<double> & y , int *method, 
 						 int * ierr, T_tri & opt)
 {
   /*
@@ -978,6 +966,9 @@ template <class T> T distance_T<T>::distance_kms(double *x,double *y, int nr1,in
   getDistfunction(*method,distfun);
 
   // here: distance computation
-  res = distfun(x,y, nr1,nr2, nc, i1, i2,ierr, opt);
+  res = distfun(x,y,ierr, opt);
   return( res);
 }
+
+
+};

@@ -4,7 +4,7 @@
  * \brief  K-means clustering 
  *
  * \date Created       : before 2005
- * \date Last Modified : Time-stamp: <2013-12-03 21:42:43 antoine>
+ * \date Last Modified : Time-stamp: <2014-03-01 12:51:00 antoine>
  *
  * \author R core team. Modified by A. Lucas for distance choice.
  *
@@ -32,7 +32,7 @@
 
 #include "distance_T.h" 
 
-
+using namespace amap;
 
 /** K-means clustering using Lloyd algorithm.
  * \brief compute k-nearest centroid of our dataset.
@@ -56,65 +56,73 @@ void kmeans_Lloyd2(double *x, int *pn, int *pp, double *cen, int *pk, int *cl,
    * x: matrix of size nxp
    * cen: matrix of size kxp
    */
-    int n = *pn, k = *pk, p = *pp, maxiter = *pmaxiter;
-    int iter, i, j, c, it, inew = 0;
-    double best, dd;
-    Rboolean updated;
-    distance_T<double>::T_tri opt;
-    int  ierr[1];
-    //double * data_tri;
-    //int * order_tri;
-    //int * rank_tri;
+  int n = *pn, k = *pk, p = *pp, maxiter = *pmaxiter;
+  int iter, i, j, c, it, inew = 0;
+  double best, dd;
+  Rboolean updated;
+  distance_T<double>::T_tri opt;
+  int  ierr[1];
+  //double * data_tri;
+  //int * order_tri;
+  //int * rank_tri;
+
+  matrice<double> dataMatrice (x, n,p);
+  matrice<double> centroidMatrice (cen, k, p);
     
-    if( (*method == distance_T<double>::SPEARMAN) ||  (*method == distance_T<double>::KENDALL))
-      {
-	opt.reset(p);
-      }
-
-    for(i = 0; i < n; i++) cl[i] = -1;
-    for(iter = 0; iter < maxiter; iter++) {
-	updated = FALSE;
-	for(i = 0; i < n; i++) {
-	    /* find nearest centre for each point */
-	    best = R_PosInf;
-	    for(j = 0; j < k; j++) {
-
-  	        dd = distance_T<double>::distance_kms(x,cen,n,k,p,i,j,method,ierr,opt);
-		/*printf("| %f",dd);
-		 */
-		if(dd < best) {
-		    best = dd;
-		    inew = j+1;
-		}
-	    }
-	    if(cl[i] != inew) {
-		updated = TRUE;
-		cl[i] = inew;
-	    }
-	}
-	if(!updated) break;
-	/* update each centre */
-	for(j = 0; j < k*p; j++) cen[j] = 0.0;
-	for(j = 0; j < k; j++) nc[j] = 0;
-	for(i = 0; i < n; i++) {
-	    it = cl[i] - 1; nc[it]++;
-	    for(c = 0; c < p; c++) cen[it+c*k] += x[i+c*n];
-	}
-	for(j = 0; j < k*p; j++) cen[j] /= nc[j % k];
+  if( (*method == distance_T<double>::SPEARMAN) ||  (*method == distance_T<double>::KENDALL))
+    {
+      opt.reset(p);
     }
 
-    *pmaxiter = iter + 1;
-    /*    for(j = 0; j < k; j++) wss[j] = 0.0; */
+  for(i = 0; i < n; i++) cl[i] = -1;
+  for(iter = 0; iter < maxiter; iter++) {
+    updated = FALSE;
     for(i = 0; i < n; i++) {
-	it = cl[i] - 1;
-	wss[it] = distance_T<double>::distance_kms(x,cen,n,k,p,i,it,method,ierr,opt);
-	wss[it] = wss[it] * (wss[it]) ;
-	/*
-	for(c = 0; c < p; c++) {
-	    tmp = x[i+n*c] - cen[it+k*c];
-	    wss[it] += tmp * tmp;
-	    }*/
+      /* find nearest centre for each point */
+      best = R_PosInf;
+      for(j = 0; j < k; j++) {
+	vecteur<double> dataI = dataMatrice.getRow(i);
+	vecteur<double> centroidJ = centroidMatrice.getRow(j);
+	dd = distance_T<double>::distance_kms(dataI, centroidJ,method,ierr,opt);
+	/*printf("| %f",dd);
+	 */
+	if(dd < best) {
+	  best = dd;
+	  inew = j+1;
+	}
+      }
+      if(cl[i] != inew) {
+	updated = TRUE;
+	cl[i] = inew;
+      }
     }
+    if(!updated) break;
+    /* update each centre */
+    for(j = 0; j < k*p; j++) cen[j] = 0.0;
+    for(j = 0; j < k; j++) nc[j] = 0;
+    for(i = 0; i < n; i++) {
+      it = cl[i] - 1; nc[it]++;
+      for(c = 0; c < p; c++) cen[it+c*k] += x[i+c*n];
+    }
+    for(j = 0; j < k*p; j++) cen[j] /= nc[j % k];
+  }
+
+  *pmaxiter = iter + 1;
+  /*    for(j = 0; j < k; j++) wss[j] = 0.0; */
+  for(i = 0; i < n; i++) {
+    it = cl[i] - 1;
+
+    vecteur<double> dataI = dataMatrice.getRow(i);
+    vecteur<double> centroidJ = centroidMatrice.getRow(it);
+
+    wss[it] = distance_T<double>::distance_kms(dataI, centroidJ,method,ierr,opt);
+    wss[it] = wss[it] * (wss[it]) ;
+    /*
+      for(c = 0; c < p; c++) {
+      tmp = x[i+n*c] - cen[it+k*c];
+      wss[it] += tmp * tmp;
+      }*/
+  }
 
 
 }

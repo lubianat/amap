@@ -1,3 +1,6 @@
+Sat Mar 01 2014
+  * Fix C++ code.
+
 Wed Feb 26 2014
   * remove DUP=FALSE in .C call.
 
