@@ -2,7 +2,7 @@
  * \brief all functions requiered for R dist function and C hcluster function.
  *
  *  \date Created: probably in 1995
- *  \date Last modified: Time-stamp: <2014-03-01 13:07:20 antoine>
+ *  \date Last modified: Time-stamp: <2014-03-01 17:21:54 antoine>
  *
  *  \author R core members, and lately: Antoine Lucas 
  *
@@ -36,6 +36,7 @@
 #endif
 
 #include "distance_T.h"
+#include "matriceTriangle.h"
 #include "distance.h"
 
 #include <float.h>
@@ -862,7 +863,7 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
 
 
   matrice<double> myMatrice (x, nr, nc);
-  
+  matriceTriangle<T> distMatrice(d, nr, false);
   getDistfunction(*method,distfun);
 
   
@@ -896,27 +897,29 @@ template <class T> void* distance_T<T>::thread_dist(void* arguments_void)
     {
       for(j = debut ; j < fin ; j++)
 	{
+	  vecteur<T> distRow = distMatrice.getRow(j);
+	  vecteur<double> rowJ = myMatrice.getRow(j);
+
 	  ij = (2 * (nr-dc) - j +1) * (j) /2 ;
 	  for(i = j+dc ; i < nr ; i++)
 	    {
 	      vecteur<double> rowI = myMatrice.getRow(i);
-	      vecteur<double> rowJ = myMatrice.getRow(j);
-	      d[ij++] = distfun(rowI, rowJ ,ierr,opt);
+	      distRow[i] = distfun(rowI, rowJ ,ierr,opt);
 	    }
 	}
   } 
   else { /* updates the distance only for i2*/
-    //printf("DEBUG AL : %d %d %d\n", i2, nr, nc);
+
+    // a row of distance matrix
+    vecteur<T> distRow = distMatrice.getRow(i2);
+    vecteur<double> rowI = myMatrice.getRow(i2);
+
     for(j = debut ; j < fin ; j++)
       {
 	if (i2!=j) {
-	  int ind1 = j+i2*nr-(i2+1)*(i2+2)/2;
-	  if (i2 > j)
-	    ind1 = i2+j*nr-(j+1)*(j+2)/2;
 
-	  vecteur<double> rowI = myMatrice.getRow(i2);
 	  vecteur<double> rowJ = myMatrice.getRow(j);
-	  d[ind1] = distfun(rowI, rowJ,ierr,opt);
+	  distRow[j] = distfun(rowI, rowJ,ierr,opt);
 	  //printf("updated dist %d %d %f\n",i2,j,d[ind1]);
 	}
 	

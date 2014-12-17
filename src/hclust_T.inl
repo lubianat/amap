@@ -79,7 +79,7 @@ namespace hclust_T
     SmartPtr<double> disnn(*n);
     SmartPtr<short int> flag(*n);
 
-    int count,h,idx1,idxitem1,idx2;
+    int h,idx1,idxitem1,idx2;
 
     
     *result = 1;

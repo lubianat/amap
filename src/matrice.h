@@ -57,7 +57,20 @@ namespace amap {
   };
 
 
-
+  /**
+   * Matrix data.
+   *
+   * a matrix with 3 row and 4 cols
+   * +---+---+---+---+
+   * | 0 | 3 | 6 | 9 |
+   * +---+---+---+---+
+   * | 1 | 4 | 7 | 10|
+   * +---+---+---+---+
+   * | 2 | 5 | 8 | 11|
+   * +---+---+---+---+
+   * 
+   * 
+   */
   template<class T> class matrice : public array<T> {
   private:
     /**
@@ -131,6 +144,22 @@ namespace amap {
       return nrow * ncol;
     };
     
+    /**
+     * accessor.
+     * \return number of rows.
+     */
+    int getNrow() {
+      return nrow;
+    }
+
+    /**
+     * accessor.
+     * \return number of rows.
+     */
+    int getNcol() {
+      return ncol;
+    }
+
 
   };
 

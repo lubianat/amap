@@ -33,7 +33,7 @@ function(x, centers, iter.max = 10, nstart = 1,
   if(class(x) == "exprSet")
   { 
     library(Biobase)
-     x <- exprs(x)
+     x <- Biobase::exprs(x)
   }
 
   x <- as.matrix(x)

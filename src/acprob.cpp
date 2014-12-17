@@ -4,7 +4,7 @@
  * \brief  Robust principal component analysis
  *
  * \date Created       : 06/11/02 
- * \date Last Modified : Time-stamp: <2013-12-03 22:05:39 antoine>
+ * \date Last Modified : Time-stamp: <2014-12-17 18:55:45 antoine>
  *
  * This Message must remain attached to this source code at all times.
  * This source code may not be redistributed, nor may any executable
@@ -55,11 +55,11 @@ void noyau(double *u, char **k,double *res)
   switch (**k)
 	{
 	case 'g' : *res = pow(2 * pi,-0.5) * exp(-pow(*u ,2)/2)   ; break;
-	case 'q' : *res = 15.0/16 * pow(1- pow(*u,2),2) * (abs(*u)<1); break;
-	case 't' : *res = 35.0/32 * pow(1- pow(*u,2),3) * (abs(*u)<1); break;
-	case 'e' : *res =  3.0/4  * (1- pow(*u,2))   * (abs(*u)<1); break;
-	case 'c' : *res = pi/4  *cos(*u * pi/2) * (abs(*u)<1); break;
-	case 'u' : *res = 1.0/2 * (abs(*u)<1)              ; break;
+	case 'q' : *res = 15.0/16 * pow(1- pow(*u,2),2) * (fabs(*u)<1); break;
+	case 't' : *res = 35.0/32 * pow(1- pow(*u,2),3) * (fabs(*u)<1); break;
+	case 'e' : *res =  3.0/4  * (1- pow(*u,2))   * (fabs(*u)<1); break;
+	case 'c' : *res = pi/4  *cos(*u * pi/2) * (fabs(*u)<1); break;
+	case 'u' : *res = 1.0/2 * (fabs(*u)<1)              ; break;
 	}
   /*  return *res; */
 }

@@ -1,7 +1,7 @@
 ## Hierarchical clustering
 ##
 ## Created       : 18/11/02
-## Last Modified : Time-stamp: <2014-02-26 19:03:13 antoine>
+## Last Modified : Time-stamp: <2014-12-17 19:06:24 antoine>
 ##
 ## This function is a "mix" of function dist and function hclust.
 ##
@@ -14,7 +14,7 @@ hclusterpar <- hcluster <- function (x, method = "euclidean", diag = FALSE, uppe
 {
 
   if(class(x) == "exprSet")
-    x <- exprs(x)
+    x <- Biobase::exprs(x)
 
   ## take from dist
   if (!is.na(pmatch(method, "euclidian"))) 
