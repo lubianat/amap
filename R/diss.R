@@ -8,7 +8,7 @@ diss <- function (x, w=rep(1,ncol(x)))
         return(NULL)
       }
     
-    res <- .C("diss",
+    res <- .C(C_diss,
               as.integer(x),
               double(n*n),
               n,p,

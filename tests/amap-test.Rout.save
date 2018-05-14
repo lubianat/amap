@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2014-02-24 r65073) -- "Unsuffered Consequences"
-Copyright (C) 2014 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R Under development (unstable) (2018-05-05 r74699) -- "Unsuffered Consequences"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -6425,35 +6425,13 @@ Standard deviations:
 Eigen values:
 [1] 3.2817172 1.0106413 0.4610868 0.3944977
 > 
-> x = matrix (1:12, 3, 4)
-> ncol = as.integer(dim(x)[2])
-> nrow = as.integer(dim(x)[1])
-> rien = .C("checkMatrix",as.double(x), nrow, ncol, PACKAGE="amap")
-
-1.000000	4.000000	7.000000	10.000000	
-2.000000	5.000000	8.000000	11.000000	
-3.000000	6.000000	9.000000	12.000000	
 > 
-> m = matrix(1:16,4,4)
-> d = as.dist(m)
-> rien = .C("checkMatrixTriangle",as.double(d),as.integer(4), as.integer(0))
-
-0.000000	2.000000	3.000000	4.000000	
-2.000000	0.000000	7.000000	8.000000	
-3.000000	7.000000	0.000000	12.000000	
-4.000000	8.000000	12.000000	0.000000	
 > 
-> d=c(1,2,3,4,6,7,8,11,12,16)
-> rien = .C("checkMatrixTriangle",as.double(d),as.integer(4), as.integer(1))
-
-1.000000	2.000000	3.000000	4.000000	
-2.000000	6.000000	7.000000	8.000000	
-3.000000	7.000000	11.000000	12.000000	
-4.000000	8.000000	12.000000	16.000000	
+> 
 > 
 > 
 > 
 > 
 > proc.time()
    user  system elapsed 
-  2.160   0.890   3.015 
+  2.616   5.856   8.453 

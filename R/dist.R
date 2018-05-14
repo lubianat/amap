@@ -3,7 +3,7 @@ Dist <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
 
   if(class(x) == "exprSet")
   {
-      library(Biobase)
+      requireNamespace("Biobase")
       x <- Biobase::exprs(x)
   }
       
@@ -20,7 +20,7 @@ Dist <- function(x, method="euclidean", nbproc = 2, diag=FALSE, upper=FALSE)
 	stop("ambiguous distance method")
 
     N <- nrow(x <- as.matrix(x))
-    d <- .C("R_distance",
+    d <- .C(C_R_distance,
 	    x = as.double(x),
 	    nr= N,
 	    nc= ncol(x),

@@ -1,4 +1,4 @@
-useDynLib(amap)
+useDynLib(amap,  .registration = TRUE, .fixes = "C_")
 
 export("Kmeans","acp","pca","K","W","varrob",
        "acpgen","acprob","plot2","plotAll",
@@ -13,3 +13,9 @@ export("Dist","hcluster","hclusterpar")
 
 
 export("matlogic","burt","afc")
+
+
+importFrom("graphics", "arrows", "axis", "barplot", "box", "lines",
+             "par", "plot", "plot.new", "plot.window", "points", "text",
+             "title")
+importFrom("stats", "biplot", "sd", "var")

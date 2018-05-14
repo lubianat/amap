@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 30/10/02
-#  Last Modified : Time-stamp: <2003-04-02 09:52:47 lucas>
+#  Last Modified : Time-stamp: <2018-05-12 16:44:23 (antoine)>
 #
 #  Description   : Robust principal component analysis
 #                  
@@ -37,7 +37,7 @@ W <- function(x,h,D=NULL,kernel="gaussien")
     kernel <- substr(kernel,1,1)
 
     VarLoc <- .C(
-                 "W",
+                 C_W,
                  as.double(x),
                  as.double(h),
                  as.double(D),
@@ -72,7 +72,7 @@ varrob <- function(x,h,D=NULL,kernel="gaussien")
     kernel <- substr(kernel,1,1)
 
     Calcul <- .C(
-                 "VarRob",
+                 C_VarRob,
                  as.double(x),
                  as.double(h),
                  as.double(D),
@@ -101,12 +101,12 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
     x    <- scale(x ,center = center, scale = FALSE)
     if (reduce == TRUE)
          {
-          x    <- apply(x,2,function(u) { u/sd(u)}) 
+          x    <- apply(x,2,function(u) { u/stats::sd(u)}) 
          }
 
     # ESTIMATION DE W et VarRob
     n <- dim(x)[1]
-    VarInv   <- solve(var(x)*(n-1)/n) # solve= inverser
+    VarInv   <- solve(stats::var(x)*(n-1)/n) # solve= inverser
     leU    <- varrob(x,h1,D=VarInv,kernel=kernel)
     leW    <- W(x,h2,D=VarInv,kernel=kernel)
     Winv   <- solve(leW) 
@@ -142,7 +142,7 @@ acpgen <- function(x,h1,h2,center=TRUE,reduce=TRUE,kernel="gaussien")
       dimnames(scores)[[1]] <- dimnames(x)[[1]]
     dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
     eig    <- sqrt(EIG$values)
-    sdev   <- apply(scores,2,sd)    
+    sdev   <- apply(scores,2,stats::sd)    
     res    <- list(eig=eig,sdev=sdev,scores=scores,loadings=V)
     class(res) <- "acp"
     res
@@ -155,7 +155,7 @@ acprob <- function(x,h=1,center=TRUE,reduce=TRUE,kernel="gaussien")
     x    <- scale(x ,center = center, scale = FALSE)
     if (reduce == TRUE)
          {
-          x    <- apply(x,2,function(u) { u/sd(u)}) 
+          x    <- apply(x,2,function(u) { u/stats::sd(u)}) 
          }
     EIG  <- eigen( varrob(x,h),symmetric=TRUE) 
     V    <- EIG$vector    # ou bien: V=svd(x)$v
@@ -172,7 +172,7 @@ acprob <- function(x,h=1,center=TRUE,reduce=TRUE,kernel="gaussien")
     if(!is.null( dimnames(x)[[1]] ))
       dimnames(scores)[[1]] <- dimnames(x)[[1]]
     dimnames(scores)[[2]] <- paste("Comp",1:dim(x)[2])
-    sdev   <- apply(scores,2,sd)    
+    sdev   <- apply(scores,2,stats::sd)    
     res  <- list(eig=val,sdev=sdev,scores=scores,loadings=V)
     class(res) <- "acp"
     res

@@ -1,8 +1,10 @@
 #ifndef ACPROB_H
 #define ACPROB_H 1
 
-
+#ifdef __cplusplus
 extern "C" {
+#endif
+
 
 
   /*! noyau: base function for kernel computation
@@ -59,6 +61,9 @@ extern "C" {
    */
   void VarRob(double *x,double *h,double *d,int *n,int *p,char **kernel,double *res, int * result);
 
+#ifdef __cplusplus
 };
+#endif
+
 
 #endif

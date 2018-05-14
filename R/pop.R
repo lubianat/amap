@@ -11,7 +11,7 @@ pop <- function(x,fmbvr=TRUE,triabs=TRUE,allsol=TRUE)
     
     bornth <- z0 <- z <- as.double(0)
     
-    res <- .Fortran("pnkfmb",
+    res <- .Fortran(C_pnkfmb,
                     as.integer(fmbvr),
                     as.integer(triabs),
                     as.integer(allsol),

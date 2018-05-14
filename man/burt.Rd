@@ -43,7 +43,7 @@ burt(x)
 
 \keyword{multivariate}
 
-\author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
+\author{Antoine Lucas}
 
 
 

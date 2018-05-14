@@ -1,6 +1,8 @@
 
-extern "C"
-{
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
   /**
    * R_distance: compute parallelized distance. Function called direclty by R
@@ -22,6 +24,8 @@ extern "C"
 
   void rsort_rank_order(double *x, int *order, int *rank, int * n);
 
+#ifdef __cplusplus
+};
+#endif
 
 
-}

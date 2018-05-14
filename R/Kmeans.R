@@ -4,7 +4,7 @@ function(x, centers, iter.max = 10, nstart = 1,
 {
   dokmeans <- function()
     {
-      Z <- .C("kmeans_Lloyd2", as.double(x), as.integer(m),
+      Z <- .C(C_kmeans_Lloyd2, as.double(x), as.integer(m),
               as.integer(ncol(x)),
               centers = as.double(centers), as.integer(k),
               c1 = integer(m), iter = as.integer(iter.max),
@@ -31,8 +31,8 @@ function(x, centers, iter.max = 10, nstart = 1,
     stop("ambiguous distance method")
   
   if(class(x) == "exprSet")
-  { 
-    library(Biobase)
+  {
+     requireNamespace("Biobase")
      x <- Biobase::exprs(x)
   }
 
@@ -66,7 +66,7 @@ function(x, centers, iter.max = 10, nstart = 1,
     stop("must have same number of columns in 'x' and 'centers'")
   
   
-  Z <- .C("kmeans_Lloyd2", as.double(x), as.integer(m),
+  Z <- .C(C_kmeans_Lloyd2, as.double(x), as.integer(m),
           as.integer(ncol(x)),
           centers = as.double(centers), as.integer(k),
           c1 = integer(m), iter = as.integer(iter.max),

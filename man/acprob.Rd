@@ -61,5 +61,5 @@ divide each column by standard deviation}
 
 }
 
-\author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
+\author{Antoine Lucas}
 \seealso{\link[stats]{princomp} \link{acpgen}}

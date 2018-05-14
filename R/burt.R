@@ -17,7 +17,7 @@ matlogic <- function(x)
   res <- as.integer(matrix(0,ncol=k,nrow=n))
   x <- c(x,recursive=TRUE)
 
-  result <- .C("matind",
+  result <- .C(C_matind,
                as.integer(nblev),
                as.integer(x),
                res=res,

@@ -45,11 +45,6 @@ pca(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
   }
 
 
-\references{
-  A. Carlier
-  Analyse des donn\'ees Multidimensionnelles
-  \url{http://www.lsp.ups-tlse.fr/Carlier/enseignement.html}
-}
 
 
 \examples{
@@ -60,5 +55,5 @@ plot(p)
 }
 \keyword{multivariate}
 
-\author{Antoine Lucas, \url{http://mulcyber.toulouse.inra.fr/projects/amap/}}
+\author{Antoine Lucas}
 \seealso{\link{plot.acp},\link{acpgen}, \link[stats]{princomp} }

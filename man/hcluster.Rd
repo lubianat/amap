@@ -96,7 +96,7 @@ hcluster(x, method = "euclidean", diag = FALSE, upper = FALSE,
 \author{
   The \code{hcluster} function is based on C code adapted from Cran
   Fortran routine
-  by Antoine Lucas \url{http://mulcyber.toulouse.inra.fr/projects/amap/}.
+  by Antoine Lucas.
 }
 \seealso{
   \code{\link{Dist}},

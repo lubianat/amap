@@ -1,7 +1,7 @@
 #-------------------------------------------------------
 #
 #  Created       : 29/10/02
-#  Last Modified : Time-stamp: <2013-12-02 19:32:49 antoine>
+#  Last Modified : Time-stamp: <2018-05-11 20:49:49 (antoine)>
 #
 #  Description   : Principal component analysis
 #                  
@@ -20,7 +20,7 @@ acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
       x <- t(t(x) - as.vector(( wI %*% x)/sum(wI)))
 ##    x    <- scale(x ,center = center, scale = FALSE)
     if (reduce) 
-      x    <- apply(x,2,function(u) { u/sd(u)}) 
+      x    <- apply(x,2,function(u) { u/stats::sd(u)}) 
 
     ##              Di.X'.Dv.X
     EIG  <- eigen( (t(x)* wI) %*% (x * wV) ,symmetric=FALSE) 
@@ -44,7 +44,7 @@ acp <- function(x,center=TRUE,reduce=TRUE,wI=rep(1,nrow(x)),wV=rep(1,ncol(x)))
 
     ##cmpr <- x %*% (sqrt(wV) * as.matrix(V))
     
-    sdev   <- apply(scores,2,sd)    
+    sdev   <- apply(scores,2,stats::sd)    
     res  <- list(eig=val,sdev=sdev,scores=scores,loadings=V)
     class(res) <- "acp"
     res
@@ -105,19 +105,19 @@ biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,ma
     YLAB <- paste(label,j)
 
     # PLOT DES AXES
-    plot.new()
-    plot.window(LIM,LIM)
-    axis(1,labels=TRUE,tick=TRUE)
-    axis(2,labels=TRUE,tick=TRUE)
-    box()
-    title(xlab=XLAB,ylab=YLAB,main=main)
+    graphics::plot.new()
+    graphics::plot.window(LIM,LIM)
+    graphics::axis(1,labels=TRUE,tick=TRUE)
+    graphics::axis(2,labels=TRUE,tick=TRUE)
+    graphics::box()
+    graphics::title(xlab=XLAB,ylab=YLAB,main=main)
 
 
     # PLOT DU NOM DES FLECHES
-    text(x=U[,i]*1.3,y=U[,j]*1.3,labels=dimnames(U)[[1]],col=col)   
+    graphics::text(x=U[,i]*1.3,y=U[,j]*1.3,labels=dimnames(U)[[1]],col=col)   
 
     # PLOT DES FLECHES
-    arrows(0,0,U[,i],U[,j],length = length,col=col)
+    graphics::arrows(0,0,U[,i],U[,j],length = length,col=col)
 
     # CERCLE
     if(circle)
@@ -125,7 +125,7 @@ biplot.acp <- function(x,i=1,j=2,label='Composants',col='darkblue',length=0.1,ma
         t2p <- 2 * pi * seq(0,1, length = 200)
         xc <- cos(t2p)
         yc <- sin(t2p)
-        lines(xc,yc,col='darkblue')
+        graphics::lines(xc,yc,col='darkblue')
       }
 }
 
@@ -138,16 +138,16 @@ plot2 <- function(x,pourcent=FALSE,eigen=TRUE,label='Comp.',col='lightgrey',main
     if(pourcent){U <- U/sum(U) }
     n     <- length(U)
     names <- paste(label,1:n)
-    barplot(U,main=main,ylab=ylab,col=col,names.arg=names)
+    graphics::barplot(U,main=main,ylab=ylab,col=col,names.arg=names)
 }
 
 
 plotAll <- function(x)
   {
-    par(mfrow=c(2,2))
+    graphics::par(mfrow=c(2,2))
     plot2(x)
     ##    boxplot(as.list(as.data.frame(x$cmpr)))
-    plot(x,variables=FALSE)
-    biplot(x)
-    plot(x,main="Both",variables=TRUE)
+    graphics::plot(x,variables=FALSE)
+    stats::biplot(x)
+    graphics::plot(x,main="Both",variables=TRUE)
   }

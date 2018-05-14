@@ -89,7 +89,6 @@ pop(d)
   \url{http://petitjeanmichel.free.fr/itoweb.petitjean.class.html}
   
   R port by Antoine Lucas,
-  \url{http://mulcyber.toulouse.inra.fr/projects/amap/}
 }
 
 
