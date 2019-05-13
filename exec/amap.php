@@ -206,9 +206,8 @@ else
 
    /* Signature  */
 
-   echo "<p>This results made by <a
-href='http://mulcyber.toulouse.inra.fr/projects/amap/'>amap
-package</a>. Code use: <a href='$ID/prog.R'>prog.R</a>, 
+   echo "<p>This results made by amap, 
+Code use: <a href='$ID/prog.R'>prog.R</a>, 
 Out: <a href='$ID/prog.R.out'>prog.R.out</a>,
 Warnings: <a href='$ID/prog.R.warnings'>prog.R.warnings</a>.";
 
