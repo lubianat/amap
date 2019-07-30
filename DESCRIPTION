@@ -4,7 +4,7 @@ Date: 2019-04-25
 Title: Another Multidimensional Analysis Package
 Author: Antoine Lucas
 Maintainer: Antoine Lucas <antoinelucas@gmail.com>
-Depends: R (>= 3.6.0)
+Depends: R (>= 3.5.0)
 Suggests: Biobase
 Description: Tools for Clustering and Principal Component Analysis
         (With robust methods, and parallelized functions).
